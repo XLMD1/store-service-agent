@@ -1,0 +1,39 @@
+/* C 方向：所有页面与组件共用的视觉变量。 */
+:root {
+  color-scheme: light;
+  --ink: #17313b;
+  --primary: #0f766e;
+  --primary-hover: #0b635d;
+  --primary-soft: #e7f3f1;
+  --page: #f7f9f8;
+  --surface: #ffffff;
+  --text: #17313b;
+  --muted: #52646f;
+  --line: #e2e9e9;
+  --warning: #92400e;
+  --warning-soft: #fff5e7;
+  --success: #166534;
+  --success-soft: #edf6ef;
+  --danger: #b91c1c;
+  --danger-soft: #fff1f1;
+  --focus: #a96812;
+  --radius-control: 6px;
+  --radius-surface: 8px;
+  --shadow-panel: 0 12px 36px rgb(23 49 59 / 12%);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --font-ui: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+}
+/* 只需引入本文件与 ui.css，即可复用整套材质。 */
+.material-ink {
+  background-color: var(--ink);
+  background-image: url("assets/ink-grain.png");
+  background-repeat: repeat;
+  background-size: 628px 628px;
+  color: white;
+}
+.material-paper { background: var(--surface); border: 1px solid var(--line); }

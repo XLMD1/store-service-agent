@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="data:,"><title>门店助手 · 工作台</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="ui.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></symbol><symbol id="clipboard" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="1.5"/><path d="M9 5V3h6v2M9 10h6M9 14h6M9 18h3"/></symbol><symbol id="history" viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2.7 7M3 5v6h6m3-4v6l4 2"/></symbol><symbol id="wrench" viewBox="0 0 24 24"><path d="M14 6a5 5 0 0 0-6.7 6.7L3.2 17a2.7 2.7 0 0 0 3.8 3.8l4.3-4.2A5 5 0 0 0 18 10l-3 3-4-4Z"/></symbol><symbol id="box" viewBox="0 0 24 24"><path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 10 9-5M12 13 3 8m9 5v9M7.5 5.5l9 5"/></symbol><symbol id="file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12h8M8 16h8"/></symbol><symbol id="photo" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m3 17 5-5 4 4 4-5 5 6"/></symbol><symbol id="settings" viewBox="0 0 24 24"><path d="m10 3-.6 2.2-2 .9-2-.6-2 3.5 1.5 1.6v2.3L3.4 15l2 3.4 2-.5 2 .9.6 2.2h4l.6-2.2 2-.9 2 .5 2-3.4-1.5-1.7v-2.2L20.6 9l-2-3.5-2 .6-2-.9L14 3Z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol><symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol><symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol><symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol><symbol id="warning" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Zm0 6v5m0 3v.1"/></symbol><symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol><symbol id="phone" viewBox="0 0 24 24"><path d="m5 3 4 1 1 5-3 2a16 16 0 0 0 6 6l2-3 5 1 1 4c-1 3-6 2-10-1S2 7 5 3Z"/></symbol><symbol id="pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="back" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol><symbol id="plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></symbol></svg>
+<div class="app-shell">
+<header class="app-hero material-ink">
+  <div class="app-top">
+    <div><h1>门店助手</h1><p class="meta">示例门店 · 接单员</p></div>
+    <button class="quiet-button on-dark" data-action="settings"><svg class="icon " aria-hidden="true"><use href="#settings"></use></svg>资料与设置</button>
+  </div>
+  <form id="task-form">
+    <h2 class="task-title"><label for="task-input">今天要处理什么？</label></h2>
+    <textarea id="task-input" class="task-input" rows="1" placeholder="输入要查找或登记的内容…" aria-describedby="task-error"></textarea>
+    <div class="task-actions">
+      <button class="button button-dark-outline" type="button" data-action="paste"><svg class="icon icon-small" aria-hidden="true"><use href="#clipboard"></use></svg>粘贴文字</button>
+      <button class="button button-dark-outline" type="button" data-action="upload"><svg class="icon icon-small" aria-hidden="true"><use href="#photo"></use></svg>上传照片</button>
+      <button class="button button-primary" type="submit">开始</button>
+    </div>
+    <input id="photo-input" type="file" accept="image/*" hidden>
+    <div class="attachment" id="attachment" hidden><span id="attachment-name"></span><button type="button" data-action="remove-photo">移除</button></div>
+    <p class="task-error" id="task-error" role="alert" hidden></p>
+  </form>
+</header>
+<main class="app-content" id="main-content">
+  <section class="shortcuts" aria-label="常用功能">
+    <button class="shortcut" data-action="organize"><svg class="icon icon-large" aria-hidden="true"><use href="#clipboard"></use></svg><span>整理售后</span></button>
+    <button class="shortcut" data-action="history"><svg class="icon icon-large" aria-hidden="true"><use href="#history"></use></svg><span>查上次记录</span></button>
+    <button class="shortcut" data-action="repair"><svg class="icon icon-large" aria-hidden="true"><use href="#wrench"></use></svg><span>维修辅助</span></button>
+    <button class="shortcut" data-action="inventory"><svg class="icon icon-large" aria-hidden="true"><use href="#box"></use></svg><span>查库存</span></button>
+  </section>
+  <section class="content-section" aria-labelledby="pending-title">
+    <div class="section-heading">
+      <div class="section-title"><h2 id="pending-title">待核对</h2><span class="count" aria-label="2条待核对">2</span></div>
+      <button class="text-link" data-action="pending">查看全部<svg class="icon icon-small" aria-hidden="true"><use href="#chevron"></use></svg></button>
+    </div>
+    <div class="record-list">
+      <div class="record-row pending">
+        <svg class="icon " aria-hidden="true"><use href="#file"></use></svg><div class="record-main"><strong>售后草稿</strong><p>示例客户 · 手机号待核对</p></div>
+        <button class="text-link" data-action="draft">继续核对<svg class="icon icon-small" aria-hidden="true"><use href="#chevron"></use></svg></button>
+      </div>
+      <div class="record-row pending">
+        <svg class="icon " aria-hidden="true"><use href="#box"></use></svg><div class="record-main"><strong>提货草稿</strong><p>2号库 · 示例型号A</p></div>
+        <button class="text-link" data-action="pickup">继续核对<svg class="icon icon-small" aria-hidden="true"><use href="#chevron"></use></svg></button>
+      </div>
+    </div>
+  </section>
+  <section class="content-section" aria-labelledby="recent-title">
+    <div class="section-heading"><h2 id="recent-title">最近任务</h2></div>
+    <div class="record-list">
+      <div class="record-row"><svg class="icon " aria-hidden="true"><use href="#file"></use></svg><div class="record-main"><strong>售后历史查询</strong><p>已完成 · 10月26日 10:20</p></div><button class="text-link" data-action="history">查看<svg class="icon icon-small" aria-hidden="true"><use href="#chevron"></use></svg></button></div>
+      <div class="record-row"><svg class="icon " aria-hidden="true"><use href="#box"></use></svg><div class="record-main"><strong>2号库库存查询</strong><p>已完成 · 10月26日 09:45</p></div><button class="text-link" data-action="inventory">查看<svg class="icon icon-small" aria-hidden="true"><use href="#chevron"></use></svg></button></div>
+    </div>
+  </section>
+
+</main>
+<nav class="bottom-nav" aria-label="主导航">
+  <button class="nav-item" aria-current="page" data-action="home"><svg class="icon " aria-hidden="true"><use href="#home"></use></svg>工作台</button>
+  <button class="nav-item" data-action="pending"><svg class="icon " aria-hidden="true"><use href="#file"></use></svg>待核对</button>
+  <button class="nav-item" data-action="history"><svg class="icon " aria-hidden="true"><use href="#wrench"></use></svg>售后</button>
+  <button class="nav-item" data-action="inventory"><svg class="icon " aria-hidden="true"><use href="#box"></use></svg>库存</button>
+</nav>
+</div>
+<dialog id="sample-dialog" aria-labelledby="dialog-title">
+  <div class="dialog-heading"><h2 id="dialog-title"></h2><button class="icon-button" data-action="close" aria-label="关闭"><svg class="icon " aria-hidden="true"><use href="#close"></use></svg></button></div>
+  <div id="dialog-body" class="dialog-body"></div>
+  <div class="dialog-footer"><button class="button" data-action="close">返回工作台</button></div>
+</dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+</body></html>
