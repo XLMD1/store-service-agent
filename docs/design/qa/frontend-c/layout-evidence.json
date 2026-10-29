@@ -1,0 +1,218 @@
+[
+  {
+    "route": "home",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "pending",
+    "contentWidth": 320,
+    "scrollWidth": 320,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "contentWidth": 305,
+    "route": "service-draft",
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "service-search",
+    "contentWidth": 320,
+    "scrollWidth": 320,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "service-detail",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "repair-assistant",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "inventory",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "reserved-pickup",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "inbound-statistics",
+    "contentWidth": 305,
+    "scrollWidth": 305,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 320
+  },
+  {
+    "route": "home",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "pending",
+    "contentWidth": 390,
+    "scrollWidth": 390,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "contentWidth": 375,
+    "route": "service-draft",
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "service-search",
+    "contentWidth": 390,
+    "scrollWidth": 390,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "service-detail",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "repair-assistant",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "inventory",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "reserved-pickup",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "inbound-statistics",
+    "contentWidth": 375,
+    "scrollWidth": 375,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 390
+  },
+  {
+    "route": "home",
+    "contentWidth": 1440,
+    "scrollWidth": 1440,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "pending",
+    "contentWidth": 1440,
+    "scrollWidth": 1440,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "contentWidth": 1425,
+    "route": "service-draft",
+    "scrollWidth": 1425,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "service-search",
+    "contentWidth": 1440,
+    "scrollWidth": 1440,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "service-detail",
+    "contentWidth": 1425,
+    "scrollWidth": 1425,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "repair-assistant",
+    "contentWidth": 1425,
+    "scrollWidth": 1425,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "inventory",
+    "contentWidth": 1425,
+    "scrollWidth": 1425,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "reserved-pickup",
+    "contentWidth": 1440,
+    "scrollWidth": 1440,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  },
+  {
+    "route": "inbound-statistics",
+    "contentWidth": 1425,
+    "scrollWidth": 1425,
+    "smallTargets": [],
+    "unlabeled": [],
+    "viewport": 1440
+  }
+]

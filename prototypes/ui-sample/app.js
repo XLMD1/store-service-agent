@@ -63,7 +63,7 @@ const actions = {
   home() { window.scrollTo({top: 0, behavior: 'auto'}); },
   close() { dialog.close(); },
   settings() {
-    openPanel('资料与设置', '<p class="muted">当前为示例门店的视觉样板。</p><div class="kit-stack" style="margin-top:16px"><a class="button" href="ui-kit.html">查看视觉组件</a><a class="button" href="../../docs/design/mobile-pages-c-v1.html">查看七页概念图</a></div>');
+    openPanel('资料与设置', '<p class="muted">当前为示例门店的视觉样板。</p><div class="kit-stack" style="margin-top:16px"><a class="button" href="../frontend/index.html">打开核心页面交互样板</a><a class="button" href="ui-kit.html">查看视觉组件</a><a class="button" href="../../docs/design/design-resources.html#concepts">查看七页概念图</a></div>');
   },
   async paste() {
     try {

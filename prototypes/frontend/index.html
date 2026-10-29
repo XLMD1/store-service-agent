@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="门店售后与库存助手，C方向核心页面交互样板，使用虚构示例数据。">
+  <link rel="icon" href="data:,">
+  <title>门店助手 · 工作台</title>
+  <link rel="stylesheet" href="../ui-sample/tokens.css">
+  <link rel="stylesheet" href="../ui-sample/ui.css">
+  <link rel="stylesheet" href="frontend.css">
+  <script src="rules.js" defer></script>
+  <script src="shared.js" defer></script>
+  <script src="workbench.js" defer></script>
+  <script src="service.js" defer></script>
+  <script src="inventory.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body class="frontend">
+<a class="skip-link" href="#page-content">跳到页面内容</a>
+<div class="workspace">
+  <aside class="sidebar material-ink" aria-label="门店导航">
+    <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">门</span><span>门店助手<small>售后与库存协作</small></span></a>
+    <p class="store-label">示例门店 / 内部工作台</p>
+    <nav id="desktop-nav" aria-label="桌面主导航"></nav>
+    <div class="sidebar-foot"><a href="#settings">资料与设置</a><span>示例接单员 · 兼任进出货</span><span class="demo-label">交互样板 · 示例数据</span></div>
+  </aside>
+  <div class="page-frame">
+    <div class="desktop-bar"><span id="breadcrumb">工作台</span><span>示例门店 <span class="separator">/</span> 示例接单员</span></div>
+    <div id="page-root"></div>
+  </div>
+</div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="手机主导航"></nav>
+<dialog id="reader" aria-labelledby="reader-title">
+  <div class="dialog-heading"><h2 id="reader-title"></h2><button class="icon-button" id="reader-close" aria-label="关闭阅读层">×</button></div>
+  <div class="dialog-body" id="reader-content"></div>
+</dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>
