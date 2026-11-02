@@ -35,6 +35,7 @@ class Reservation(Base):
     cancelled_quantity: Mapped[int] = mapped_column(Integer, default=0)
     is_opening: Mapped[bool] = mapped_column(Boolean, default=True)
     basis_note: Mapped[str] = mapped_column(String(1000))
+    basis_kind: Mapped[str | None] = mapped_column(String(16))
     version: Mapped[int] = mapped_column(Integer, default=1)
 
 
@@ -57,6 +58,7 @@ class InventoryDocument(Base):
     boundary_note: Mapped[str | None] = mapped_column(String(1000))
     registered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     basis_note: Mapped[str] = mapped_column(String(1000))
+    reservation_id: Mapped[str | None] = mapped_column(ForeignKey('inventory_reservations.id'), index=True)
 
 
 class Ledger(Base):

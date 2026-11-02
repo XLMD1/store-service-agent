@@ -28,7 +28,8 @@ class OpeningParameters(StrictModel):
 
 
 class DraftCreate(StrictModel):
-    kind: Literal['inventory_opening', 'inventory_inbound']
+    kind: Literal['inventory_opening', 'inventory_inbound', 'inventory_outbound',
+                  'reservation_create', 'reservation_cancel', 'reservation_pickup']
     parameters: dict
 
 
@@ -67,6 +68,18 @@ class Occurred(StrictModel):
 class InboundParameters(StrictModel):
     warehouse_id: UUID | None = None
     model_id: UUID | None = None
+    quantity: int | None = Field(default=None, strict=True, ge=1, le=2147483647)
+    occurred: Occurred | None = None
+    basis_note: str = Field(default='', max_length=1000)
+
+
+class ReserveParameters(InboundParameters):
+    customer_id: UUID | None = None
+    basis_kind: Literal['oral', 'deposit', 'paid'] | None = None
+
+
+class ReservationActionParameters(StrictModel):
+    reservation_id: UUID | None = None
     quantity: int | None = Field(default=None, strict=True, ge=1, le=2147483647)
     occurred: Occurred | None = None
     basis_note: str = Field(default='', max_length=1000)

@@ -1,0 +1,61 @@
+[
+  {
+    "check": "model-open-390",
+    "client": 375,
+    "gap": 6.000007629394531,
+    "height": 46.92708587646485,
+    "scroll": 375,
+    "width": 46
+  },
+  {
+    "cards": 0,
+    "check": "select-all-no-query",
+    "id": "<redacted>",
+    "name": "全部型号"
+  },
+  {
+    "check": "all-results",
+    "models": [
+      "示例型号A",
+      "示例型号B",
+      "示例型号C零库存"
+    ]
+  },
+  {
+    "cards": 0,
+    "check": "unknown-clears-id",
+    "id": "",
+    "menu": "没有匹配的型号，请核对名称或从完整列表选择。"
+  },
+  {
+    "check": "typed-exact-model",
+    "id": "<redacted>",
+    "models": [
+      "示例型号B"
+    ]
+  },
+  {
+    "check": "model-open-320",
+    "client": 305,
+    "gap": 6.000007629394531,
+    "height": 46.92708587646485,
+    "scroll": 305,
+    "width": 46
+  },
+  {
+    "check": "escape-model",
+    "focus": "model-toggle",
+    "hidden": true
+  },
+  {
+    "check": "menus-exclusive",
+    "modelHidden": true,
+    "warehouseHidden": false
+  },
+  {
+    "check": "desktop-open",
+    "client": 1425,
+    "gap": 6.000007629394531,
+    "scroll": 1425
+  }
+]

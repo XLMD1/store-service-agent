@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-02",
+  "label": "isolated review database, synthetic data only; original quantities compared with pre-M1-04 dump",
+  "accounts": [
+    {
+      "code": "DEMO-02",
+      "on_hand": 30,
+      "reserved": 3,
+      "available": 27,
+      "version": 3,
+      "pre_m1_04_unchanged": true,
+      "ledger_matches": true,
+      "reservation_sum_matches": true
+    },
+    {
+      "code": "DEMO-03",
+      "on_hand": 25,
+      "reserved": 2,
+      "available": 23,
+      "version": 2,
+      "pre_m1_04_unchanged": true,
+      "ledger_matches": true,
+      "reservation_sum_matches": true
+    },
+    {
+      "code": "DEMO-M104",
+      "on_hand": 7,
+      "reserved": 3,
+      "available": 4,
+      "version": 5,
+      "pre_m1_04_unchanged": false,
+      "ledger_matches": true,
+      "reservation_sum_matches": true
+    }
+  ],
+  "m1_04_document_counts": {
+    "cancel": 1,
+    "opening": 1,
+    "outbound": 1,
+    "pickup": 1,
+    "reserve": 1
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-02",
+  "environment": "in-app browser viewport; not physical-device validation",
+  "layout": [
+    {
+      "client": 305,
+      "page": "outbound-preview",
+      "scroll": 305,
+      "targets": [
+        {
+          "height": 44,
+          "text": "退出登录"
+        },
+        {
+          "height": 46,
+          "text": "请选择库房示例2号库 · DEMO-02示例3号库 · DE"
+        },
+        {
+          "height": 46,
+          "text": "请选择型号示例型号A"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "quantity"
+        },
+        {
+          "height": 46,
+          "text": "只知道日期知道精确时刻"
+        },
+        {
+          "height": 49.20000076293945,
+          "text": "date"
+        },
+        {
+          "height": 71.20000457763672,
+          "text": "T0同日先后不明？核实起点边界"
+        },
+        {
+          "height": 46,
+          "text": "尚未核实已核实在T0之后在T0或之前"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "boundary_note"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "basis_note"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "保存草稿并预览"
+        },
+        {
+          "height": 64.80000305175781,
+          "text": "我已核对操作类型、具体对象、客户及以上数量变化。"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "确认普通出库"
+        },
+        {
+          "height": 47.20000076293945,
+          "text": "按原操作核验结果"
+        }
+      ],
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "ledger",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "reservations",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "reserve-receipt",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "pickup-receipt",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "inventory",
+      "scroll": 305,
+      "width": 320
+    }
+  ]
+}

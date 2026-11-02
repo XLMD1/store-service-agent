@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-02",
+  "checks": [
+    {
+      "model": "",
+      "queryCursor": "pointer",
+      "required": true,
+      "state": "after-login",
+      "stockCards": 0,
+      "warehouse": ""
+    },
+    {
+      "model": "",
+      "queryHoverColor": "rgb(11, 99, 93)",
+      "state": "missing-model",
+      "stockCards": 0,
+      "validation": "请在列表中选择一项。"
+    },
+    {
+      "state": "fields-filled-without-query",
+      "stockCards": 0
+    },
+    {
+      "state": "candidate-selected-without-query",
+      "stockCards": 0,
+      "warehouse": "页面优化示例库"
+    },
+    {
+      "linkCursor": "pointer",
+      "model": "41201450-902e-42c8-866b-23b38aa99411",
+      "queryColor": "rgb(11, 99, 93)",
+      "queryCursor": "pointer",
+      "state": "explicit-query",
+      "stockCards": 1
+    },
+    {
+      "model": "",
+      "state": "return-to-inventory",
+      "stockCards": 0,
+      "warehouse": ""
+    },
+    {
+      "hoverBackground": "rgb(11, 99, 93)",
+      "queryCursor": "pointer",
+      "state": "desktop-hover",
+      "stockCards": 0,
+      "viewport": 1440
+    },
+    {
+      "client": 305,
+      "modelRequired": true,
+      "scroll": 305,
+      "state": "initial-320",
+      "stockCards": 0,
+      "viewport": 320
+    }
+  ]
+}

@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from app.auth.router import check_write, current_user, database
-from app.auth.service import ensure_permission, lock_accounts
+from app.auth.service import ensure_permission, identity, lock_accounts
 from app.catalog.models import CatalogAudit, Customer, ProductModel, Warehouse
 from app.catalog.schemas import CustomerCreate, ModelCreate, ModelUpdate, WarehouseCreate, WarehouseUpdate
 
@@ -17,9 +17,18 @@ def serialize(row):
     return {column.name: getattr(row, column.name) for column in row.__table__.columns}
 
 
+def customer_access(db, user):
+    db.refresh(user)
+    if not user.enabled or not {'inventory.opening', 'reservation.confirm'}.intersection(identity(db, user)['permissions']):
+        raise HTTPException(403, 'Permission denied')
+
+
 def write_catalog(db, user, kind, cls, payload, target=None):
     lock_accounts(db)
-    ensure_permission(db, user, 'inventory.opening' if cls is Customer else 'catalog.manage')
+    if cls is Customer:
+        customer_access(db, user)
+    else:
+        ensure_permission(db, user, 'catalog.manage')
     values = payload.model_dump(exclude={'confirmed', 'expected_version'}, exclude_unset=True)
     before = None
     if target:
@@ -35,6 +44,8 @@ def write_catalog(db, user, kind, cls, payload, target=None):
             setattr(row, key, value)
         row.version += 1
     else:
+        if cls is Warehouse:
+            values['code'] = payload.code
         row = cls(**values)
         db.add(row)
     try:
@@ -59,7 +70,7 @@ def models(user=Depends(current_user), db=Depends(database, scope='function')):
 
 @router.get('/customers')
 def customers(user=Depends(current_user), db=Depends(database, scope='function')):
-    ensure_permission(db, user, 'inventory.opening')
+    customer_access(db, user)
     return [serialize(row) for row in db.scalars(select(Customer).order_by(Customer.display_name, Customer.id))]
 
 

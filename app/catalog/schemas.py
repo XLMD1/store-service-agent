@@ -1,5 +1,6 @@
 from pydantic import Field, StringConstraints, field_validator
 from typing import Annotated, Literal
+from uuid import uuid4
 
 from app.auth.schemas import StrictModel
 
@@ -20,7 +21,7 @@ class Confirmed(StrictModel):
 
 
 class WarehouseCreate(Confirmed):
-    code: Code
+    code: Code = Field(default_factory=lambda: uuid4().hex)
     name: Name
 
 

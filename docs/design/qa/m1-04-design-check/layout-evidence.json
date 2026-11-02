@@ -1,0 +1,81 @@
+{
+  "date": "2026-11-02",
+  "checks": [
+    {
+      "client": 375,
+      "headerClass": "top material-ink",
+      "order": [
+        "section-head stock-heading",
+        "grid stock-grid",
+        "panel stock-total",
+        "muted",
+        "panel"
+      ],
+      "page": "inventory",
+      "scroll": 375,
+      "viewport": 390
+    },
+    {
+      "client": 305,
+      "minMainTargetHeight": 44,
+      "page": "inventory",
+      "scroll": 305,
+      "viewport": 320
+    },
+    {
+      "focusedTag": "BUTTON",
+      "focusedText": "查询库存",
+      "page": "inventory-keyboard",
+      "rect": "{\"bottom\":495.5999946594238,\"height\":47.20000076293945,\"left\":32.79999923706055,\"right\":342.4000053405762,\"top\":448.3999938964844,\"width\":309.6000061035156,\"x\":32.79999923706055,\"y\":448.3999938964844}",
+      "viewport": 390
+    },
+    {
+      "client": 305,
+      "page": "reservations",
+      "scroll": 305,
+      "viewport": 320
+    },
+    {
+      "client": 305,
+      "customerForm": false,
+      "page": "catalog",
+      "scroll": 305,
+      "viewport": 320,
+      "warehouseFields": [
+        "name"
+      ]
+    },
+    {
+      "client": 305,
+      "page": "customers",
+      "scroll": 305,
+      "viewport": 320
+    },
+    {
+      "client": 305,
+      "page": "reserve",
+      "scroll": 305,
+      "viewport": 320
+    },
+    {
+      "backHeight": 44,
+      "customerHeight": 44,
+      "page": "opening-final-targets",
+      "viewport": 320
+    },
+    {
+      "client": 1425,
+      "height": 1000,
+      "page": "inventory-desktop",
+      "scroll": 1425,
+      "viewport": 1440
+    },
+    {
+      "client": 305,
+      "inputLength": 96,
+      "page": "long-name-no-match",
+      "scroll": 305,
+      "viewport": 320
+    }
+  ]
+}

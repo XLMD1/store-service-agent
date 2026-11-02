@@ -830,11 +830,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: stock_operator outbound 8 rejected from 10/3/7; no balance change. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac17_stock_operator_cannot_outbound_eight_when_available_seven",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {
@@ -881,11 +885,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: clerk explicitly reserves 2 for an independent customer; 10/3/7 becomes 10/5/5. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac18_clerk_reserves_two_for_independent_customer",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {
@@ -926,11 +934,15 @@
       },
       "fixture_refs": [],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: clerk cancellation 3 from selected remaining 2 rejected even with another reservation remaining 3; 10/5/5 unchanged. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac19_clerk_cannot_cancel_three_from_reservation_remaining_two",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {
@@ -977,11 +989,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: stock_operator pickup 2 from selected opening reservation; 10/3/7 becomes 8/1/7; original receipt replay does not repeat effect. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac20_stock_operator_pickup_two_from_opening_reservation",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {
@@ -1115,11 +1131,15 @@
       },
       "fixture_refs": [],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: two distinct clerk accounts concurrently reserve the last 1 from 1/0/1 for different customers; exactly one 200 and one 409; 1/1/0, one reservation document and matching ledger. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac23_two_clerks_compete_for_exactly_last_on_hand_unit",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {
@@ -1167,11 +1187,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "2026-11-02 Windows / Python 3.12.10 / PostgreSQL 18 / isolated store_agent_m1_test / synthetic data",
+        "command": ".venv/Scripts/python -m pytest -q",
+        "result": "M1-04 technical verification in full 123-test run: clerk reserves 7 in preview; another stock_operator outbounds 1 to 9/3/6; stale confirm 409, old quantity re-preview rejected; refreshed quantity 6 requires new preview and confirmation. User review pending; not Agent or store production acceptance.",
+        "evidence": [
+          "tests/integration/test_inventory_reservations.py::test_ac24_old_seven_reservation_fails_after_other_actor_outbounds_one",
+          "docs/plans/m1-04-implementation.md",
+          "docs/design/qa/m1-04/README.md"
+        ]
       }
     },
     {

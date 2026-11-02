@@ -1,0 +1,173 @@
+{
+  "cssViewports": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 320,
+      "height": 844
+    }
+  ],
+  "checks": [
+    {
+      "check": "full-list-after-input",
+      "otherWarehouseVisible": true,
+      "selectedWithoutQuery": true
+    },
+    {
+      "check": "all-models",
+      "models": [
+        "示例型号A",
+        "示例型号B",
+        "示例型号C零库存"
+      ],
+      "total": "实物在库9台已预留0台可售9台",
+      "unknown": "1种型号尚未在此库房建账",
+      "view": "desktop"
+    },
+    {
+      "cards": 3,
+      "check": "switch-retains-query",
+      "model": "all",
+      "view": "mobile",
+      "warehouse": "页面优化示例库"
+    },
+    {
+      "check": "mobile-320",
+      "client": 305,
+      "scroll": 305,
+      "view": "mobile"
+    },
+    {
+      "check": "escape-closes",
+      "focus": "warehouse-toggle",
+      "hidden": true
+    },
+    {
+      "check": "unsaved-inbound-preserved",
+      "note": "模式切换检查样例（不保存）",
+      "quantity": "7",
+      "view": "mobile"
+    },
+    {
+      "check": "catalog-desktop",
+      "client": 1425,
+      "scroll": 1425,
+      "title": "库房与型号",
+      "view": "desktop"
+    },
+    {
+      "check": "customers-desktop",
+      "client": 1425,
+      "scroll": 1425,
+      "title": "客户资料",
+      "view": "desktop"
+    },
+    {
+      "check": "opening-desktop",
+      "client": 1425,
+      "scroll": 1425,
+      "title": "期初建账",
+      "view": "desktop"
+    },
+    {
+      "check": "reservations-desktop",
+      "client": 1440,
+      "scroll": 1440,
+      "title": "预留查询",
+      "view": "desktop"
+    },
+    {
+      "check": "ledger-desktop",
+      "client": 1440,
+      "scroll": 1440,
+      "title": "库存流水",
+      "view": "desktop"
+    },
+    {
+      "check": "pending-desktop",
+      "client": 1440,
+      "scroll": 1440,
+      "title": "待核对",
+      "view": "desktop"
+    },
+    {
+      "cards": 0,
+      "check": "return-empty",
+      "model": "",
+      "view": "desktop",
+      "warehouse": ""
+    },
+    {
+      "cards": 0,
+      "check": "blank-model-blocked",
+      "model": "",
+      "required": true,
+      "validation": "请在列表中选择一项。"
+    },
+    {
+      "check": "single-model",
+      "models": [
+        "示例型号B"
+      ]
+    },
+    {
+      "check": "desktop-320-sidebar",
+      "client": 305,
+      "columns": "64px 240.667px",
+      "scroll": 305,
+      "sidebarLabels": [
+        "库存查询",
+        "预留查询",
+        "库存流水",
+        "待核对草稿",
+        "登记入库",
+        "客户资料",
+        "库房与型号",
+        "期初建账"
+      ],
+      "view": "desktop"
+    },
+    {
+      "check": "desktop-320-final",
+      "client": 305,
+      "labels": [
+        {
+          "display": "block",
+          "text": "库存"
+        },
+        {
+          "display": "block",
+          "text": "预留"
+        },
+        {
+          "display": "block",
+          "text": "流水"
+        },
+        {
+          "display": "block",
+          "text": "草稿"
+        },
+        {
+          "display": "block",
+          "text": "入库"
+        },
+        {
+          "display": "block",
+          "text": "客户"
+        },
+        {
+          "display": "block",
+          "text": "资料"
+        },
+        {
+          "display": "block",
+          "text": "建账"
+        }
+      ],
+      "scroll": 305,
+      "view": "desktop"
+    }
+  ]
+}

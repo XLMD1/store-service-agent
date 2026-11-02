@@ -1,6 +1,6 @@
 # M1 后端开发与审核入口
 
-当前实现包含已获准继续的M1-01/M1-02，以及已获用户审核通过的M1-03入库与确认基础。登录、资料、建账、查询、入库、待核对已接后端；出库及Agent未实现。测试账号不代表真实门店授权。
+当前实现包含已获准继续的M1-01/M1-02，以及已获用户审核通过的M1-03入库与确认基础。M1-04出库、留货/取消/提货、客户引用、预留与流水也已接后端，待本阶段用户审核；统计、更正及Agent未实现。测试账号不代表真实门店授权。
 
 ## 环境与依赖
 
@@ -71,7 +71,7 @@ $env:APP_CONFIG_FILE = '.local/dev.json'
 
 ## 测试与备份
 
-M1-02新增接口：`GET/POST /api/catalog/warehouses`、`GET/POST /api/catalog/models`、`PATCH /api/catalog/{warehouses|models}/{id}`、`GET/POST /api/catalog/customers`、`GET /api/inventory/balance`、`POST/GET/PATCH /api/drafts[/{id}]`、`POST /api/operations/{id}/confirm`和`GET /api/operations/{id}`。所有写接口沿用Origin/CSRF；资料写入需显式`confirmed:true`，建账必须先取得草稿版本与后端操作标识再人工确认。查询、确认请求字段以架构第17节和实际schemas为准；当前支持`inventory_opening`及`inventory_inbound`。
+M1-02新增接口：`GET/POST /api/catalog/warehouses`、`GET/POST /api/catalog/models`、`PATCH /api/catalog/{warehouses|models}/{id}`、`GET/POST /api/catalog/customers`、`GET /api/inventory/balance`、`POST/GET/PATCH /api/drafts[/{id}]`、`POST /api/operations/{id}/confirm`和`GET /api/operations/{id}`。所有写接口沿用Origin/CSRF；资料写入需显式`confirmed:true`，建账必须先取得草稿版本与后端操作标识再人工确认。查询、确认请求字段以架构第17节和实际schemas为准；当前另支持M1-04的`inventory_outbound / reservation_create / reservation_cancel / reservation_pickup`，请求契约见架构17.7。
 
 库房/型号维护请求严格校验版本，停用保留历史；期初客户引用与售后档案独立，不按手机号自动合并客户。建账草稿支持缺项保存；已有起点、超额预留、旧草稿、参数或主体不符均不能写入。成功操作先核验原绑定和当前权限，再返回原回执，不重复建账。
 
@@ -84,6 +84,8 @@ node prototypes/frontend/rules.test.cjs
 node tests/web-form-state.test.cjs
 node tests/web-inbound-time.test.cjs
 node tests/web-api-response.test.cjs
+node tests/web-movements.test.cjs
+node tests/web-inventory.test.cjs
 git diff --check
 ```
 
@@ -93,9 +95,21 @@ git diff --check
 
 ## 当前限制
 
-本轮限本机开发及技术验证，未交付真实账号、部署、外网访问、安装包或真机测试。期初建账的确认/幂等/事务已实现，入库已支持受控确认，出库、留货、提货、统计及Agent仍待后续切片。账号管理仍只有API，没有管理页面。每个M1小阶段完成后等待用户审核；页面证据见[核对记录](../design/qa/m1-02/README.md)。
+本轮限本机开发及技术验证，未交付真实账号、部署、外网访问、安装包或真机测试。期初建账的确认/幂等/事务已实现，入库已支持受控确认，M1-04已补出库、留货/取消/提货及预留/流水；统计、更正及Agent仍待后续切片。账号管理仍只有API，没有管理页面。每个M1小阶段完成后等待用户审核；页面证据见[核对记录](../design/qa/m1-02/README.md)。
 
 
 M1-03运行说明：通过“登记入库”选择库房/型号、数量、发生日期或精确时刻及依据，保存草稿后人工确认。缺项在“待核对草稿”继续；成功显示提交时的实际回执，最新余额另行查询。发生日期等于T0当天时需核实after及依据；旧事件不得重复入库。日期精度原单没有虚构时刻，时间字段未改动时保持原精度。
 
 迁移0004遇到已保存日期精度事件时拒绝降级，不可为了回退补成午夜。升级前先备份，回退需用兼容的迁移前备份在隔离环境验证；本轮仅验证空开发库迁移往返及带日期数据拒绝降级，未宣称完整恢复演练完成。M1-03证据见[页面记录](../design/qa/m1-03/README.md)。
+
+
+M1-04审核：打开库存页的“普通出库”“客户留货”；提货/取消先进入“客户预留”检索并选择具体单据。客户引用可独立登记；口头/定金/全款是依据标签，不核算收款。所有库存写入先保存草稿、核对后端影响、显式勾选再确认，断连按原操作核验。“库存流水”可筛选日期/操作类型，原单不可直接编辑。
+
+0005已在本机开发、测试及审核库升级；审核库原两账户不变，本轮新增独立M1-04虚构库7/3/4及缺日期提货草稿。存在新业务草稿或正式操作时不允许降级0005；需在隔离环境核验兼容的迁移前备份。页面、样例链及未覆盖项见[本阶段核对](../design/qa/m1-04/README.md)，完整执行结果见[M1-04实施记录](../plans/m1-04-implementation.md)。
+
+
+M1-04审核反馈优化：库存页按最新审核要求，库房及型号必填、初始为空，人工提交后才查询；模糊/同名先人工选择候选。`GET /api/inventory/overview`按必填warehouse_id及可选model_id返回后端分项/已建账合计，旧balance接口不变。库房创建支持name+confirmed:true，内部code自动生成；既有code仍兼容且不重写。库房与型号页面不再重复登记客户，统一进入客户资料；页面“客户预留”改为“预留查询”。新库存视图脚本inventory.js在app.js之前加载。无需新迁移；[本轮记录](../design/qa/m1-04-refinement/README.md)保留截图、126后端/11生产JS/4样板结果及限制。
+
+最新交互修复见[手动查询核对](../design/qa/m1-04-manual-query/README.md)：不恢复或自动提交上次库存条件，候选选择只确认对象；所有启用按钮提供鼠标提示。只读overview接口仍保留可选model_id兼容能力，当时网页仅传具体型号；现行明确选择全部型号时省略model_id。
+
+当前电脑页面与查询选择见[本轮核对](../design/qa/m1-04-desktop-query/README.md)：顶部电脑端/手机端切换接正式同源页面，电脑复用C侧栏布局；切换不重新加载表单。初始条件为空，型号必须明确选择全部或具体项；库房完整列表可随时切换。未更改后端接口、权限及库存事务。

@@ -210,10 +210,12 @@ def test_migration_refuses_to_destroy_date_only_event_precision(application, set
     client,params=opened
     assert confirm(client,inbound(client,params)).status_code==200
     cfg=Config('alembic.ini');cfg.attributes['database_url']=settings.database_url
+    with application.state.sessions() as db:
+        original_revision=db.scalar(text('SELECT version_num FROM alembic_version'))
     with pytest.raises(RuntimeError,match='Cannot downgrade date-only events'):
         command.downgrade(cfg,'f803b23a24b7')
     with application.state.sessions() as db:
-        assert db.scalar(text('SELECT version_num FROM alembic_version'))=='0004_document_occurrence'
+        assert db.scalar(text('SELECT version_num FROM alembic_version'))==original_revision
         assert db.scalar(text("SELECT count(*) FROM inventory_documents WHERE occurred_precision='date'"))==1
 
 

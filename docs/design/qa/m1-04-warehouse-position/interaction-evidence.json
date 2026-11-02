@@ -1,0 +1,45 @@
+{
+  "beforeGap": 238.1146,
+  "checks": [
+    {
+      "buttonHeight": 46.92708587646485,
+      "buttonWidth": 46,
+      "check": "mobile-open-390",
+      "client": 375,
+      "gap": 6.000007629394531,
+      "joinedGap": -0.000011444091796875,
+      "scroll": 375
+    },
+    {
+      "cards": 0,
+      "check": "select-without-query",
+      "listHidden": true,
+      "name": "页面优化示例库"
+    },
+    {
+      "buttonHeight": 46.92708587646485,
+      "buttonWidth": 46,
+      "check": "mobile-open-320",
+      "client": 305,
+      "gap": 6.000007629394531,
+      "scroll": 305
+    },
+    {
+      "check": "escape-close",
+      "focus": "warehouse-toggle",
+      "hidden": true
+    },
+    {
+      "cards": 1,
+      "check": "manual-query",
+      "model": "all",
+      "warehouse": "示例2号库"
+    },
+    {
+      "check": "desktop-open-1440",
+      "client": 1425,
+      "gap": 6.000007629394531,
+      "scroll": 1425
+    }
+  ]
+}

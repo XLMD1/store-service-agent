@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-02",
+  "environment": "browser viewport emulation; no physical-device validation",
+  "layout": [
+    {
+      "client": 305,
+      "minimumControlHeight": 44,
+      "page": "inventory-overview",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "reservation-prefilter",
+      "scroll": 305,
+      "width": 320
+    },
+    {
+      "client": 305,
+      "customerCreateForm": false,
+      "page": "catalog",
+      "scroll": 305,
+      "warehouseCreateFields": [
+        "name"
+      ],
+      "width": 320
+    },
+    {
+      "client": 305,
+      "page": "customers",
+      "scroll": 305,
+      "width": 320
+    }
+  ]
+}

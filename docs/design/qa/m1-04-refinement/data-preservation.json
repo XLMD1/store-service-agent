@@ -1,0 +1,7 @@
+{
+  "date": "2026-11-02",
+  "previous_account_count": 3,
+  "all_previous_ids_balances_versions_unchanged": true,
+  "all_accounts_ledger_and_reservation_totals_match": true,
+  "label": "isolated review database with synthetic samples"
+}

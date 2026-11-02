@@ -1,0 +1,45 @@
+{
+  "assets": [
+    {
+      "production": "app/web/tokens.css",
+      "reference": "prototypes/ui-sample/tokens.css",
+      "identical": true,
+      "sha256": "56e287fad8511a2bd3dcc9cc92f750845fda82deb6ddca5fe609b5fdb68ca122"
+    },
+    {
+      "production": "app/web/assets/icons.svg",
+      "reference": "prototypes/ui-sample/assets/icons.svg",
+      "identical": true,
+      "sha256": "5795d3c9a7c16605af87e4176dd0669a01c091426403c65609be5d3638c2bc2c"
+    },
+    {
+      "production": "app/web/assets/ink-grain.png",
+      "reference": "prototypes/ui-sample/assets/ink-grain.png",
+      "identical": true,
+      "sha256": "1102dd1863f3b525afa83f33e28238d8b6e76d5b7223079c40b862a3bf39562f"
+    }
+  ],
+  "text_contrast": [
+    {
+      "foreground": "#ffffff",
+      "background": "#0f766e",
+      "ratio": 5.47
+    },
+    {
+      "foreground": "#17313b",
+      "background": "#ffffff",
+      "ratio": 13.65
+    },
+    {
+      "foreground": "#52646f",
+      "background": "#ffffff",
+      "ratio": 6.16
+    },
+    {
+      "foreground": "#0f766e",
+      "background": "#e7f3f1",
+      "ratio": 4.82
+    }
+  ],
+  "scope": "declared solid colors; texture composition and native controls visually checked separately"
+}

@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.4 · 整理日期：2026-11-02 · 视觉基准：C / 沉稳专业型。
+版本：V1.11 · 整理日期：2026-11-03 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -63,6 +63,113 @@ M1-02已获准继续，保留其历史截图。当前新增/更新页面完成�
 | m1-inventory | [库存导航与查询](../../app/web/app.js) | [库存](http://127.0.0.1:8000/#inventory) | [390px](qa/m1-03/inventory-390.jpg)、[320px](qa/m1-03/inventory-320.jpg) | 已接入库后余额查询，用户审核通过 |
 
 [核对与未覆盖项](qa/m1-03/README.md)区分浏览器、程序测试和未验证真机范围。只知日期不补时刻，修改后重新预览，入库5使10/3/7变15/3/12；截图数字来自后端。原型及M1-02截图不覆盖或冒充当前证据。
+
+### 1.5 M1-04出库、留货与提货
+
+以下页面接入真实后端，**本机技术/浏览器核对完成，待M1-04用户审核**。新增表单沿用C方向既有库存与提货效果图、样板及生产组件，没有新增独立概念图。
+
+| 页面编号 | 名称 / 代码 | 本机入口 | 截图 | 状态 |
+| --- | --- | --- | --- | --- |
+| m1-outbound | [普通出库](../../app/web/movements.js) | [办理](http://127.0.0.1:8000/#movement?kind=inventory_outbound) | [320px预览](qa/m1-04/outbound-preview-320.jpg) | 后端校验可售，草稿/确认/回执已接入，待审核 |
+| m1-reserve | [客户留货](../../app/web/movements.js) | [办理](http://127.0.0.1:8000/#movement?kind=reservation_create) | [电脑](qa/m1-04/reserve-desktop.jpg)、[390px预览](qa/m1-04/reserve-preview-390.jpg) | 显式选客户及依据标签，待审核 |
+| m1-pickup | [预留提货](../../app/web/movements.js) | [先选具体预留](http://127.0.0.1:8000/#reservations) | [预览](qa/m1-04/pickup-preview-390.jpg)、[回执](qa/m1-04/pickup-receipt-390.jpg) | 按所选预留同时扣H/R，待审核 |
+| m1-cancel | [取消留货](../../app/web/movements.js) | [先选具体预留](http://127.0.0.1:8000/#reservations) | [回执](qa/m1-04/cancel-receipt-390.jpg) | 只取消本单剩余，待审核 |
+| m1-reservations | [预留检索及明细](../../app/web/movements.js) | [查询](http://127.0.0.1:8000/#reservations) | [390px](qa/m1-04/reservations-390.jpg) | 客户/库房/型号/未提状态筛选，待审核 |
+| m1-ledger | [库存流水](../../app/web/movements.js) | [查询](http://127.0.0.1:8000/#ledger) | [390px](qa/m1-04/ledger-390.jpg)、[320px](qa/m1-04/ledger-320.jpg) | 发生日期/类型及原单关联，待审核 |
+| m1-customers | [独立客户引用](../../app/web/movements.js) | [登记](http://127.0.0.1:8000/#customers) | [390px](qa/m1-04/customers-390.jpg) | 已知字段人工登记，无售后档案依赖，待审核 |
+| m1-pending | [本阶段草稿恢复](../../app/web/inbound.js) | [待核对](http://127.0.0.1:8000/#pending) | [390px](qa/m1-04/pending-390.jpg) | 新业务草稿恢复，待审核 |
+| m1-inventory | [库存及办理入口](../../app/web/app.js) | [库存](http://127.0.0.1:8000/#inventory) | [390px](qa/m1-04/inventory-390.jpg)、[320px](qa/m1-04/inventory-320.jpg) | 客户预留及结束状态、实际余额，待审核 |
+
+[核对记录](qa/m1-04/README.md)包含样例链、视口、恢复、截图版本与未覆盖项。原M1-02/M1-03及原型截图仅作其历史阶段证据；本阶段未做统计、更正或Agent，不代表完整M1。
+
+### 1.6 M1-04审核反馈版本（历史）
+
+以下保留本次优化时的入口，现行页面见1.9；**本机核对完成，待用户审核**；1.3～1.5截图保留为其历史版本。仍沿用C方向原图/样板及生产素材，库存页面维护源新增`app/web/inventory.js`。
+
+| 页面编号 | 当前内容 / 代码 | 运行入口 | 最新证据 | 状态 |
+| --- | --- | --- | --- | --- |
+| m1-inventory | [库房名称查询、分型号及合计](../../app/web/inventory.js) | [库存](http://127.0.0.1:8000/#inventory) | [电脑](qa/m1-04-refinement/inventory-desktop.jpg)、[分项](qa/m1-04-refinement/inventory-models-desktop.jpg)、[390px](qa/m1-04-refinement/inventory-query-390.jpg)、[320px](qa/m1-04-refinement/inventory-models-320.jpg)、[日常办理](qa/m1-04-refinement/actions-390.jpg) | 型号可不选、查询/办理/设置分层，待审核 |
+| m1-catalog | [库房与型号](../../app/web/app.js) | [维护](http://127.0.0.1:8000/#catalog) | [电脑](qa/m1-04-refinement/catalog-desktop.jpg)、[390px](qa/m1-04-refinement/catalog-390.jpg)、[320px最终版](qa/m1-04-refinement/catalog-320.jpg) | 库房单名称输入，无重复客户表单，待审核 |
+| m1-reservations | [预留查询](../../app/web/movements.js) | [查询](http://127.0.0.1:8000/#reservations) | [390px](qa/m1-04-refinement/reservation-query-390.jpg) | 标题/入口统一，分项入口预填对象，待审核 |
+| m1-customers | [客户资料](../../app/web/movements.js) | [登记](http://127.0.0.1:8000/#customers) | [本轮入口联调记录](qa/m1-04-refinement/README.md) | 统一独立表单，不新增售后能力，待审核 |
+| m1-reserve / m1-opening | [留货及建账入口](../../app/web/app.js) | [办理留货](http://127.0.0.1:8000/#movement?kind=reservation_create)、[建账](http://127.0.0.1:8000/#opening) | [联调记录](qa/m1-04-refinement/README.md) | 留货动作与预留查询区分；建账可预填对象，待审核 |
+
+[完整核对与限制](qa/m1-04-refinement/README.md)包含0/未知、模糊候选、布局和回归。未建账型号只是资料目录中的候选，不能据此认定该库实际有货；合计只覆盖已建账分项。姓名/电话等客户内容不进入库存查询URL。
+
+### 1.7 按AGENTS.md复核版本（历史）
+
+本节保留规范复核时的历史目录，现行查询交互见1.9。**本机设计/页面复核完成，待用户审核**，不代表完整M1、真机或生产验收。先按C库存05原图及完整HTML样板核对，再修复规范4.5要求的“分项优先、合计随后”；颜色、SVG和纹理沿用既有资源。
+
+| 页面编号 | 名称 / 代码 | 运行入口 | 当前截图 | 状态 |
+| --- | --- | --- | --- | --- |
+| m1-inventory | [库存查询与分项](../../app/web/inventory.js) | [打开](http://127.0.0.1:8000/#inventory) | [inventory-query-390](qa/m1-04-design-check/inventory-query-390.jpg)、[inventory-items-390](qa/m1-04-design-check/inventory-items-390.jpg)、[inventory-total-390](qa/m1-04-design-check/inventory-total-390.jpg)、[inventory-items-320](qa/m1-04-design-check/inventory-items-320.jpg)、[inventory-desktop](qa/m1-04-design-check/inventory-desktop.jpg)、[inventory-unknown-390](qa/m1-04-design-check/inventory-unknown-390.jpg)、[keyboard-focus-390](qa/m1-04-design-check/keyboard-focus-390.jpg) | 本机设计/页面复核完成，待用户审核 |
+| m1-catalog | [库房与型号](../../app/web/app.js) | [打开](http://127.0.0.1:8000/#catalog) | [catalog-390](qa/m1-04-design-check/catalog-390.jpg)、[catalog-desktop](qa/m1-04-design-check/catalog-desktop.jpg) | 本机设计/页面复核完成，待用户审核 |
+| m1-reservations | [预留查询](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#reservations) | [reservations-390](qa/m1-04-design-check/reservations-390.jpg) | 本机设计/页面复核完成，待用户审核 |
+| m1-customers | [客户资料](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#customers) | [customers-390](qa/m1-04-design-check/customers-390.jpg) | 本机设计/页面复核完成，待用户审核 |
+| m1-reserve | [办理留货](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#movement?kind=reservation_create) | [reserve-390](qa/m1-04-design-check/reserve-390.jpg) | 本机设计/页面复核完成，待用户审核 |
+| m1-opening | [期初建账](../../app/web/app.js) | [打开](http://127.0.0.1:8000/#opening) | [opening-390](qa/m1-04-design-check/opening-390.jpg) | 本机设计/页面复核完成，待用户审核 |
+
+[逐项核对记录](qa/m1-04-design-check/README.md)列明实际查看方式、原图/样板对应、素材校验、截图像素与CSS视口区别、键盘及44px目标、未覆盖项；[资源证据](qa/m1-04-design-check/resource-evidence.json)与[布局证据](qa/m1-04-design-check/layout-evidence.json)可复查。客户、留货、建账为既有C组件的业务延伸，没有为它们虚构独立效果图。
+
+### 1.8 型号必选与明确查询（历史）
+
+**本机交互验证完成，待用户审核**。用户最新要求替代旧的“型号可选/自动恢复查询”：进入库存页时库房、型号均留空；型号必选，点击查询或键盘明确提交后才显示结果，候选选择不自动查询。沿用C方向颜色、字段及图标，不改后端库存业务规则。
+
+| 页面编号 | 维护源 / 入口 | 当前证据 | 状态 |
+| --- | --- | --- | --- |
+| m1-inventory | [inventory.js](../../app/web/inventory.js) / [库存](http://127.0.0.1:8000/#inventory) | [390px初始](qa/m1-04-manual-query/initial-390.jpg)、[320px](qa/m1-04-manual-query/initial-320.jpg)、[电脑](qa/m1-04-manual-query/initial-desktop.jpg)、[候选未查询](qa/m1-04-manual-query/candidate-not-queried-390.jpg)、[手动结果](qa/m1-04-manual-query/manual-result-390.jpg) | 两项必选、空白进入、明确查询，待审核 |
+| m1-catalog | [app.js](../../app/web/app.js) / [库房与型号](http://127.0.0.1:8000/#catalog) | [布局沿用](qa/m1-04-design-check/catalog-390.jpg)；[共用鼠标提示](qa/m1-04-manual-query/README.md) | 布局未改，统一按钮反馈，待审核 |
+| m1-reservations | [movements.js](../../app/web/movements.js) / [预留查询](http://127.0.0.1:8000/#reservations) | [布局沿用](qa/m1-04-design-check/reservations-390.jpg)；[交互记录](qa/m1-04-manual-query/README.md) | 布局未改，统一按钮反馈，待审核 |
+| m1-customers | [movements.js](../../app/web/movements.js) / [客户资料](http://127.0.0.1:8000/#customers) | [布局沿用](qa/m1-04-design-check/customers-390.jpg)；[交互记录](qa/m1-04-manual-query/README.md) | 布局未改，统一按钮反馈，待审核 |
+| m1-reserve | [movements.js](../../app/web/movements.js) / [办理留货](http://127.0.0.1:8000/#movement?kind=reservation_create) | [布局沿用](qa/m1-04-design-check/reserve-390.jpg)；[交互记录](qa/m1-04-manual-query/README.md) | 布局未改，统一按钮反馈，待审核 |
+| m1-opening | [app.js](../../app/web/app.js) / [期初建账](http://127.0.0.1:8000/#opening) | [布局沿用](qa/m1-04-design-check/opening-390.jpg)；[交互记录](qa/m1-04-manual-query/README.md) | 布局未改，统一按钮反馈，待审核 |
+
+所有启用按钮和可点击入口使用手形光标，主/次按钮有悬停高亮；禁用按钮不显示可点样式，键盘保留可见焦点。共用维护源为[app.css](../../app/web/app.css)。[完整记录](qa/m1-04-manual-query/README.md)、[交互证据](qa/m1-04-manual-query/interaction-evidence.json)、[主按钮截图](qa/m1-04-manual-query/hover-primary-desktop.jpg)区分实际检查、沿用截图及未覆盖项。
+
+### 1.9 电脑/手机模式与完整查询选择（布局基线，库房控件见1.10）
+
+**本机页面与交互核对完成，待M1-04用户审核**。用户选定既有C方向电脑样板的左侧导航、右侧业务区，正式页面新增“电脑端 / 手机端”手动切换；切换仅改变布局，保留当前表单及查询结果，不重新请求或写入。首次按窗口宽度初始化，手动模式在页面会话内保留；刷新后重新按窗口宽度初始化。窄屏电脑模式使用紧凑侧栏（保留左侧导航），模式按钮始终可用。
+
+查询初始仍为空，型号需明确选择“全部型号”或某一型号，再点击查询。全部型号复用后端overview省略model_id能力；库房旁的完整列表不受已输入名称过滤，可直接切换，选择不自动查询。旧V1.8具体型号限制已被本次要求替代。
+
+布局依据：[电脑样板原图](qa/frontend-c/home-desktop.jpg)、[完整HTML](../../prototypes/frontend/index.html)、[C库存图](assets/mobile-c/05-inventory.png)。共用维护源：[shell](../../app/web/app.js)、[app.css](../../app/web/app.css)；颜色、SVG及纹理沿用原C资源，未引入样板模拟业务。
+
+| 页面编号 | 页面 / 业务源码 | 本机入口 | 本轮电脑截图 | 核对范围（均待用户审核） |
+| --- | --- | --- | --- | --- |
+| m1-inventory | [库存查询](../../app/web/inventory.js) | [打开](http://127.0.0.1:8000/#inventory) | [desktop-all-models](qa/m1-04-desktop-query/desktop-all-models.jpg) | 全部/单型号、完整库房列表、两种模式已核对 |
+| m1-inbound | [入库登记](../../app/web/inbound.js) | [打开](http://127.0.0.1:8000/#inbound) | [inbound-desktop](qa/m1-04-desktop-query/inbound-desktop.jpg) | 布局和未保存表单切换已核对 |
+| m1-outbound | [普通出库](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#movement?kind=inventory_outbound) | [outbound-desktop](qa/m1-04-desktop-query/outbound-desktop.jpg) | 电脑表单布局已核对 |
+| m1-reserve | [办理留货](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#movement?kind=reservation_create) | [reserve-desktop](qa/m1-04-desktop-query/reserve-desktop.jpg) | 电脑表单布局已核对 |
+| m1-pickup | [预留提货](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#reservations) | [pickup-desktop](qa/m1-04-desktop-query/pickup-desktop.jpg) | 从具体样例预留进入，布局已核对 |
+| m1-cancel | [取消留货](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#reservations) | [cancel-desktop](qa/m1-04-desktop-query/cancel-desktop.jpg) | 从具体样例预留进入，布局已核对 |
+| m1-reservations | [预留查询](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#reservations) | [reservations-desktop](qa/m1-04-desktop-query/reservations-desktop.jpg) | 侧栏跳转和查询布局已核对 |
+| m1-ledger | [库存流水](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#ledger) | [ledger-desktop](qa/m1-04-desktop-query/ledger-desktop.jpg) | 侧栏跳转和查询布局已核对 |
+| m1-pending | [待核对](../../app/web/inbound.js) | [打开](http://127.0.0.1:8000/#pending) | [pending-desktop](qa/m1-04-desktop-query/pending-desktop.jpg) | 侧栏跳转和列表布局已核对 |
+| m1-customers | [客户资料](../../app/web/movements.js) | [打开](http://127.0.0.1:8000/#customers) | [customers-desktop](qa/m1-04-desktop-query/customers-desktop.jpg) | 侧栏跳转和表单布局已核对 |
+| m1-catalog | [库房与型号](../../app/web/app.js) | [打开](http://127.0.0.1:8000/#catalog) | [catalog-desktop](qa/m1-04-desktop-query/catalog-desktop.jpg) | 侧栏跳转和维护布局已核对 |
+| m1-opening | [期初建账](../../app/web/app.js) | [打开](http://127.0.0.1:8000/#opening) | [opening-desktop](qa/m1-04-desktop-query/opening-desktop.jpg) | 侧栏跳转和表单布局已核对 |
+
+[初始电脑页](qa/m1-04-desktop-query/desktop-initial.jpg)、[完整库房列表](qa/m1-04-desktop-query/warehouse-list-desktop.jpg)、[单型号](qa/m1-04-desktop-query/desktop-single-model.jpg)、[电脑窗口中的手机模式](qa/m1-04-desktop-query/mobile-mode-desktop-window.jpg)、[320px手机](qa/m1-04-desktop-query/mobile-320.jpg)、[320px电脑侧栏](qa/m1-04-desktop-query/desktop-320.jpg)、[核对记录与限制](qa/m1-04-desktop-query/README.md)、[实际交互证据](qa/m1-04-desktop-query/interaction-evidence.json)。本轮只核对页面和只读查询，不重新宣称业务确认、实体手机或生产验收完成。
+
+### 1.10 手机库房选择位置（控件基线，型号统一见1.11）
+
+**本机位置与交互核对完成，待用户审核**。沿用C方向；将库房输入及下拉入口连为一体，手机入口46px宽，列表紧贴名称输入框下方6px展开。可访问名称仍是“选择库房”，固定标签、键盘焦点及完整列表切换保留；查询逻辑不变。其他页面和电脑侧栏继续采用1.9基线。
+
+| 页面编号 | 维护源 / 入口 | 本轮截图 | 状态 |
+| --- | --- | --- | --- |
+| m1-inventory | [inventory.js](../../app/web/inventory.js)、[app.css](../../app/web/app.css) / [库存](http://127.0.0.1:8000/#inventory) | [390px展开](qa/m1-04-warehouse-position/open-390.jpg)、[选定后](qa/m1-04-warehouse-position/selected-390.jpg)、[320px](qa/m1-04-warehouse-position/open-320.jpg)、[电脑共用控件](qa/m1-04-warehouse-position/desktop-open.jpg) | 6px间距、44px以上入口、键盘/手动查询核对完成，待审核 |
+
+[修改前](qa/m1-04-warehouse-position/before-open-390.jpg)、[核对记录与限制](qa/m1-04-warehouse-position/README.md)、[交互证据](qa/m1-04-warehouse-position/interaction-evidence.json)。布局依据及原图仍见1.9；本次没有业务写入或重新宣称完整业务验收。
+
+### 1.11 型号与库房选择统一（现行局部修订）
+
+**2026-11-03 / 本机页面与交互核对完成，待用户审核**。沿用C方向及1.10库房控件：型号同样提供名称输入、右侧下拉入口及紧贴下方6px的完整列表；共用46px手机入口和电脑文字按钮。默认不选，保留全部型号与明确查询；文字变动清除旧型号ID，未知/多候选不自动查询，两个菜单互斥，Escape关闭并回焦点。其他页面沿用1.9基线。
+
+| 页面编号 | 维护源 / 入口 | 本轮截图 | 状态 |
+| --- | --- | --- | --- |
+| m1-inventory | [inventory.js](../../app/web/inventory.js)、[app.css](../../app/web/app.css) / [库存](http://127.0.0.1:8000/#inventory) | [初始390px](qa/m1-04-model-picker/initial-390.jpg)、[型号展开390px](qa/m1-04-model-picker/model-open-390.jpg)、[320px](qa/m1-04-model-picker/model-open-320.jpg)、[电脑](qa/m1-04-model-picker/model-open-desktop.jpg) | 外观、全部/单型号、修改清选择、键盘及窄屏已核对，待审核 |
+
+[完整核对与限制](qa/m1-04-model-picker/README.md)、[交互证据](qa/m1-04-model-picker/interaction-evidence.json)。布局依据仍为1.9的C原图与HTML样板；本轮只改库存查询控件，不宣称完整业务重验。
 
 ## 2. HTML样板
 
