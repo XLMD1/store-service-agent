@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "data_kind": "synthetic",
+  "label": "虚构示例，仅供开发验证，不代表真实台账或人员授权",
+  "prepared_on": "2026-10-29",
+  "source": {
+    "document": "docs/prd/store-service-agent-prd-v1.0.md",
+    "section": "8.4",
+    "note": "数量和动作来自PRD验收演算；编号、客户、日期和权限编码为M0构造。"
+  },
+  "timezone": "Asia/Shanghai",
+  "usage": "independent_states每项独立重置；continuous_scenario按序执行。此文件不是可直接导入正式库的种子，也不是已执行结果。",
+  "sample_permission_policy": {
+    "status": "confirmed_for_sample_development",
+    "decision_on": "2026-10-29",
+    "scope": "用户同意开发样例沿用PRD建议；真实人员职责、账号和授权尚待核对。",
+    "source_section": "3.2",
+    "roles": {
+      "clerk": [
+        "service.read",
+        "service.draft",
+        "service.confirm",
+        "repair.query",
+        "inventory.read",
+        "reservation.confirm",
+        "reservation.cancel"
+      ],
+      "technician": [
+        "service.read",
+        "service.draft",
+        "repair.query",
+        "knowledge.review",
+        "inventory.read"
+      ],
+      "stock_operator": [
+        "inventory.read",
+        "inventory.inbound",
+        "inventory.outbound",
+        "reservation.pickup"
+      ],
+      "owner": [
+        "service.read",
+        "service.draft",
+        "service.confirm",
+        "repair.query",
+        "inventory.read",
+        "inventory.inbound",
+        "inventory.outbound",
+        "reservation.confirm",
+        "reservation.cancel",
+        "reservation.pickup",
+        "inventory.opening",
+        "inventory.correct",
+        "catalog.manage",
+        "account.manage",
+        "knowledge.publish"
+      ]
+    },
+    "principals": [
+      {
+        "id": "demo-clerk",
+        "label": "示例接单人员",
+        "roles": [
+          "clerk"
+        ]
+      },
+      {
+        "id": "demo-technician",
+        "label": "示例维修师傅",
+        "roles": [
+          "technician"
+        ]
+      },
+      {
+        "id": "demo-stock_operator",
+        "label": "示例进出货人员",
+        "roles": [
+          "stock_operator"
+        ]
+      },
+      {
+        "id": "demo-owner",
+        "label": "示例负责人",
+        "roles": [
+          "owner"
+        ]
+      }
+    ],
+    "notes": [
+      "同一账号可兼任多个职责，权限取允许集合并集；账号停用和当前权限始终由后端检查。",
+      "负责人可组织专业审核，不因负责人角色自动具有knowledge.review。"
+    ]
+  },
+  "catalog": {
+    "warehouses": [
+      {
+        "id": "demo-wh-02",
+        "name": "示例2号库"
+      }
+    ],
+    "models": [
+      {
+        "id": "demo-model-a",
+        "name": "示例型号A",
+        "aliases": []
+      },
+      {
+        "id": "demo-model-b",
+        "name": "示例型号B",
+        "aliases": []
+      }
+    ],
+    "provenance": "constructed"
+  },
+  "customers": [
+    {
+      "id": "demo-customer-a",
+      "display_name": "示例客户甲",
+      "phone": null,
+      "address": null,
+      "association": "explicitly_selected_synthetic_id"
+    },
+    {
+      "id": "demo-customer-b",
+      "display_name": "示例客户乙",
+      "phone": null,
+      "address": null,
+      "association": "explicitly_selected_synthetic_id"
+    }
+  ],
+  "independent_states": {
+    "uninitialized": {
+      "warehouse_id": "demo-wh-02",
+      "model_id": "demo-model-a",
+      "status": "uninitialized",
+      "t0": null,
+      "on_hand": null,
+      "reserved": null,
+      "available": null,
+      "version": null,
+      "effective_inbound_total": 0,
+      "reservations": []
+    },
+    "opening_10_3_7": {
+      "warehouse_id": "demo-wh-02",
+      "model_id": "demo-model-a",
+      "status": "opened",
+      "t0": "2026-10-01T00:00:00+08:00",
+      "on_hand": 10,
+      "reserved": 3,
+      "available": 7,
+      "version": 1,
+      "effective_inbound_total": 0,
+      "reservations": [
+        {
+          "id": "demo-res-opening",
+          "customer_id": "demo-customer-a",
+          "warehouse_id": "demo-wh-02",
+          "model_id": "demo-model-a",
+          "is_opening": true,
+          "registered_quantity": 3,
+          "picked_quantity": 0,
+          "cancelled_quantity": 0,
+          "remaining_quantity": 3,
+          "status": "active",
+          "basis_note": "虚构期初留货，登记量仅表示T0尚未提走的3台；更早历史不纳入本账期。"
+        }
+      ]
+    },
+    "opened_zero": {
+      "warehouse_id": "demo-wh-02",
+      "model_id": "demo-model-b",
+      "status": "opened",
+      "t0": "2026-10-01T00:00:00+08:00",
+      "on_hand": 0,
+      "reserved": 0,
+      "available": 0,
+      "version": 1,
+      "effective_inbound_total": 0,
+      "reservations": []
+    }
+  },
+  "continuous_scenario": {
+    "id": "prd-8-4",
+    "warehouse_id": "demo-wh-02",
+    "model_id": "demo-model-a",
+    "initial_state_ref": "independent_states.uninitialized",
+    "note": "所有确认与操作都是未来测试步骤；没有真实确认人、operation_id或回执。每步expected为预期，不是实测。",
+    "steps": [
+      {
+        "id": "step-00",
+        "kind": "opening",
+        "actor_id": "demo-owner",
+        "occurred": {
+          "precision": "datetime",
+          "at": "2026-10-01T00:00:00+08:00"
+        },
+        "parameters": {
+          "on_hand": 10,
+          "opening_reservations": [
+            {
+              "id": "demo-res-opening",
+              "customer_id": "demo-customer-a",
+              "warehouse_id": "demo-wh-02",
+              "model_id": "demo-model-a",
+              "is_opening": true,
+              "registered_quantity": 3,
+              "picked_quantity": 0,
+              "cancelled_quantity": 0,
+              "remaining_quantity": 3,
+              "status": "active",
+              "basis_note": "虚构期初留货，登记量仅表示T0尚未提走的3台；更早历史不纳入本账期。"
+            }
+          ]
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 10,
+          "reserved": 3,
+          "available": 7,
+          "effective_inbound_total": 0,
+          "version": 1
+        }
+      },
+      {
+        "id": "step-01",
+        "kind": "inbound",
+        "actor_id": "demo-stock_operator",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-02"
+        },
+        "parameters": {
+          "quantity": 5
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 15,
+          "reserved": 3,
+          "available": 12,
+          "effective_inbound_total": 5,
+          "version": 2
+        }
+      },
+      {
+        "id": "step-02",
+        "kind": "reserve",
+        "actor_id": "demo-clerk",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-03"
+        },
+        "parameters": {
+          "quantity": 4,
+          "customer_id": "demo-customer-b",
+          "reservation_id": "demo-res-new",
+          "basis_note": "虚构新增留货，已明确选定示例客户乙。"
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 15,
+          "reserved": 7,
+          "available": 8,
+          "effective_inbound_total": 5,
+          "version": 3
+        }
+      },
+      {
+        "id": "step-03",
+        "kind": "pickup",
+        "actor_id": "demo-stock_operator",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-04"
+        },
+        "parameters": {
+          "quantity": 2,
+          "reservation_id": "demo-res-new"
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 13,
+          "reserved": 5,
+          "available": 8,
+          "effective_inbound_total": 5,
+          "version": 4
+        }
+      },
+      {
+        "id": "step-04",
+        "kind": "cancel_reservation",
+        "actor_id": "demo-clerk",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-05"
+        },
+        "parameters": {
+          "quantity": 2,
+          "reservation_id": "demo-res-new"
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 13,
+          "reserved": 3,
+          "available": 10,
+          "effective_inbound_total": 5,
+          "version": 5
+        }
+      },
+      {
+        "id": "step-05",
+        "kind": "outbound",
+        "actor_id": "demo-stock_operator",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-06"
+        },
+        "parameters": {
+          "quantity": 3
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 10,
+          "reserved": 3,
+          "available": 7,
+          "effective_inbound_total": 5,
+          "version": 6
+        }
+      },
+      {
+        "id": "step-06",
+        "kind": "stocktake_adjustment",
+        "actor_id": "demo-owner",
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-07"
+        },
+        "parameters": {
+          "target_on_hand": 9,
+          "reason": "虚构盘点差异；不是原入库数量录错。"
+        },
+        "confirmation_required": true,
+        "expected": {
+          "on_hand": 9,
+          "reserved": 3,
+          "available": 6,
+          "effective_inbound_total": 5,
+          "version": 7
+        }
+      }
+    ],
+    "expected_final_reservations": [
+      {
+        "id": "demo-res-opening",
+        "customer_id": "demo-customer-a",
+        "warehouse_id": "demo-wh-02",
+        "model_id": "demo-model-a",
+        "is_opening": true,
+        "registered_quantity": 3,
+        "picked_quantity": 0,
+        "cancelled_quantity": 0,
+        "remaining_quantity": 3,
+        "status": "active",
+        "basis_note": "虚构期初留货，登记量仅表示T0尚未提走的3台；更早历史不纳入本账期。"
+      },
+      {
+        "id": "demo-res-new",
+        "customer_id": "demo-customer-b",
+        "warehouse_id": "demo-wh-02",
+        "model_id": "demo-model-a",
+        "is_opening": false,
+        "registered_quantity": 4,
+        "picked_quantity": 2,
+        "cancelled_quantity": 2,
+        "remaining_quantity": 0,
+        "status": "ended"
+      }
+    ]
+  },
+  "boundary_examples": [
+    {
+      "id": "old-inbound",
+      "input": {
+        "kind": "inbound",
+        "quantity": 5,
+        "occurred": {
+          "precision": "datetime",
+          "at": "2026-09-30T12:00:00+08:00"
+        }
+      },
+      "precondition_ref": "independent_states.opening_10_3_7",
+      "expected": "拒绝常规入库；期初已经包含的旧事件不重复加库存或进货。"
+    },
+    {
+      "id": "t0-day-unknown-boundary",
+      "input": {
+        "kind": "inbound",
+        "quantity": 5,
+        "occurred": {
+          "precision": "date",
+          "date": "2026-10-01",
+          "t0_relation": "unknown"
+        }
+      },
+      "precondition_ref": "independent_states.opening_10_3_7",
+      "expected": "待补信息；人工核实T0前后边界，不能自动提交。"
+    },
+    {
+      "id": "duplicate-inbound",
+      "step_ref": "continuous_scenario.steps.step-01",
+      "expected": "沿用后端原先分配的操作标识与相同参数，返回原回执；余额仍为15/3/12，流水不增加。"
+    },
+    {
+      "id": "operation-parameter-mismatch",
+      "step_ref": "continuous_scenario.steps.step-01",
+      "changed_quantity": 6,
+      "expected": "原操作标识换参数被拒绝，无额外效果。"
+    }
+  ]
+}

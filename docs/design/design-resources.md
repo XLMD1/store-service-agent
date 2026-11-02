@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.2 · 整理日期：2026-10-29 · 视觉基准：C / 沉稳专业型。
+版本：V1.4 · 整理日期：2026-11-02 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -36,6 +36,33 @@
 | inventory | 库存总览 | [效果图](assets/mobile-c/05-inventory.png) | 完整视图交互样板（本地演示） | [独立页面](../../prototypes/frontend/index.html#inventory) | [390px截图](qa/frontend-c/inventory-390.jpg) | 按库房和型号查询在库、预留、可售；未建账 |
 | reserved-pickup | 预留提货确认 | [效果图](assets/mobile-c/06-reserved-pickup.png) | 完整视图交互样板（本地演示） | [独立页面](../../prototypes/frontend/index.html#reserved-pickup) | [390px截图](qa/frontend-c/reserved-pickup-390.jpg) | 在库10→8、预留3→1、可售7→7，人工确认 |
 | inbound-statistics | 进货统计 | [效果图](assets/mobile-c/07-inbound-statistics.png) | 完整视图交互样板（本地演示） | [独立页面](../../prototypes/frontend/index.html#inbound-statistics) | [390px截图](qa/frontend-c/inbound-statistics-390.jpg) | 日期/库房/型号分组及建账后有效进货 |
+
+### 1.3 M1-02同源业务页面
+
+下列是已接入后端的M1-02页面，完成本机技术/浏览器核对，**待用户审核**。不是完整库存闭环或已上线产品；原七页仍保留历史样板状态。
+
+| 页面编号 | 名称 | 代码入口 | 本机运行入口 | 截图 | 状态 |
+| --- | --- | --- | --- | --- | --- |
+| m1-login | 登录 | [app/web](../../app/web/index.html) | [登录](http://127.0.0.1:8000/#login) | [390px](qa/m1-02/login-390.jpg) | 已接身份API，本机核对，待审核 |
+| m1-inventory | 库存起点查询 | [app.js](../../app/web/app.js) | [查询](http://127.0.0.1:8000/#inventory) | [390px](qa/m1-02/inventory-390.jpg)、[320px](qa/m1-02/inventory-320.jpg) | 已接余额API，限建账/查询，待审核 |
+| m1-opening | 期初建账 | [app.js](../../app/web/app.js) | [建账](http://127.0.0.1:8000/#opening) | [电脑](qa/m1-02/opening-desktop.jpg)、[预览](qa/m1-02/opening-preview-390.jpg)、[回执](qa/m1-02/opening-receipt-390.jpg) | 草稿/人工确认/回执已接后端，待审核 |
+| m1-catalog | 基础资料 | [app.js](../../app/web/app.js) | [维护](http://127.0.0.1:8000/#catalog) | [电脑](qa/m1-02/catalog-desktop.jpg) | 库房/型号维护及客户引用已接后端，待审核 |
+
+[核对记录与未覆盖项](qa/m1-02/README.md)说明样例性质、视口、流程和进程重启证据。[后端开发说明](../guides/backend-development.md)提供运行方式；不能用静态HTTP服务器运行这些业务页面。新增页面没有独立概念图，按C方向既有库存图与组件规范扩展。
+
+生产公共维护源为[app/web/tokens.css](../../app/web/tokens.css)、[app.css](../../app/web/app.css)及[生产素材](../../app/web/assets/icons.svg)；原素材原样迁移，生产脚本不使用原型的模拟状态或规则。`prototypes/`中的同名文件作为历史样板保留，生产变更不回写历史版本。
+
+### 1.4 M1-03入库与待核对
+
+M1-02已获准继续，保留其历史截图。当前新增/更新页面完成本机技术核对，**M1-03用户审核通过**；不代表完整库存或真机验收。
+
+| 页面编号 | 名称 / 代码 | 本机入口 | 截图 | 状态 |
+| --- | --- | --- | --- | --- |
+| m1-inbound | [入库表单](../../app/web/inbound.js) | [入库](http://127.0.0.1:8000/#inbound) | [电脑](qa/m1-03/inbound-desktop.jpg)、[390px预览](qa/m1-03/inbound-preview-390.jpg)、[回执](qa/m1-03/inbound-receipt-390.jpg)、[T0待补](qa/m1-03/t0-pending-390.jpg) | 已接草稿/确认/回执，用户审核通过 |
+| m1-pending | [待核对](../../app/web/inbound.js) | [待核对](http://127.0.0.1:8000/#pending) | [390px](qa/m1-03/pending-390.jpg) | 当前账号授权的未完成草稿，用户审核通过 |
+| m1-inventory | [库存导航与查询](../../app/web/app.js) | [库存](http://127.0.0.1:8000/#inventory) | [390px](qa/m1-03/inventory-390.jpg)、[320px](qa/m1-03/inventory-320.jpg) | 已接入库后余额查询，用户审核通过 |
+
+[核对与未覆盖项](qa/m1-03/README.md)区分浏览器、程序测试和未验证真机范围。只知日期不补时刻，修改后重新预览，入库5使10/3/7变15/3/12；截图数字来自后端。原型及M1-02截图不覆盖或冒充当前证据。
 
 ## 2. HTML样板
 

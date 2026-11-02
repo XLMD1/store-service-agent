@@ -17,6 +17,8 @@
 | 任务 | 文档 |
 | --- | --- |
 | 代码、测试与交付 | [开发规范](guides/development.md) |
+| 后端启动、身份接口与本机测试 | [后端开发说明](guides/backend-development.md)；验收状态仍以开发计划为准 |
+| M0构造样例与验收任务 | [样例数据入口](../evals/README.md)；实际缺口与进度仍在开发计划维护 |
 | 提交、推送、PR格式 | [Git规范](guides/git.md) |
 | 页面设计或实现 | [设计规范AI版](design/design-resources.md)及[HTML可视化版](design/design-resources.html)：页面、素材、交互与视觉规则的统一入口 |
 | 检查当前前端样板的验证范围 | [核心前端核对记录](design/qa/frontend-c/README.md)与[概念图/实现比对](design/qa/frontend-c/comparison.html) |
