@@ -1,0 +1,650 @@
+[
+  {
+    "route": "home",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "工作台",
+    "width": 320
+  },
+  {
+    "route": "pending",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "待核对",
+    "width": 320
+  },
+  {
+    "route": "service-draft",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "售后草稿核对",
+    "width": 320
+  },
+  {
+    "route": "service-search",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "售后档案",
+    "width": 320
+  },
+  {
+    "route": "service-detail?customer=demo-c1",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "售后档案详情",
+    "width": 320
+  },
+  {
+    "route": "repair-assistant",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "维修辅助",
+    "width": 320
+  },
+  {
+    "route": "settings",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "资料与设置",
+    "width": 320
+  },
+  {
+    "route": "inventory",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "库存",
+    "width": 320
+  },
+  {
+    "route": "opening",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "期初建账",
+    "width": 320
+  },
+  {
+    "route": "inbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "入库登记",
+    "width": 320
+  },
+  {
+    "route": "movement?kind=inventory_outbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "普通出库",
+    "width": 320
+  },
+  {
+    "route": "movement?kind=reservation_create",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "办理留货",
+    "width": 320
+  },
+  {
+    "route": "movement?kind=reservation_pickup&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "预留提货",
+    "width": 320
+  },
+  {
+    "route": "movement?kind=reservation_cancel&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "取消留货",
+    "width": 320
+  },
+  {
+    "route": "reservations",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 320
+  },
+  {
+    "route": "ledger",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "库存流水",
+    "width": 320
+  },
+  {
+    "route": "statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 320
+  },
+  {
+    "route": "correction",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "原单数量更正",
+    "width": 320
+  },
+  {
+    "route": "correction?kind=inventory_adjustment",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "盘点调整",
+    "width": 320
+  },
+  {
+    "route": "reconciliation",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "库存对账",
+    "width": 320
+  },
+  {
+    "route": "catalog",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "库房与型号",
+    "width": 320
+  },
+  {
+    "route": "customers",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "客户资料",
+    "width": 320
+  },
+  {
+    "route": "reserved-pickup",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 320
+  },
+  {
+    "route": "inbound-statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 305,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 320
+  },
+  {
+    "route": "home",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "工作台",
+    "width": 390
+  },
+  {
+    "route": "pending",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "待核对",
+    "width": 390
+  },
+  {
+    "route": "service-draft",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "售后草稿核对",
+    "width": 390
+  },
+  {
+    "route": "service-search",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "售后档案",
+    "width": 390
+  },
+  {
+    "route": "service-detail?customer=demo-c1",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "售后档案详情",
+    "width": 390
+  },
+  {
+    "route": "repair-assistant",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "维修辅助",
+    "width": 390
+  },
+  {
+    "route": "settings",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "资料与设置",
+    "width": 390
+  },
+  {
+    "route": "inventory",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "库存",
+    "width": 390
+  },
+  {
+    "route": "opening",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "期初建账",
+    "width": 390
+  },
+  {
+    "route": "inbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "入库登记",
+    "width": 390
+  },
+  {
+    "route": "movement?kind=inventory_outbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "普通出库",
+    "width": 390
+  },
+  {
+    "route": "movement?kind=reservation_create",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "办理留货",
+    "width": 390
+  },
+  {
+    "route": "movement?kind=reservation_pickup&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "预留提货",
+    "width": 390
+  },
+  {
+    "route": "movement?kind=reservation_cancel&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "取消留货",
+    "width": 390
+  },
+  {
+    "route": "reservations",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 390
+  },
+  {
+    "route": "ledger",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "库存流水",
+    "width": 390
+  },
+  {
+    "route": "statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 390
+  },
+  {
+    "route": "correction",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "原单数量更正",
+    "width": 390
+  },
+  {
+    "route": "correction?kind=inventory_adjustment",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "盘点调整",
+    "width": 390
+  },
+  {
+    "route": "reconciliation",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "库存对账",
+    "width": 390
+  },
+  {
+    "route": "catalog",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "库房与型号",
+    "width": 390
+  },
+  {
+    "route": "customers",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "客户资料",
+    "width": 390
+  },
+  {
+    "route": "reserved-pickup",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 390
+  },
+  {
+    "route": "inbound-statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 375,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 390
+  },
+  {
+    "route": "home",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "工作台",
+    "width": 1440
+  },
+  {
+    "route": "pending",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "待核对",
+    "width": 1440
+  },
+  {
+    "route": "service-draft",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "售后草稿核对",
+    "width": 1440
+  },
+  {
+    "route": "service-search",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "售后档案",
+    "width": 1440
+  },
+  {
+    "route": "service-detail?customer=demo-c1",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "售后档案详情",
+    "width": 1440
+  },
+  {
+    "route": "repair-assistant",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "维修辅助",
+    "width": 1440
+  },
+  {
+    "route": "settings",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "资料与设置",
+    "width": 1440
+  },
+  {
+    "route": "inventory",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "库存",
+    "width": 1440
+  },
+  {
+    "route": "opening",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "期初建账",
+    "width": 1440
+  },
+  {
+    "route": "inbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "入库登记",
+    "width": 1440
+  },
+  {
+    "route": "movement?kind=inventory_outbound",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "普通出库",
+    "width": 1440
+  },
+  {
+    "route": "movement?kind=reservation_create",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "办理留货",
+    "width": 1440
+  },
+  {
+    "route": "movement?kind=reservation_pickup&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "预留提货",
+    "width": 1440
+  },
+  {
+    "route": "movement?kind=reservation_cancel&reservation=00000000-0000-4000-8000-000000000007",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "取消留货",
+    "width": 1440
+  },
+  {
+    "route": "reservations",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 1440
+  },
+  {
+    "route": "ledger",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "库存流水",
+    "width": 1440
+  },
+  {
+    "route": "statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 1440
+  },
+  {
+    "route": "correction",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "原单数量更正",
+    "width": 1440
+  },
+  {
+    "route": "correction?kind=inventory_adjustment",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "盘点调整",
+    "width": 1440
+  },
+  {
+    "route": "reconciliation",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "库存对账",
+    "width": 1440
+  },
+  {
+    "route": "catalog",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "库房与型号",
+    "width": 1440
+  },
+  {
+    "route": "customers",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "客户资料",
+    "width": 1440
+  },
+  {
+    "route": "reserved-pickup",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "预留查询",
+    "width": 1440
+  },
+  {
+    "route": "inbound-statistics",
+    "notice": "",
+    "rawSelects": 0,
+    "scrollWidth": 1425,
+    "smallButtons": [],
+    "title": "进货统计",
+    "width": 1440
+  }
+]

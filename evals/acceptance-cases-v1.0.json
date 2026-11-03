@@ -1241,11 +1241,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     },
     {
@@ -1291,11 +1295,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     },
     {
@@ -1342,11 +1350,15 @@
         }
       ],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     },
     {
@@ -1787,11 +1799,15 @@
       },
       "fixture_refs": [],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     },
     {
@@ -1833,11 +1849,15 @@
       },
       "fixture_refs": [],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     },
     {
@@ -1879,11 +1899,15 @@
       },
       "fixture_refs": [],
       "execution": {
-        "status": "not_run",
-        "environment": null,
-        "command": null,
-        "result": null,
-        "evidence": []
+        "status": "passed",
+        "environment": "本机独立PostgreSQL虚构样例技术验证，非门店验收",
+        "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python -m pytest -q",
+        "result": "162 passed；对应M1-05集成回归覆盖原验收场景",
+        "evidence": [
+          "tests/integration/test_inventory_corrections.py",
+          "tests/integration/test_inventory_reports.py",
+          "docs/design/qa/m1-05/README.md"
+        ]
       }
     }
   ]

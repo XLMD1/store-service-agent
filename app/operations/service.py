@@ -12,19 +12,21 @@ from app.catalog.models import Customer, ProductModel, Warehouse
 from app.inventory.models import InventoryAccount, InventoryDocument, Ledger, Reservation
 from app.inventory.service import balance_result, find_account, stock_event_context
 from app.inventory.movements import MOVEMENT_KINDS, apply_movement, movement_preview
+from app.inventory.corrections import CORRECTION_KINDS, apply_correction, correction_preview
 from app.operations.models import Draft, Operation
-from app.operations.schemas import InboundParameters, OpeningParameters, ReserveParameters, ReservationActionParameters
+from app.operations.schemas import InboundParameters, OpeningParameters, ReserveParameters, ReservationActionParameters, AdjustmentParameters, CorrectionParameters
 
 
 PERMISSIONS = {'inventory_opening': 'inventory.opening', 'inventory_inbound': 'inventory.inbound',
     'inventory_outbound': 'inventory.outbound', 'reservation_create': 'reservation.confirm',
-    'reservation_cancel': 'reservation.cancel', 'reservation_pickup': 'reservation.pickup'}
+    'reservation_cancel': 'reservation.cancel', 'reservation_pickup': 'reservation.pickup', 'inventory_adjustment': 'inventory.correct', 'inventory_correction': 'inventory.correct'}
 
 
 def normalize_parameters(kind, parameters):
     schema = {'inventory_opening': OpeningParameters, 'inventory_inbound': InboundParameters,
         'inventory_outbound': InboundParameters, 'reservation_create': ReserveParameters,
-        'reservation_cancel': ReservationActionParameters, 'reservation_pickup': ReservationActionParameters}[kind]
+        'reservation_cancel': ReservationActionParameters, 'reservation_pickup': ReservationActionParameters,
+        'inventory_adjustment': AdjustmentParameters, 'inventory_correction': CorrectionParameters}[kind]
     try:
         return schema.model_validate(parameters).model_dump(mode='json')
     except ValidationError:
@@ -78,7 +80,9 @@ def prepare_draft(db, user, parameters, row=None, *, kind='inventory_opening'):
     kind = row.kind if row else kind
     ensure_permission(db, user, PERMISSIONS[kind])
     params = normalize_parameters(kind, parameters)
-    if kind in MOVEMENT_KINDS:
+    if kind in CORRECTION_KINDS:
+        missing, preview, versions = correction_preview(db, kind, params)
+    elif kind in MOVEMENT_KINDS:
         missing, preview, versions = movement_preview(db, kind, params)
     else:
         preview_function = opening_preview if kind == 'inventory_opening' else inbound_preview
@@ -115,6 +119,8 @@ def confirm_operation(db, user, operation_id, payload):
         return op.result
     if op.state != 'pending' or draft.state != 'ready' or draft.version != op.draft_version:
         raise HTTPException(409, 'Draft changed or already submitted')
+    if draft.kind in CORRECTION_KINDS:
+        return apply_correction(db, user, op, draft, params)
     if draft.kind == 'inventory_inbound':
         return apply_inbound(db, user, op, draft, params)
     if draft.kind in MOVEMENT_KINDS:

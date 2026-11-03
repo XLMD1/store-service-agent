@@ -469,3 +469,14 @@ JSON字段使用`snake_case`。登录主体、权限、确认人、登记时间�
 M1-04后续审核修订（2026-11-02）：网页库存查询每次进入均为空，必须选择型号并明确提交；不读取上次inventorySearch，也不在选候选后requestSubmit。overview可选model_id作为已有只读接口能力保留，当时页面仅提交具体warehouse_id/model_id（现行改为下述全部型号选择）；没有改动正式写入、权限或库存算法。
 
 M1-04电脑/手机模式修订（2026-11-02）：型号必选保留，但增加all显式选项，all时省略model_id调用既有overview；不将all传UUID参数。库房名称检索沿用稳定ID解析，旁侧按钮独立展开全部目录；人工选定更新ID/名称并清空结果，不自动提交。名称被人工改动后清除旧选择。shell共用侧栏按已有权限筛选，只包含已实现页面；state.viewMode控制DOM容器的data-view及按钮aria-pressed，不重建表单或发请求。首次/刷新按1000px窗口阈值初始化，手动选择保留在当前页面会话；手机模式在宽窗口仍使用单列，窄窗口电脑模式可操作紧凑侧栏（保留左侧导航）。无数据迁移或后端写入变化。
+
+
+### 17.9 M1-05统计、更正与对账
+
+迁移0006为InventoryDocument增加original_document_id自关联、old_quantity/new_quantity和version（旧行1）；更正记录不可被普通编辑。inventory_adjustment参数warehouse_id/model_id/on_hand/occurred/basis_note；inventory_correction仅document_id/new_quantity/basis_note。数量非负整数含0，原因必填才能确认，权限均inventory.correct。未填保存missing草稿。
+
+复用prepare_draft/confirm_operation：操作→草稿→身份权限锁→账户→预留→被更正原单；绑定账户/资料/预留/原单version。确认时重算差额，入库H加d、出库H减d、提货H/R均减d且累计已提加d，不能侵占已取消份额；减记可恢复进行中。盘点按目标与当前H之差调整，R保持。余额、预留、原单effective/version、新correction或adjustment文档、流水和回执同事务。原单original_quantity及发生时间不改，历史成功回执保持原当时事实；数量更正单的发生/登记为本次时刻。调整/更正新单effective存有符号差额，old/new保存前后量。
+
+GET /api/inventory/statistics要求inventory.read，start/end为北京时间自然日含两端，可按date/warehouse/model分组及对象筛选；只汇总原inbound的effective，correction/adjustment不重复计进货，返回原单更正链及各对象T0/未建账/部分覆盖说明。GET /documents只读列原inbound/outbound/pickup及更正链。GET /reconciliation要求inventory.correct，以单条聚合SQL核对余额、流水、客户剩余预留与原单有效量重建（排除correction独立重复差额）；未建账数量null，一致性null。流水查询包含adjustment/correction及关联原单、old/new。只读对账不自动改账。
+
+原单有效量归0是受约束冲正；库房/型号/日期改错须再另行正常登记并分别确认，不提供直接改历史对象接口。0006有更正/盘点草稿或历史时拒绝降级。真实职责及生产盘点仍需人工核定。

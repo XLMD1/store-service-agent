@@ -277,7 +277,7 @@ def test_migration_refuses_to_drop_new_reservation_history(application,settings,
     with pytest.raises(RuntimeError,match='Cannot downgrade recorded reservation/outbound'):
         command.downgrade(cfg,'0004_document_occurrence')
     with application.state.sessions() as db:
-        assert db.scalar(text('SELECT version_num FROM alembic_version'))=='0005_reservation_operations'
+        assert db.scalar(text('SELECT version_num FROM alembic_version'))=='0006_inventory_corrections'
         assert db.scalar(text("SELECT count(*) FROM inventory_documents WHERE kind='reserve' AND reservation_id IS NOT NULL"))==1
 
 
