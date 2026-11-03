@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.11 · 整理日期：2026-11-03 · 视觉基准：C / 沉稳专业型。
+版本：V1.13 · 整理日期：2026-11-03 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -170,6 +170,56 @@ M1-02已获准继续，保留其历史截图。当前新增/更新页面完成�
 | m1-inventory | [inventory.js](../../app/web/inventory.js)、[app.css](../../app/web/app.css) / [库存](http://127.0.0.1:8000/#inventory) | [初始390px](qa/m1-04-model-picker/initial-390.jpg)、[型号展开390px](qa/m1-04-model-picker/model-open-390.jpg)、[320px](qa/m1-04-model-picker/model-open-320.jpg)、[电脑](qa/m1-04-model-picker/model-open-desktop.jpg) | 外观、全部/单型号、修改清选择、键盘及窄屏已核对，待审核 |
 
 [完整核对与限制](qa/m1-04-model-picker/README.md)、[交互证据](qa/m1-04-model-picker/interaction-evidence.json)。布局依据仍为1.9的C原图与HTML样板；本轮只改库存查询控件，不宣称完整业务重验。
+
+### 1.12 M1-05统计、更正与对账（真实API版本保留）
+
+**2026-11-03 / 本机技术与页面核对完成，待用户审核**。统计沿用[07原图](assets/mobile-c/07-inbound-statistics.png)、[完整统计样板](../../prototypes/frontend/index.html#inbound-statistics)及C库存/确认组件；新负责人表单没有独立概念图，不虚构原图。共用维护源[reconciliation.js](../../app/web/reconciliation.js)、[shell](../../app/web/app.js)、[app.css](../../app/web/app.css)。统计先条件、有效合计/覆盖、分组与原单；更正先具体原单/原因、后端前后量，再人工确认及回执；对账只读不修复。原图18台与本轮独立样例有效4台不是同一台账，不作像素或数据复刻承诺。
+
+| 页面编号 | 页面 / 本机入口 | 本轮截图 | 状态 |
+| --- | --- | --- | --- |
+| m1-statistics | [进货统计](http://127.0.0.1:8000/#statistics) | [statistics-desktop.jpg](qa/m1-05/statistics-desktop.jpg)、[statistics-result-320.jpg](qa/m1-05/statistics-result-320.jpg) | 已接真实API，本机核对，待审核 |
+| m1-correction | [原单数量更正](http://127.0.0.1:8000/#correction) | [correction-preview-390.jpg](qa/m1-05/correction-preview-390.jpg)、[correction-receipt-390.jpg](qa/m1-05/correction-receipt-390.jpg) | 已接真实API，本机核对，待审核 |
+| m1-adjustment | [盘点调整](http://127.0.0.1:8000/#correction?kind=inventory_adjustment) | [adjustment-preview-390.jpg](qa/m1-05/adjustment-preview-390.jpg)、[adjustment-receipt-390.jpg](qa/m1-05/adjustment-receipt-390.jpg) | 已接真实API，本机核对，待审核 |
+| m1-reconciliation | [库存对账](http://127.0.0.1:8000/#reconciliation) | [reconciliation-final-390.jpg](qa/m1-05/reconciliation-final-390.jpg)、[reconciliation-desktop.jpg](qa/m1-05/reconciliation-desktop.jpg) | 已接真实API，本机核对，待审核 |
+
+库存增加统计及负责人更正/盘点/对账入口，流水显示更正原单及前后量，待核对支持恢复新kind；这些共用入口保留既有编号与样式，核心新页见上表。[核对范围与限制](qa/m1-05/README.md)、[数据库证据](qa/m1-05/database-evidence.json)、[布局证据](qa/m1-05/layout-evidence.json)。自动审批限制按实记录；本机结果不代表生产或真实盘点验收。其他业务页沿用前述基线。
+
+### 1.13 全量前端 mock 与选择框统一（当前前端演示）
+
+2026-11-03 / **前端实现及本机检查完成，用户已审核通过；全为内存模拟，不代表真实业务已实现或上线。**
+沿用C方向的[电脑工作台样板](qa/frontend-c/home-desktop.jpg)、[完整HTML](../../prototypes/frontend/index.html)及本页各业务原图。复用tokens、SVG及墨青纹理；历史原型和1.3～1.12真实API版本保留。本轮只改前端、前端工具链/测试及相关文档，已有后端变更保留且未追加修改；未运行数据库迁移或数据库测试。
+
+运行 `npm run dev` 后打开[独立演示入口](http://127.0.0.1:8765/mock.html)。直接双击HTML不能运行；8000真实入口不加载mock。下列页面共享[选择框](../../app/web/pickers.js)：与库存查询一致的输入+手机46px/电脑文字展开入口、下方6px列表；支持完整列表换选、搜索、键盘、Escape返回焦点、禁用和表单数据同步。手机一级四项导航，二级办理只保留返回与本页操作，电脑/手机模式可手动选择。
+
+| 页面编号 | 名称 / 模拟入口 | 本轮截图 | 已实现的前端交互 |
+| --- | --- | --- | --- |
+| m1-login | [登录](http://127.0.0.1:8765/mock.html#login) | [login-320](qa/frontend-mock/login-320.jpg) | 登录/退出、错误提示；demo-owner / demo |
+| home | [工作台](http://127.0.0.1:8765/mock.html#home) | [home-390](qa/frontend-mock/home-390.jpg) | 任务文字/本地照片/预览去向、高频入口、两类待核对/最近档案 |
+| m1-pending | [待核对](http://127.0.0.1:8765/mock.html#pending) | [pending-390](qa/frontend-mock/pending-390.jpg) | 全部/售后/库存分类、缺项、保存时间及草稿恢复 |
+| service-draft | [售后草稿](http://127.0.0.1:8765/mock.html#service-draft) | [service-draft-390](qa/frontend-mock/service-draft-390.jpg) | 来源阅读、未知字段、人工地址关联、预览/模拟归档 |
+| service-search | [售后检索](http://127.0.0.1:8765/mock.html#service-search) | [service-search-390](qa/frontend-mock/service-search-390.jpg) | 多地址候选、无匹配与保留查询条件 |
+| service-detail | [售后详情](http://127.0.0.1:8765/mock.html#service-detail?customer=demo-c1) | [service-detail-390](qa/frontend-mock/service-detail-390.jpg) | 时间线、实际结果待补、原文/修订、补充草稿 |
+| repair-assistant | [维修辅助](http://127.0.0.1:8765/mock.html#repair-assistant) | [repair-assistant-390](qa/frontend-mock/repair-assistant-390.jpg) | 准确机型、资料缺口、条件/引用原文/反馈、条件改变清旧结果 |
+| settings | [资料与设置](http://127.0.0.1:8765/mock.html#settings) | [settings-390](qa/frontend-mock/settings-390.jpg) | 账号职责与最后负责人保护；手册登记/审核/发布/停用；资料入口 |
+| m1-inventory | [库存查询](http://127.0.0.1:8765/mock.html#inventory) | [inventory-390](qa/frontend-mock/inventory-390.jpg) | 空白进入，选择库房和具体/全部型号后手动查询 |
+| m1-opening | [期初建账](http://127.0.0.1:8765/mock.html#opening) | [opening-390](qa/frontend-mock/opening-390.jpg) | T0/实物/期初客户留货、缺项/预览/模拟确认 |
+| m1-inbound | [入库登记](http://127.0.0.1:8765/mock.html#inbound) | [inbound-390](qa/frontend-mock/inbound-390.jpg) | 数量/时间精度/T0边界、草稿/预览/原操作核验/回执 |
+| m1-outbound | [普通出库](http://127.0.0.1:8765/mock.html#movement?kind=inventory_outbound) | [outbound-390](qa/frontend-mock/outbound-390.jpg) | 可售约束、草稿/预览/模拟确认 |
+| m1-reserve | [办理留货](http://127.0.0.1:8765/mock.html#movement?kind=reservation_create) | [reserve-390](qa/frontend-mock/reserve-390.jpg) | 客户、依据标签、预留约束与客户明确的预览 |
+| m1-pickup | [预留提货](http://127.0.0.1:8765/mock.html#reservations) | [pickup-390](qa/frontend-mock/pickup-390.jpg) | 从具体预留进入，同时扣在库/该单预留；不自动换对象 |
+| m1-cancel | [取消留货](http://127.0.0.1:8765/mock.html#reservations) | [cancel-390](qa/frontend-mock/cancel-390.jpg) | 从具体预留进入，只释放该单剩余 |
+| m1-reservations | [预留查询](http://127.0.0.1:8765/mock.html#reservations) | [reservations-390](qa/frontend-mock/reservations-390.jpg) | 关键词/库房/型号/未提状态及办理入口 |
+| m1-ledger | [库存流水](http://127.0.0.1:8765/mock.html#ledger) | [ledger-390](qa/frontend-mock/ledger-390.jpg) | 对象/日期/类型检索，当前原单有效量及更正关联 |
+| m1-statistics | [进货统计](http://127.0.0.1:8765/mock.html#statistics) | [statistics-390](qa/frontend-mock/statistics-390.jpg) | 日期/库房/型号/分组、有效进货/建账覆盖及原单 |
+| m1-correction | [原单更正](http://127.0.0.1:8765/mock.html#correction) | [correction-390](qa/frontend-mock/correction-390.jpg) | 选具体原单、目标有效量/依据、前后量与模拟回执 |
+| m1-adjustment | [盘点调整](http://127.0.0.1:8765/mock.html#correction?kind=inventory_adjustment) | [adjustment-390](qa/frontend-mock/adjustment-390.jpg) | 核实实物目标、不得低于预留、模拟确认 |
+| m1-reconciliation | [库存对账](http://127.0.0.1:8765/mock.html#reconciliation) | [reconciliation-390](qa/frontend-mock/reconciliation-390.jpg) | 只读核对余额/流水/预留/原单；不自动修复 |
+| m1-catalog | [库房与型号](http://127.0.0.1:8765/mock.html#catalog) | [catalog-390](qa/frontend-mock/catalog-390.jpg) | 新增/修改/启停及版本；一个库房多个型号 |
+| m1-customers | [客户资料](http://127.0.0.1:8765/mock.html#customers) | [customers-390](qa/frontend-mock/customers-390.jpg) | 明确客户/地址引用登记、版本修改与未知字段 |
+
+以上各行状态均为“前端mock已实现/本机核对，用户已审核通过”。`reserved-pickup`兼容预留查询入口，`inbound-statistics`兼容统计入口；提货/取消须先选具体预留。所有演示对象虚构，刷新重置；售后与库存客户范围分别展示，不自动跨域合并。维修只有虚构引用结构；手册登记目前为元信息；照片本地预览，不上传、不AI识别。账号设置仅模拟配置，演示角色由顶部控制切换，不能当作服务端授权。
+
+[接口契约](frontend-api-contract.md) / [售后维修设置拟定契约](frontend-service-contract.md) / [实施与文件清单](../plans/frontend-mock-completion.md) / [完整核对记录](qa/frontend-mock/README.md)。72项路由/尺寸检查及55项前端测试通过；类型检查限严格接口声明，存量原生JS由lint和运行时测试检查。截图为浏览器视口截图，文件名表示CSS目标宽度，实际像素见清单，未做实体设备或生产验收。
 
 ## 2. HTML样板
 

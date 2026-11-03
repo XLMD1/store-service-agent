@@ -11,9 +11,11 @@ from app.auth.models import User
 from app.catalog.models import Customer, ProductModel, Warehouse
 from app.inventory.models import InventoryAccount, InventoryDocument, Ledger, Reservation
 from app.inventory.service import balance_result, find_account, reservation_result
+from app.inventory.reports import router as reports_router
 
 
 router = APIRouter(prefix='/api/inventory')
+router.include_router(reports_router)
 
 
 @router.get('/overview')
@@ -81,7 +83,7 @@ def reservations(q: str = Query(default='', max_length=100), warehouse_id: UUID 
 @router.get('/ledger')
 def ledger(warehouse_id: UUID, model_id: UUID, start: CalendarDate | None = None, end: CalendarDate | None = None,
            reservation_id: UUID | None = None,
-           kind: Literal['opening', 'inbound', 'outbound', 'reserve', 'cancel', 'pickup'] | None = None,
+           kind: Literal['opening', 'inbound', 'outbound', 'reserve', 'cancel', 'pickup', 'adjustment', 'correction'] | None = None,
            user=Depends(current_user), db=Depends(database, scope='function')):
     ensure_permission(db, user, 'inventory.read')
     if start and end and start > end:
@@ -104,6 +106,7 @@ def ledger(warehouse_id: UUID, model_id: UUID, start: CalendarDate | None = None
     result = []
     for row, document, actor in db.execute(query.order_by(Ledger.version.desc())):
         result.append({'id': row.id, 'business_id': document.id, 'operation_id': document.operation_id,
+            'original_document_id': document.original_document_id, 'old_quantity': document.old_quantity, 'new_quantity': document.new_quantity,
             'kind': document.kind, 'quantity': document.effective_quantity, 'on_hand_delta': row.on_hand_delta,
             'reserved_delta': row.reserved_delta, 'version': row.version, 'reservation_id': document.reservation_id,
             'occurred': {'precision': document.occurred_precision,

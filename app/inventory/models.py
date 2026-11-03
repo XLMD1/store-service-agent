@@ -59,6 +59,10 @@ class InventoryDocument(Base):
     registered_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     basis_note: Mapped[str] = mapped_column(String(1000))
     reservation_id: Mapped[str | None] = mapped_column(ForeignKey('inventory_reservations.id'), index=True)
+    original_document_id: Mapped[str | None] = mapped_column(ForeignKey('inventory_documents.id'), index=True)
+    old_quantity: Mapped[int | None] = mapped_column(Integer)
+    new_quantity: Mapped[int | None] = mapped_column(Integer)
+    version: Mapped[int] = mapped_column(Integer, default=1, server_default='1')
 
 
 class Ledger(Base):

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light"><title>门店助手 · 前端演示</title>
+  <link rel="icon" href="data:,"><link rel="stylesheet" href="/web/tokens.css"><link rel="stylesheet" href="/web/app.css"><link rel="stylesheet" href="/web/service-pages.css">
+  <script defer src="/web/mock-api.js"></script><script defer src="/web/mock-bootstrap.js"></script><script defer src="/web/service-pages.js"></script><script defer src="/web/form-state.js"></script><script defer src="/web/inbound.js"></script><script defer src="/web/movements.js"></script><script defer src="/web/inventory.js"></script><script defer src="/web/reconciliation.js"></script><script defer src="/web/pickers.js"></script><script defer src="/web/app.js"></script>
+</head>
+<body><a class="skip" href="#main">跳到主要内容</a><section id="demo-tools" class="demo-tools" aria-label="演示控制"><strong>前端 mock 演示 · 虚构数据，不连接真实台账</strong><details><summary>演示角色与状态</summary><div class="grid two"><label class="field"><span>演示角色</span><select id="demo-role"><option value="owner">负责人</option><option value="clerk">接单员</option><option value="stock_operator">进出货员</option><option value="technician">维修师傅</option></select></label><label class="field"><span>库存接口场景</span><select id="demo-scenario"><option value="normal">正常样例</option><option value="empty">空库存数据</option><option value="error">接口错误</option><option value="conflict">确认时冲突</option><option value="pending">提交结果待核验</option></select></label></div><button id="demo-reset" type="button">重置演示样例</button><p class="muted">刷新恢复全部样例；模拟确认仅更新当前页面内存。空库存场景清空库存业务；售后样例独立。待核验请按原操作核验结果。</p></details></section><div id="app"></div><div id="notice" class="notice" role="alert" hidden></div></body>
+</html>

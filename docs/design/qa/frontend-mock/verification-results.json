@@ -1,0 +1,18 @@
+{
+  "protected_files_unchanged": 56,
+  "protected_mismatches": [],
+  "allowed_gitignore_change": "frontend generated directories only",
+  "pages_in_both_design_versions": 23,
+  "screenshots": 36,
+  "static_files_hash_verified": 18,
+  "checks": {
+    "lint": "0 errors, 0 warnings",
+    "typecheck": "strict contracts.ts only",
+    "frontend_tests": "55 passed",
+    "build": "18 files",
+    "browser_layout": "72 checks, no issues",
+    "static_browser": "home and inventory mounted, no warn/error logs"
+  },
+  "backend_or_database_test_run": false,
+  "git_commit_or_push": false
+}

@@ -1,0 +1,19 @@
+{
+  "name": "store-service-agent-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Native JavaScript frontend checks and isolated static mock preview",
+  "scripts": {
+    "lint": "eslint app/web scripts/frontend-*.mjs eslint.config.mjs",
+    "typecheck": "tsc -p tsconfig.frontend.json",
+    "build": "node scripts/frontend-build.mjs",
+    "test:frontend": "node --test --test-isolation=none tests/web-*.test.cjs",
+    "dev": "node scripts/frontend-serve.mjs"
+  },
+  "engines": { "node": ">=26" },
+  "devDependencies": {
+    "eslint": "9.39.1",
+    "jsdom": "26.1.0",
+    "typescript": "5.9.3"
+  }
+}

@@ -113,3 +113,10 @@ M1-04审核反馈优化：库存页按最新审核要求，库房及型号必填
 最新交互修复见[手动查询核对](../design/qa/m1-04-manual-query/README.md)：不恢复或自动提交上次库存条件，候选选择只确认对象；所有启用按钮提供鼠标提示。只读overview接口仍保留可选model_id兼容能力，当时网页仅传具体型号；现行明确选择全部型号时省略model_id。
 
 当前电脑页面与查询选择见[本轮核对](../design/qa/m1-04-desktop-query/README.md)：顶部电脑端/手机端切换接正式同源页面，电脑复用C侧栏布局；切换不重新加载表单。初始条件为空，型号必须明确选择全部或具体项；库房完整列表可随时切换。未更改后端接口、权限及库存事务。
+
+
+## M1-05审核
+
+同源页新增#statistics、#correction、#correction?kind=inventory_adjustment、#reconciliation；负责人沿用inventory.correct。统计和对账须明确查询，盘点/数量更正必须保存草稿并人工核对预览后确认；异常仍用原操作标识核验。代码见app/web/reconciliation.js及app/inventory/corrections.py、reports.py。
+
+审核库已备份升级至0006，旧7账户保留；构造M1-05独立虚构样例供审核。pytest仍只清理store_agent_m1_test；最终162项后端、21项生产JS及4项样板通过，证据与限制见[阶段核对](../design/qa/m1-05/README.md)。新增node tests/web-corrections.test.cjs。不要通过删除迁移或降级丢弃更正历史。

@@ -1,0 +1,163 @@
+[
+  {
+    "id": "m1-login",
+    "name": "登录",
+    "route": "login",
+    "screenshot": "login-320",
+    "features": "登录/退出、错误提示；demo-owner / demo"
+  },
+  {
+    "id": "home",
+    "name": "工作台",
+    "route": "home",
+    "screenshot": "home-390",
+    "features": "任务文字/本地照片/预览去向、高频入口、两类待核对/最近档案"
+  },
+  {
+    "id": "m1-pending",
+    "name": "待核对",
+    "route": "pending",
+    "screenshot": "pending-390",
+    "features": "全部/售后/库存分类、缺项、保存时间及草稿恢复"
+  },
+  {
+    "id": "service-draft",
+    "name": "售后草稿",
+    "route": "service-draft",
+    "screenshot": "service-draft-390",
+    "features": "来源阅读、未知字段、人工地址关联、预览/模拟归档"
+  },
+  {
+    "id": "service-search",
+    "name": "售后检索",
+    "route": "service-search",
+    "screenshot": "service-search-390",
+    "features": "多地址候选、无匹配与保留查询条件"
+  },
+  {
+    "id": "service-detail",
+    "name": "售后详情",
+    "route": "service-detail?customer=demo-c1",
+    "screenshot": "service-detail-390",
+    "features": "时间线、实际结果待补、原文/修订、补充草稿"
+  },
+  {
+    "id": "repair-assistant",
+    "name": "维修辅助",
+    "route": "repair-assistant",
+    "screenshot": "repair-assistant-390",
+    "features": "准确机型、资料缺口、条件/引用原文/反馈、条件改变清旧结果"
+  },
+  {
+    "id": "settings",
+    "name": "资料与设置",
+    "route": "settings",
+    "screenshot": "settings-390",
+    "features": "账号职责与最后负责人保护；手册登记/审核/发布/停用；资料入口"
+  },
+  {
+    "id": "m1-inventory",
+    "name": "库存查询",
+    "route": "inventory",
+    "screenshot": "inventory-390",
+    "features": "空白进入，选择库房和具体/全部型号后手动查询"
+  },
+  {
+    "id": "m1-opening",
+    "name": "期初建账",
+    "route": "opening",
+    "screenshot": "opening-390",
+    "features": "T0/实物/期初客户留货、缺项/预览/模拟确认"
+  },
+  {
+    "id": "m1-inbound",
+    "name": "入库登记",
+    "route": "inbound",
+    "screenshot": "inbound-390",
+    "features": "数量/时间精度/T0边界、草稿/预览/原操作核验/回执"
+  },
+  {
+    "id": "m1-outbound",
+    "name": "普通出库",
+    "route": "movement?kind=inventory_outbound",
+    "screenshot": "outbound-390",
+    "features": "可售约束、草稿/预览/模拟确认"
+  },
+  {
+    "id": "m1-reserve",
+    "name": "办理留货",
+    "route": "movement?kind=reservation_create",
+    "screenshot": "reserve-390",
+    "features": "客户、依据标签、预留约束与客户明确的预览"
+  },
+  {
+    "id": "m1-pickup",
+    "name": "预留提货",
+    "route": "reservations",
+    "screenshot": "pickup-390",
+    "features": "从具体预留进入，同时扣在库/该单预留；不自动换对象"
+  },
+  {
+    "id": "m1-cancel",
+    "name": "取消留货",
+    "route": "reservations",
+    "screenshot": "cancel-390",
+    "features": "从具体预留进入，只释放该单剩余"
+  },
+  {
+    "id": "m1-reservations",
+    "name": "预留查询",
+    "route": "reservations",
+    "screenshot": "reservations-390",
+    "features": "关键词/库房/型号/未提状态及办理入口"
+  },
+  {
+    "id": "m1-ledger",
+    "name": "库存流水",
+    "route": "ledger",
+    "screenshot": "ledger-390",
+    "features": "对象/日期/类型检索，当前原单有效量及更正关联"
+  },
+  {
+    "id": "m1-statistics",
+    "name": "进货统计",
+    "route": "statistics",
+    "screenshot": "statistics-390",
+    "features": "日期/库房/型号/分组、有效进货/建账覆盖及原单"
+  },
+  {
+    "id": "m1-correction",
+    "name": "原单更正",
+    "route": "correction",
+    "screenshot": "correction-390",
+    "features": "选具体原单、目标有效量/依据、前后量与模拟回执"
+  },
+  {
+    "id": "m1-adjustment",
+    "name": "盘点调整",
+    "route": "correction?kind=inventory_adjustment",
+    "screenshot": "adjustment-390",
+    "features": "核实实物目标、不得低于预留、模拟确认"
+  },
+  {
+    "id": "m1-reconciliation",
+    "name": "库存对账",
+    "route": "reconciliation",
+    "screenshot": "reconciliation-390",
+    "features": "只读核对余额/流水/预留/原单；不自动修复"
+  },
+  {
+    "id": "m1-catalog",
+    "name": "库房与型号",
+    "route": "catalog",
+    "screenshot": "catalog-390",
+    "features": "新增/修改/启停及版本；一个库房多个型号"
+  },
+  {
+    "id": "m1-customers",
+    "name": "客户资料",
+    "route": "customers",
+    "screenshot": "customers-390",
+    "features": "明确客户/地址引用登记、版本修改与未知字段"
+  }
+]
