@@ -322,10 +322,12 @@ def test_migration_0006_refuses_to_drop_correction_draft_or_recorded_history(app
     if recorded:
         assert confirm(client,item).status_code==200
     cfg=Config('alembic.ini');cfg.attributes['database_url']=settings.database_url
+    with application.state.sessions() as db:
+        original_revision=db.scalar(text('SELECT version_num FROM alembic_version'))
     with pytest.raises(RuntimeError,match='Cannot discard correction history'):
         command.downgrade(cfg,'0005_reservation_operations')
     with application.state.sessions() as db:
-        assert db.scalar(text('SELECT version_num FROM alembic_version'))=='0006_inventory_corrections'
+        assert db.scalar(text('SELECT version_num FROM alembic_version'))==original_revision
         assert db.scalar(text('SELECT count(*) FROM drafts WHERE id=:id'),{'id':item['id']})==1
         assert db.scalar(text('SELECT count(*) FROM inventory_documents WHERE original_document_id=:id'),
                          {'id':original['business_id']})==int(recorded)

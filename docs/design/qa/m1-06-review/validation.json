@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-04",
+  "backend": {
+    "passed": 255,
+    "seconds": 201.11,
+    "database": "store_agent_m1_test, dedicated loopback PostgreSQL"
+  },
+  "frontend": {
+    "tests": 63,
+    "lint": "passed",
+    "typecheck": "passed; strict interface declarations only",
+    "build_files": 20
+  },
+  "browser": {
+    "layout": "layout-checks.json",
+    "screenshots": "screenshot-manifest.json",
+    "physical_devices": false
+  },
+  "current_store_tables_fingerprint_unchanged": 13,
+  "actual_key_changed": false,
+  "paid_model_requests_this_revision": 0,
+  "database_migrations_this_revision": false,
+  "user_review": "pending",
+  "committed_or_pushed": false,
+  "local_links_checked": 801,
+  "git_diff_check": "passed",
+  "credential_pattern_check": "passed; word-boundary rule excludes task-unconfigured filename false positive",
+  "retained_screenshot_hashes_verified": 68
+}

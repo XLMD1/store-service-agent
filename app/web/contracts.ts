@@ -100,3 +100,22 @@ export interface MockAPI {
   setScenario(scenario: Scenario): {scenario: Scenario; demo: true};
   getScenario(): Scenario;
 }
+/** M1-06 real task API; independent mock does not implement these endpoints. */
+export type AgentState = 'processing' | 'missing' | 'awaiting_confirmation' | 'awaiting_verification' | 'completed' | 'failed' | 'cancelled';
+export type AgentAction = BusinessKind | 'query_inventory' | 'query_reservations' | 'query_statistics' | 'query_ledger';
+export interface AgentTaskItem {
+  id: UUID; action: AgentAction; state: AgentState; question: string;
+  candidates: Partial<Record<'warehouse' | 'model' | 'customer' | 'reference', {id: UUID; label: string}[]>>;
+  draft: Draft | null; result: Receipt | Overview | Statistics | {reservations: ReservationListItem[]} | {ledger: LedgerRow[]} | null;
+}
+export interface AgentTask {
+  id: UUID; text: string; followups: string[]; version: number; state: AgentState; question: string; items: AgentTaskItem[];
+  created_at: string; updated_at: string; can_retry: boolean;
+  budget: {model_attempts: number; max_model_attempts: number; known_tokens: number; tool_calls: number; max_tool_calls: number};
+}
+export interface AgentTaskCreate {request_id: UUID; text: string}
+export interface AgentTaskRun {expected_version: number; reply?: string}
+export interface AgentSelection extends AgentTaskRun {item_id: UUID; field: 'warehouse' | 'model' | 'customer' | 'reference'; value: UUID}
+/** Task list accepts ?month=YYYY-MM (Beijing creation date, whole month) or ?pending_only=true. */
+export interface DeepSeekSettings {configured: boolean; readable: boolean; source: 'local' | 'environment' | 'disabled' | 'unreadable'; model: string}
+export interface DeepSeekSettingsUpdate {api_key: string; confirmed: true}

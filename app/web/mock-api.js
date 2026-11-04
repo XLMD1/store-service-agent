@@ -53,12 +53,13 @@
     return {w,m,r,original};
   }
   function preview(kind,p) {
-    const required=kind==='inventory_correction'?['document_id','new_quantity','basis_note']:kind==='inventory_opening'?['warehouse_id','model_id','t0','on_hand','basis_note']:(kind==='reservation_cancel'||kind==='reservation_pickup'?['reservation_id','quantity','occurred','basis_note']:['warehouse_id','model_id',kind==='inventory_adjustment'?'on_hand':'quantity','occurred','basis_note']);
+    let required=kind==='inventory_correction'?['document_id','new_quantity','basis_note']:kind==='inventory_opening'?['warehouse_id','model_id','t0','on_hand','basis_note']:(kind==='reservation_cancel'||kind==='reservation_pickup'?['reservation_id','quantity','occurred','basis_note']:['warehouse_id','model_id',kind==='inventory_adjustment'?'on_hand':'quantity','occurred','basis_note']);
     if(kind==='reservation_create')required.push('customer_id','basis_kind');
+    if(['inventory_inbound','inventory_outbound'].includes(kind))required=required.filter(key=>key!=='basis_note');
     const missing=required.filter(key=>p[key]===null||p[key]===undefined||p[key]==='');
     if(p.occurred){const field=p.occurred.precision==='date'?'date':'at';if(!p.occurred[field])missing.push('occurred.'+field);}
     for(const field of ['quantity','on_hand','new_quantity'])if(p[field]!=null&&!integer(p[field],field==='quantity'?1:0))fail(422,'数量必须是合法整数');
-    if(p.basis_note&&!p.basis_note.trim())missing.push('basis_note');
+    if(!['inventory_inbound','inventory_outbound'].includes(kind)&&p.basis_note&&!p.basis_note.trim())missing.push('basis_note');
     if(missing.length)return {missing,preview:null,versions:{}};
     const {w,m,r,original}=targets(p),before=balance(w,m),account=db.accounts[accountKey(w,m)];
     if(!before.warehouse.enabled||!before.model.enabled)fail(422,'请选择启用的库房和型号');

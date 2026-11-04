@@ -1,0 +1,86 @@
+[
+  {
+    "file": "candidate-picker-390.jpg",
+    "format": "JPEG",
+    "bytes": 35475,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "home-320.jpg",
+    "format": "JPEG",
+    "bytes": 30516,
+    "width": 305,
+    "height": 705
+  },
+  {
+    "file": "home-390.jpg",
+    "format": "JPEG",
+    "bytes": 33954,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "inventory-fallback-390.jpg",
+    "format": "JPEG",
+    "bytes": 30340,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "pending-390.jpg",
+    "format": "JPEG",
+    "bytes": 40824,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "query-320.jpg",
+    "format": "JPEG",
+    "bytes": 24809,
+    "width": 305,
+    "height": 705
+  },
+  {
+    "file": "query-desktop.jpg",
+    "format": "JPEG",
+    "bytes": 74239,
+    "width": 1425,
+    "height": 990
+  },
+  {
+    "file": "task-confirm-320.jpg",
+    "format": "JPEG",
+    "bytes": 28594,
+    "width": 305,
+    "height": 705
+  },
+  {
+    "file": "task-confirm-390.jpg",
+    "format": "JPEG",
+    "bytes": 32615,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "task-unconfigured-390.jpg",
+    "format": "JPEG",
+    "bytes": 34376,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "file": "live-home-desktop.jpg",
+    "format": "JPEG",
+    "bytes": 65622,
+    "width": 755,
+    "height": 938
+  },
+  {
+    "file": "live-followup-desktop.jpg",
+    "format": "JPEG",
+    "bytes": 65780,
+    "width": 755,
+    "height": 938
+  }
+]

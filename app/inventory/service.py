@@ -39,9 +39,9 @@ def balance_result(db, warehouse, model, account):
     return result
 
 
-def stock_event_context(db, params, *, locking=False, expected_versions=None):
+def stock_event_context(db, params, *, locking=False, expected_versions=None, basis_required=True):
     missing = [key for key in ['warehouse_id', 'model_id', 'quantity', 'occurred'] if params[key] is None]
-    if not params['basis_note'].strip():
+    if basis_required and not params['basis_note'].strip():
         missing.append('basis_note')
     if params['occurred']:
         field = 'date' if params['occurred']['precision'] == 'date' else 'at'

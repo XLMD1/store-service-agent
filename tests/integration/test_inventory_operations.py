@@ -24,6 +24,25 @@ def inbound(client, params):
     return response.json()
 
 
+@pytest.mark.parametrize('note',['', '   '])
+def test_inbound_note_is_optional_but_receipt_and_idempotency_remain(opened,note):
+    client,params=opened
+    item=inbound(client,{**params,'basis_note':note})
+    assert item['preview']['after']['on_hand']==15
+    receipt=confirm(client,item)
+    assert receipt.status_code==200,receipt.text
+    assert confirm(client,item).json()==receipt.json()
+    assert balance(client,params)['on_hand']==15
+
+
+def test_optional_inbound_note_does_not_skip_t0_boundary(opened):
+    client,params=opened
+    item=inbound(client,{**params,'basis_note':'','occurred':{'precision':'date','date':'2026-10-01'}})
+    assert item['preview'] is None and 'occurred.t0_relation' in item['missing_fields']
+    assert 'basis_note' not in item['missing_fields']
+    assert balance(client,params)['on_hand']==10
+
+
 def test_inbound_updates_balance_once_and_other_session_reads_latest(application, opened):
     client, params = opened
     item = inbound(client, params)

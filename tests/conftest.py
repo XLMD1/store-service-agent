@@ -1,4 +1,5 @@
 import os
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -9,7 +10,7 @@ from sqlalchemy.engine import make_url
 
 
 @pytest.fixture(scope='session')
-def settings():
+def settings(tmp_path_factory):
     from app.config import Settings
     config_path = os.environ.get('M1_TEST_CONFIG')
     if not config_path:
@@ -18,7 +19,7 @@ def settings():
     url = make_url(config.database_url)
     if url.host != '127.0.0.1' or url.database != 'store_agent_m1_test':
         pytest.fail('Refusing destructive fixtures outside the dedicated loopback test database')
-    return config
+    return replace(config,deepseek_settings_file=str(tmp_path_factory.mktemp('provider')/'deepseek.json'))
 
 
 @pytest.fixture(scope='session')
@@ -37,7 +38,8 @@ def application(settings, migrated):
     with engine.begin() as connection:
         connection.execute(text('TRUNCATE login_throttles, account_audit, auth_sessions, user_roles, users, '
             'warehouses, product_models, customers, catalog_audit, drafts, operations, inventory_accounts, '
-            'inventory_reservations, inventory_documents, inventory_ledger CASCADE'))
+            'inventory_reservations, inventory_documents, inventory_ledger, agent_task_items, agent_tasks, '
+            'checkpoints, checkpoint_blobs, checkpoint_writes CASCADE'))
     app = create_app(settings)
     with app.state.sessions.begin() as db:
         initialize_owner(db, 'demo-owner', 'Sample-Owner-Password-123', confirmed=True)

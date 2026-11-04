@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-04",
+  "backend": {
+    "command": "M1_TEST_CONFIG=.local/test.json .venv/Scripts/python.exe -m pytest -q --tb=short",
+    "passed": 247,
+    "failed": 0,
+    "seconds": 199.86,
+    "database": "dedicated loopback PostgreSQL"
+  },
+  "frontend": {
+    "lint": "passed, zero errors or warnings",
+    "typecheck": "passed; strict interface declarations only",
+    "tests": 60,
+    "build_files": 20
+  },
+  "real_deepseek_tested": true,
+  "screenshots": "browser viewport only; not physical devices",
+  "original_review_migrated": false,
+  "committed_or_pushed": false,
+  "live_result": "../../../../evals/inventory-agent/live-results-2026-11-04.json",
+  "real_model_requests": 12,
+  "exact_cost_cny": null,
+  "quality_note": "public development samples with targeted rechecks; not a uniform post-fix full rerun or independent quality acceptance",
+  "closeout_result": "closeout.md",
+  "closeout_real_model_requests": 18,
+  "closeout_summary": "../../../../evals/inventory-agent/closeout-summary.json",
+  "user_final_review": "pending"
+}

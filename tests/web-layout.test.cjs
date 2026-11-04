@@ -8,7 +8,7 @@ test('电脑和手机切换只更新布局，不重建表单或发起请求，�
   const workspace={dataset:{}},desktop={setAttribute(){}},mobile={setAttribute(){}};
   const app={set innerHTML(value){markup=value;renders++;}};
   const context=vm.createContext({module:{exports:{}},location:{hash:'#inventory'},window:{scrollTo(){},matchMedia:()=>({matches:true})},
-    document:{querySelector:selector=>({'#app':app,'#workspace':workspace,'#view-desktop':desktop,'#view-mobile':mobile,'#logout':{}}[selector])},
+    document:{querySelector:selector=>({'#app':app,'#workspace':workspace,'#view-desktop':desktop,'#view-mobile':mobile,'#logout':{}}[selector]),querySelectorAll:()=>[]},
     fetch(){throw new Error('页面模式切换不应发起请求');}});
   vm.runInContext(fs.readFileSync(require.resolve('../app/web/app.js'),'utf8'),context);
   vm.runInContext(`state.user={username:'样例',permissions:['inventory.read']};shell('库存','','<form>正在填写的表单</form>');`,context);

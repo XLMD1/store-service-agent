@@ -160,7 +160,7 @@ def confirm_operation(db, user, operation_id, payload):
 
 def inbound_preview(db, params, *, locking=False, expected_versions=None):
     missing, account, warehouse, model, versions = stock_event_context(
-        db, params, locking=locking, expected_versions=expected_versions)
+        db, params, locking=locking, expected_versions=expected_versions, basis_required=False)
     if missing:
         return missing, None, versions
     if account.on_hand + params['quantity'] > 2147483647:
