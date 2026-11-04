@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-04",
+  "scope": "browser viewport; not physical devices",
+  "images": [
+    {
+      "file": "deepseek-settings-390.jpg",
+      "width": 375,
+      "height": 811,
+      "bytes": 35380,
+      "sha256": "a27850d9fe7d097f44bacafeea7d607765e3aad8589c490971aa2d429b54d5c5"
+    },
+    {
+      "file": "deepseek-settings-desktop.jpg",
+      "width": 1440,
+      "height": 1000,
+      "bytes": 76795,
+      "sha256": "cdeb2759fed3e1fe67df8e79a6748ebe85c43f87485d3545c5d04bef49c5cd2f"
+    },
+    {
+      "file": "home-calendar-320.jpg",
+      "width": 305,
+      "height": 724,
+      "bytes": 22939,
+      "sha256": "72ec5f19d71ab6002bc8461905af7c6f04da5df8d3bdb137258afbdc2ea9a831"
+    },
+    {
+      "file": "home-calendar-390.jpg",
+      "width": 375,
+      "height": 811,
+      "bytes": 29216,
+      "sha256": "253300fb797ced0e84f2ab7a2ef1076dc15e2832eec845b43bf40dff551a4ea1"
+    },
+    {
+      "file": "home-calendar-desktop.jpg",
+      "width": 1425,
+      "height": 990,
+      "bytes": 87626,
+      "sha256": "4430f44b5229af44f69c151cdadb1abf70667e1f76e0c25b63d6de98cff82bf3"
+    },
+    {
+      "file": "inbound-optional-390.jpg",
+      "width": 375,
+      "height": 811,
+      "bytes": 32005,
+      "sha256": "e4b7db2d71b6d79feb12541f6639d8336bdfef950b0bb44fc09d8f93b7873fac"
+    },
+    {
+      "file": "pending-active-only-desktop.jpg",
+      "width": 1425,
+      "height": 990,
+      "bytes": 75812,
+      "sha256": "99a4870bc631ac557a63999f92df94aa005d860bfceb0c9304e5d710bf98884d"
+    }
+  ]
+}

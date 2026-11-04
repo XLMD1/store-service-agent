@@ -1,6 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-const icon = name => `<svg class="icon" aria-hidden="true"><use href="../ui-sample/assets/icons.svg#${name}"></use></svg>`;
+const icon = name => `<svg class="icon" aria-hidden="true"><use href="../../app/web/assets/icons.svg#${name}"></use></svg>`;
 const routes = {
   home: ['工作台', 'home'], pending: ['待核对', 'file'],
   'service-search': ['售后档案', 'wrench'], inventory: ['库存', 'box'],

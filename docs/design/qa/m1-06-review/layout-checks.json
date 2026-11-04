@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-04",
+  "screenshots": "browser viewport, not physical devices",
+  "checks": [
+    {
+      "clientWidth": 1425,
+      "page": "home",
+      "scrollWidth": 1425,
+      "selected": "2026-11-04",
+      "viewport": 1440,
+      "visibleTasks": 7
+    },
+    {
+      "clientWidth": 1440,
+      "confirmationRequired": true,
+      "page": "deepseek-settings",
+      "passwordType": "password",
+      "scrollWidth": 1440,
+      "viewport": 1440
+    },
+    {
+      "clientWidth": 375,
+      "page": "deepseek-settings",
+      "scrollWidth": 375,
+      "viewport": 390
+    },
+    {
+      "clientWidth": 305,
+      "page": "deepseek-settings",
+      "scrollWidth": 305,
+      "viewport": 320
+    },
+    {
+      "clientWidth": 305,
+      "minDayWidth": 30.73750114440918,
+      "page": "home",
+      "scrollWidth": 523,
+      "viewport": 320,
+      "phase": "before-fix"
+    },
+    {
+      "clientWidth": 305,
+      "minDayWidth": 30.73750114440918,
+      "page": "home",
+      "phase": "after-fix",
+      "scrollWidth": 305,
+      "viewport": 320
+    },
+    {
+      "clientWidth": 375,
+      "minDayWidth": 40.79999923706055,
+      "page": "home",
+      "phase": "after-fix",
+      "scrollWidth": 375,
+      "viewport": 390
+    },
+    {
+      "clientWidth": 1425,
+      "completedTaskRows": 0,
+      "page": "pending",
+      "scrollWidth": 1425,
+      "taskLinks": 1,
+      "viewport": 1440
+    },
+    {
+      "clientWidth": 375,
+      "noteRequired": false,
+      "page": "inbound",
+      "scrollWidth": 375,
+      "viewport": 390
+    },
+    {
+      "clientWidth": 305,
+      "page": "inbound",
+      "scrollWidth": 305,
+      "viewport": 320
+    },
+    {
+      "clientWidth": 305,
+      "page": "pending",
+      "scrollWidth": 305,
+      "viewport": 320
+    },
+    {
+      "clientWidth": 375,
+      "page": "pending",
+      "scrollWidth": 375,
+      "viewport": 390
+    },
+    {
+      "clientWidth": 1425,
+      "page": "home",
+      "phase": "final",
+      "scrollWidth": 1425,
+      "viewport": 1440
+    }
+  ]
+}

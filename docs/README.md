@@ -12,16 +12,21 @@
 
 当前交付状态以开发计划的“状态与阶段完成记录”为准。已交付的[前端样板](../prototypes/frontend/README.md)有手机与电脑布局；样板不代表正式业务模块完成。
 
+当前文件导航见[项目首页](../README.md)，最近整理与数据清空见[维护记录](maintenance/2026-11-04-cleanup.md)。
+
 ## 按任务补充阅读
 
 | 任务 | 文档 |
 | --- | --- |
 | 代码、测试与交付 | [开发规范](guides/development.md) |
 | 后端启动、身份接口与本机测试 | [后端开发说明](guides/backend-development.md)；验收状态仍以开发计划为准 |
+| 库存Agent、DeepSeek配置与任务恢复 | [M1-06运行与接口](guides/inventory-agent.md)；模型实测与本机测试替身分别记录 |
 | M0构造样例与验收任务 | [样例数据入口](../evals/README.md)；实际缺口与进度仍在开发计划维护 |
 | 提交、推送、PR格式 | [Git规范](guides/git.md) |
 | 页面设计或实现 | [设计规范AI版](design/design-resources.md)及[HTML可视化版](design/design-resources.html)：页面、素材、交互与视觉规则的统一入口 |
-| 检查当前前端样板的验证范围 | [核心前端核对记录](design/qa/frontend-c/README.md)与[概念图/实现比对](design/qa/frontend-c/comparison.html) |
+| 查看当前保留截图或精简历史过程图 | [关键截图入口](design/qa/README.md)与[截图清单](design/qa/screenshot-index.json)；历史目录README保留当时核对范围 |
+| 检查当前mock前端的验证范围 | [全量mock核对记录](design/qa/frontend-mock/README.md)与[关键截图入口](design/qa/README.md) |
+| 追查早期核心前端样板 | [历史核对记录](design/qa/frontend-c/README.md)与[概念图/实现核对文字](design/qa/frontend-c/comparison.html)，过程截图已精简 |
 | 追查原工作台样板的视觉修正 | [原工作台核对记录](design/qa/ui-sample-c/README.md)，仅作为对应历史版本的证据 |
 | 重新生成或追查图片素材 | [生成提示词与局部修正记录](design/mobile-pages-c-prompts-v1.md)、[通用素材说明](../prototypes/ui-sample/assets/README.md) |
 

@@ -12,6 +12,7 @@ class Settings:
     database_url: str = field(repr=False)
     origin: str
     cookie_secure: bool = True
+    deepseek_settings_file: str = '.local/deepseek-settings.json'
 
     def __post_init__(self):
         if make_url(self.database_url).drivername != 'postgresql+psycopg':

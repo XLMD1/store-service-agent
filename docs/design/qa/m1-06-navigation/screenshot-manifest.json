@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-04",
+  "scope": "browser viewport; not physical devices",
+  "images": [
+    {
+      "file": "outbound-optional-390.jpg",
+      "width": 375,
+      "height": 811,
+      "bytes": 30661,
+      "sha256": "3d1116b55baa58385e69b7a388f2192ddc802b46bb905f67ad466529e2820362"
+    },
+    {
+      "file": "sidebar-compact.jpg",
+      "width": 705,
+      "height": 881,
+      "bytes": 52826,
+      "sha256": "b1cb1dac739a28cbfd0c792631887d00b0ab45c75a5901fff92c7f22bd17e707"
+    },
+    {
+      "file": "sidebar-desktop.jpg",
+      "width": 1425,
+      "height": 990,
+      "bytes": 82347,
+      "sha256": "2b3e7da5a7017b8455891e37a4826df0b6544d1bfea5fc6e6bb559c10b27a261"
+    },
+    {
+      "file": "sidebar-settings-expanded.jpg",
+      "width": 800,
+      "height": 1000,
+      "bytes": 58316,
+      "sha256": "1403ee88ff6671bfca531ce2ead3c4e787525488df1ed845a37e305361a69dd6"
+    }
+  ]
+}

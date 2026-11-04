@@ -19,7 +19,7 @@
 
 空白型号不请求；all不是后端UUID；切换库房不显示旧结果；输入变化不能继续使用旧ID；页面模式不触发表单丢失；侧栏不能显示无权限办理入口；320px无溢出，键盘可关闭选择区。
 
-源图：[C库存](../design/assets/mobile-c/05-inventory.png)；布局：[电脑样板](../design/qa/frontend-c/home-desktop.jpg)，[完整HTML](../../prototypes/frontend/index.html)。沿用原维护源，不修改历史样板。
+源图：[C库存](../design/assets/mobile-c/05-inventory.png)；布局：电脑样板（过程截图已精简），[完整HTML](../../prototypes/frontend/index.html)。沿用原维护源，不修改历史样板。
 
 ## 实施结果
 

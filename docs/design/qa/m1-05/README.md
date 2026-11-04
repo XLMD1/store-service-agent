@@ -16,10 +16,10 @@
 
 | 页面编号 | 本轮截图 | 已验证 |
 | --- | --- | --- |
-| m1-statistics | [统计初始](statistics-before-390.jpg)、[电脑](statistics-desktop.jpg)、[320px结果](statistics-result-320.jpg) | 明确查询、有效进货4及T0/未知覆盖说明，手机无横向溢出 |
+| m1-statistics | 统计初始（过程截图已精简）、[电脑](statistics-desktop.jpg)、[320px结果](statistics-result-320.jpg) | 明确查询、有效进货4及T0/未知覆盖说明，手机无横向溢出 |
 | m1-correction | [预览](correction-preview-390.jpg)、[回执](correction-receipt-390.jpg) | 指定原单5→4，后端前后量及实际回执 |
-| m1-adjustment | [预览](adjustment-preview-390.jpg)、[回执](adjustment-receipt-390.jpg) | 独立虚构样例实物目标13，预留3不变 |
-| m1-reconciliation | [390px](reconciliation-final-390.jpg)、[电脑](reconciliation-desktop.jpg) | 余额、流水、预留合计与有效原单重建一致；未建账不当作0 |
+| m1-adjustment | 预览（过程截图已精简）、[回执](adjustment-receipt-390.jpg) | 独立虚构样例实物目标13，预留3不变 |
+| m1-reconciliation | 390px（过程截图已精简）、[电脑](reconciliation-desktop.jpg) | 余额、流水、预留合计与有效原单重建一致；未建账不当作0 |
 
 [布局证据](layout-evidence.json)记录320px手机实际DOM宽度；截图保留工具原像素。库存导航、流水更正关联及待核对新kind已接入；未对全部历史业务页重做完整浏览器验收。
 
@@ -31,3 +31,6 @@
 
 
 2026-11-03 Git交付补充：用户已明确审核完毕并授权提交、推送codex/m1-05；上文未提交/推送描述保留为实现核对时点的历史记录。本次重新运行前端lint、接口类型声明检查、55项前端测试及构建；后端文件哈希与此前验证版本一致，未重跑数据库测试或迁移。实际提交/推送结果以Git历史和远端回执为准，不代表生产验收。
+
+
+2026-11-04截图精简：已移除的过程图在原位置明确标记；文字、布局记录和测试结果仍是历史证据，不代表当前环境。

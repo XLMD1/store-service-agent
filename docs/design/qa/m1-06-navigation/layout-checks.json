@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-04",
+  "checks": [
+    {
+      "clientWidth": 1425,
+      "groups": [
+        {
+          "height": 284,
+          "id": "daily",
+          "open": true
+        },
+        {
+          "height": 212.8000030517578,
+          "id": "reports",
+          "open": true
+        },
+        {
+          "height": 44.79999923706055,
+          "id": "setup",
+          "open": false
+        }
+      ],
+      "navDisplay": "block",
+      "page": "home",
+      "scrollWidth": 1425,
+      "viewport": 1440
+    },
+    {
+      "activeBottom": 996.7999877929688,
+      "clientWidth": 705,
+      "navBottom": 879.9999923706055,
+      "navHeight": 786,
+      "navScrollHeight": 914,
+      "page": "deepseek-settings",
+      "scrollWidth": 705,
+      "viewport": 720,
+      "phase": "before-fix"
+    },
+    {
+      "activeBottom": 880,
+      "clientWidth": 705,
+      "navBottom": 879.9999923706055,
+      "page": "deepseek-settings",
+      "phase": "after-fix",
+      "scrollWidth": 705,
+      "viewport": 720
+    },
+    {
+      "activeBottom": 880,
+      "clientWidth": 705,
+      "navBottom": 879.9999923706055,
+      "navOverflowX": "hidden",
+      "page": "deepseek-settings",
+      "phase": "final",
+      "scrollWidth": 705,
+      "viewport": 720
+    },
+    {
+      "clientWidth": 375,
+      "noteRequired": false,
+      "page": "movement",
+      "scrollWidth": 375,
+      "viewport": 390
+    },
+    {
+      "clientWidth": 305,
+      "noteRequired": false,
+      "page": "movement",
+      "scrollWidth": 305,
+      "viewport": 320
+    }
+  ],
+  "notes": [
+    "First item withdrawn; pending date logic unchanged",
+    "No business or credential submission",
+    "Initial compact active link outside nav recorded before fix"
+  ]
+}

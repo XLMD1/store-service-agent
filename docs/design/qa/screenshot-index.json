@@ -1,0 +1,895 @@
+{
+  "date": "2026-11-04",
+  "scope": "docs/design/qa/*.jpg recursively",
+  "before": 165,
+  "retained_count": 72,
+  "removed_count": 104,
+  "removed_bytes": 4697717,
+  "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
+  "retained": [
+    {
+      "path": "docs/design/qa/frontend-mock/adjustment-390.jpg",
+      "bytes": 31383,
+      "sha256": "e49ce382b43ee0dfc02fb8d7c1e5f610cfb8a525b05f10c9b0b2b1935e8d40c3"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/cancel-390.jpg",
+      "bytes": 35956,
+      "sha256": "72a1779d71352bdc0c996c1c33fc0f01aec650bbcb673d08566ea4c38db51479"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/catalog-390.jpg",
+      "bytes": 32444,
+      "sha256": "008b7dd864f7615f6446c3680348480d9740b884a35f6f241ff232e0dedc84df"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/correction-390.jpg",
+      "bytes": 33655,
+      "sha256": "f7e7b96e7768de969142d282f2a6897e0ae268d6ae6f0bf9f98f035709d8992f"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/customers-390.jpg",
+      "bytes": 30614,
+      "sha256": "cd951217ed73423a75c28c1c06a3b4810ea400987891be5ce3a55f81bc800d68"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/error-recovery.jpg",
+      "bytes": 51840,
+      "sha256": "7ae552491427b54f7235c0caba6abaa65f7fab9b5582ad8eff468102f69244d1"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/home-390.jpg",
+      "bytes": 33929,
+      "sha256": "11df62be3b5ab429804e282af80f51741913b5af6fc5ae2d9e120361b854cac4"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/home-desktop.jpg",
+      "bytes": 91718,
+      "sha256": "e41370f725b0fd119390e6ddff44e0314a1bdc5d1cae2ce50b4cf3c53bd2792f"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inbound-390.jpg",
+      "bytes": 29959,
+      "sha256": "ed75ed180ba8a8913c4e8ddc9cf3e849407add40a13a10a96859a7de41845adc"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inbound-picker-390.jpg",
+      "bytes": 31666,
+      "sha256": "fdcb2f3a7287eb8eba671d9349adbd4ce28b14c5fc2c8b22c8f24e4e290cdf8c"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inbound-receipt-desktop.jpg",
+      "bytes": 99358,
+      "sha256": "07102dc44fffcc394ffe40224c053f6a4752593bd91d59b24c0f45d1e552590f"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inventory-390.jpg",
+      "bytes": 32816,
+      "sha256": "472dd09d5dcadf99452b7646d407fca5707778d816a47f19e203a6224a26cfde"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/ledger-390.jpg",
+      "bytes": 31590,
+      "sha256": "03ad9fe19bf0749f72738be2bd22d26bf7eb39f1fd7cf0838b616d5edf88f9d7"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/login-320.jpg",
+      "bytes": 20530,
+      "sha256": "ed45efba0d63ff1c3ab55bc5ff2af78bd4a6687099400d21ac17b2080725777f"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/opening-390.jpg",
+      "bytes": 33542,
+      "sha256": "bc4f81b139e876ca81dfde34a284e0e41e4400557d3c49ae117f723458803585"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/outbound-390.jpg",
+      "bytes": 29644,
+      "sha256": "903e2993a9da710496e3e9e384aceedb886c478d55eee3f2de099907db3adecd"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/pending-390.jpg",
+      "bytes": 33044,
+      "sha256": "9dabcacf961c959f65156f38a3232994d5f502bc06c7ba22fd381921d2420227"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/pickup-390.jpg",
+      "bytes": 35452,
+      "sha256": "465bc0bab6f034d282de94ab50c3c1968be9c9a30909830a5a565f690d2f8017"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/reconciliation-390.jpg",
+      "bytes": 34801,
+      "sha256": "59282a9960d3d75c1adde06998d7cd2d27fb208424edc80ba4bf048b2de0c5fe"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/repair-assistant-390.jpg",
+      "bytes": 30737,
+      "sha256": "0c2bb433fa91d5e9c1ea21a2a6f1942e2d5c270f7b34b05f2dc2061ead1183d7"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/repair-result-390.jpg",
+      "bytes": 33587,
+      "sha256": "35c89224f323b703385eeea89959281c7263cecfcc0d2a24fcba07d93a30ba53"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/reservations-390.jpg",
+      "bytes": 31247,
+      "sha256": "e6560c59823202bd5227c5d1d8d4e3209f5978386a4fa5d3e8ba2ce477f54065"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/reserve-390.jpg",
+      "bytes": 30509,
+      "sha256": "2770935146d590ba44b3e35f1690034aaffdc39f8f242cb67e06e84e6435812f"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/service-detail-390.jpg",
+      "bytes": 36195,
+      "sha256": "565165b3fbff265ebbf79e0b6e3ca4cb75df6c739d16d12ab9ae0060e4ea8833"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/service-draft-390.jpg",
+      "bytes": 40033,
+      "sha256": "fc8a358108a5c55257444a4a042869afa5f4df5f9988c07c51bdd7582dd4bac7"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/service-preview-390.jpg",
+      "bytes": 41217,
+      "sha256": "47096be2a64f048e09b4a75336ddc2fea176f68ebceab42eae743db7d5ae4995"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/service-search-390.jpg",
+      "bytes": 32418,
+      "sha256": "93c609ba94ceab4ac7f52a8a098e0700441020aaeb6e13018457e9d8905be68c"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/settings-390.jpg",
+      "bytes": 33839,
+      "sha256": "7cb28b0fce361b19f9adafb5e6837b16bc331ddc038adce5b61c6129e5f7f588"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/source-dialog-390.jpg",
+      "bytes": 30112,
+      "sha256": "f029b70515248a43a82c56f3e3dbc1b97a86211eba2555d00f8772435e49e86c"
+    },
+    {
+      "path": "docs/design/qa/m1-02/opening-preview-390.jpg",
+      "bytes": 33161,
+      "sha256": "a3eeefd6558792e011e86596a2c6a9db17656df98057ad26306822e6e37904e6"
+    },
+    {
+      "path": "docs/design/qa/m1-02/opening-receipt-390.jpg",
+      "bytes": 36073,
+      "sha256": "d2a33a79765a136008df429f24afec620b6f7233b3c89904091de61c71621c37"
+    },
+    {
+      "path": "docs/design/qa/m1-03/inbound-receipt-390.jpg",
+      "bytes": 40680,
+      "sha256": "8e79c61a1728ea0777203b084635dd1d744e7185482f7fb75ef44176e5f40267"
+    },
+    {
+      "path": "docs/design/qa/m1-03/t0-pending-390.jpg",
+      "bytes": 36172,
+      "sha256": "e9750bed24170261cc076b7fd7d76e032cbf2330ef44684badc4fc4ac364f9ca"
+    },
+    {
+      "path": "docs/design/qa/m1-04/cancel-receipt-390.jpg",
+      "bytes": 42115,
+      "sha256": "72866702474f2849058a121cbb73ee036e4b2ad2bd2a33853030cb27d9791ac7"
+    },
+    {
+      "path": "docs/design/qa/m1-04/outbound-preview-320.jpg",
+      "bytes": 30656,
+      "sha256": "409ee9e272279cec2a8d0732e1de0b72e0b3c96de9a61b7ce77043cc995eec19"
+    },
+    {
+      "path": "docs/design/qa/m1-04/pickup-receipt-390.jpg",
+      "bytes": 42249,
+      "sha256": "b789927865cae78a67fface1f38bad90adf602ff4dfea9fdb343c4714b01c913"
+    },
+    {
+      "path": "docs/design/qa/m1-04/reserve-preview-390.jpg",
+      "bytes": 33910,
+      "sha256": "e14c86ebe1ca6cbae49694a35791d0228723ab640c337f2a529c676cf3918524"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/catalog-desktop.jpg",
+      "bytes": 80100,
+      "sha256": "6528662c4b8b322e929b540c0e60790625116e09ffe6c5dd7e1266a254d095ab"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/desktop-all-models.jpg",
+      "bytes": 79381,
+      "sha256": "369705c5996f7bec86dc4c8b70f991a8cfd24ab27afdc73cb4ec2fb42c5d71e4"
+    },
+    {
+      "path": "docs/design/qa/m1-04-model-picker/model-open-390.jpg",
+      "bytes": 28520,
+      "sha256": "8fb931da44f9666c147866cd1d1b92e919012eced0008776fc2c40c078d2f3d7"
+    },
+    {
+      "path": "docs/design/qa/m1-04-model-picker/model-open-desktop.jpg",
+      "bytes": 79312,
+      "sha256": "32fa3bd9119d4649d5eeeab3948eb2b16d966953f6e9e7881816464996421e30"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/uninitialized-390.jpg",
+      "bytes": 38634,
+      "sha256": "0e4f108376801976af08dc43b5b55204c9c258e1e0405d3d0ae1ac2938f42995"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/zero-stock-390.jpg",
+      "bytes": 30610,
+      "sha256": "eec28d6661f10da47b2b3d777d7a9ce6cc5f5332ed5f980c15af16e93a50743e"
+    },
+    {
+      "path": "docs/design/qa/m1-05/adjustment-receipt-390.jpg",
+      "bytes": 37575,
+      "sha256": "d13bd9fb1087decb6d59d589626a4b188e17c649c2183b93bf67c076e2cc7320"
+    },
+    {
+      "path": "docs/design/qa/m1-05/correction-preview-390.jpg",
+      "bytes": 44460,
+      "sha256": "84d08ea170e671effb02a632146af271a0571cbce539aa5949e73ad4e3338f3a"
+    },
+    {
+      "path": "docs/design/qa/m1-05/correction-receipt-390.jpg",
+      "bytes": 36382,
+      "sha256": "ce26a51d34350287b53aff07857e4d2568d7dd832432f069f0fc66930988c5e6"
+    },
+    {
+      "path": "docs/design/qa/m1-05/reconciliation-desktop.jpg",
+      "bytes": 82307,
+      "sha256": "98ee3ebcc7b7662b004162e484e5751313870fed6f794c9d0e9e0062636c9548"
+    },
+    {
+      "path": "docs/design/qa/m1-05/statistics-desktop.jpg",
+      "bytes": 78933,
+      "sha256": "e1341c07fad113e1aebb490c16b19e4d1afb444f11fb7411c2ae57a21f87c60a"
+    },
+    {
+      "path": "docs/design/qa/m1-05/statistics-result-320.jpg",
+      "bytes": 33964,
+      "sha256": "ecaf9301f7dfc668ee789556df37efbf182d3f42e95784d224facb4f353fe08e"
+    },
+    {
+      "path": "docs/design/qa/m1-06/candidate-picker-390.jpg",
+      "bytes": 35475,
+      "sha256": "19148776eb4d73ce5d07a62d1da8e1ced37eeb403c0c63b1627fd59db5c5646c"
+    },
+    {
+      "path": "docs/design/qa/m1-06/home-320.jpg",
+      "bytes": 30516,
+      "sha256": "3bec13d9d8c4f867c4ee079eaa00807afba22b57317888c08dccb4a497be916a"
+    },
+    {
+      "path": "docs/design/qa/m1-06/home-390.jpg",
+      "bytes": 33954,
+      "sha256": "066a6c0795c013a3170d49198bcb397889bd59b78730042c47559117e21f9360"
+    },
+    {
+      "path": "docs/design/qa/m1-06/inventory-fallback-390.jpg",
+      "bytes": 30340,
+      "sha256": "a96dc8a9e6014c72bfe29c3597a66a2f025125fb8fee4c6df01b1c9de47872d7"
+    },
+    {
+      "path": "docs/design/qa/m1-06/live-followup-desktop.jpg",
+      "bytes": 65780,
+      "sha256": "269b7aa060d336d66edda745dfe388037f78cd236471845a792f6ee5840672d2"
+    },
+    {
+      "path": "docs/design/qa/m1-06/live-home-desktop.jpg",
+      "bytes": 65622,
+      "sha256": "1e6a8ff40eb56c577e6cc1bef1ae713223c73ce54a9ca8fa5c72e81f44842659"
+    },
+    {
+      "path": "docs/design/qa/m1-06/pending-390.jpg",
+      "bytes": 40824,
+      "sha256": "0f133d4c74a8253f2ee55a2aa06339fb632adf29c1a5e305c4e489247923ff9d"
+    },
+    {
+      "path": "docs/design/qa/m1-06/query-320.jpg",
+      "bytes": 24809,
+      "sha256": "2a1d05226abb7dc25bd54d00fb613fabb8c0e74286f90069ddd7991bd0db0045"
+    },
+    {
+      "path": "docs/design/qa/m1-06/query-desktop.jpg",
+      "bytes": 74239,
+      "sha256": "5571ce4ef0c40ded22359c4329762b3508596c6d013a9bba00c9f642b9f2e264"
+    },
+    {
+      "path": "docs/design/qa/m1-06/task-confirm-320.jpg",
+      "bytes": 28594,
+      "sha256": "89f5c26e6e1b4738c4b5f301abbe3f7c74c28b7802ec97ba71fc7cff190b749f"
+    },
+    {
+      "path": "docs/design/qa/m1-06/task-confirm-390.jpg",
+      "bytes": 32615,
+      "sha256": "70657918efeaadb356446005d410aa921b94f0a31c87fb51e552b645fa886575"
+    },
+    {
+      "path": "docs/design/qa/m1-06/task-unconfigured-390.jpg",
+      "bytes": 34376,
+      "sha256": "f0a799af0cf0eeb1c2a4864073f0cce5e117990213c83e5e07e784e3bc2a7326"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/deepseek-settings-390.jpg",
+      "bytes": 35380,
+      "sha256": "a27850d9fe7d097f44bacafeea7d607765e3aad8589c490971aa2d429b54d5c5"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/deepseek-settings-desktop.jpg",
+      "bytes": 76795,
+      "sha256": "cdeb2759fed3e1fe67df8e79a6748ebe85c43f87485d3545c5d04bef49c5cd2f"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/home-calendar-320.jpg",
+      "bytes": 22939,
+      "sha256": "72ec5f19d71ab6002bc8461905af7c6f04da5df8d3bdb137258afbdc2ea9a831"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/home-calendar-390.jpg",
+      "bytes": 29216,
+      "sha256": "253300fb797ced0e84f2ab7a2ef1076dc15e2832eec845b43bf40dff551a4ea1"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/home-calendar-desktop.jpg",
+      "bytes": 87626,
+      "sha256": "4430f44b5229af44f69c151cdadb1abf70667e1f76e0c25b63d6de98cff82bf3"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/inbound-optional-390.jpg",
+      "bytes": 32005,
+      "sha256": "e4b7db2d71b6d79feb12541f6639d8336bdfef950b0bb44fc09d8f93b7873fac"
+    },
+    {
+      "path": "docs/design/qa/m1-06-review/pending-active-only-desktop.jpg",
+      "bytes": 75812,
+      "sha256": "99a4870bc631ac557a63999f92df94aa005d860bfceb0c9304e5d710bf98884d"
+    },
+    {
+      "path": "docs/design/qa/m1-06-navigation/outbound-optional-390.jpg",
+      "bytes": 30661,
+      "sha256": "3d1116b55baa58385e69b7a388f2192ddc802b46bb905f67ad466529e2820362"
+    },
+    {
+      "path": "docs/design/qa/m1-06-navigation/sidebar-compact.jpg",
+      "bytes": 52826,
+      "sha256": "b1cb1dac739a28cbfd0c792631887d00b0ab45c75a5901fff92c7f22bd17e707"
+    },
+    {
+      "path": "docs/design/qa/m1-06-navigation/sidebar-desktop.jpg",
+      "bytes": 82347,
+      "sha256": "2b3e7da5a7017b8455891e37a4826df0b6544d1bfea5fc6e6bb559c10b27a261"
+    },
+    {
+      "path": "docs/design/qa/m1-06-navigation/sidebar-settings-expanded.jpg",
+      "bytes": 58316,
+      "sha256": "1403ee88ff6671bfca531ce2ead3c4e787525488df1ed845a37e305361a69dd6"
+    }
+  ],
+  "removed": [
+    {
+      "path": "docs/design/qa/frontend-c/home-320.jpg",
+      "bytes": 34967,
+      "sha256": "fc12276a0fb94715b60265f1fb281d4fc9ed2634605f5a368d883eeb3f04b3e5"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/home-390.jpg",
+      "bytes": 33934,
+      "sha256": "de884e3aa4be2e7962a07e0a4a659c4029c88f16fe3b3a116b326ee9c4c2e453"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/home-desktop.jpg",
+      "bytes": 96840,
+      "sha256": "9c649c72ebd6bb222f7b65691d2a1a9d903fe62845199f20f9d2d8d49cb12c3b"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/inbound-statistics-320.jpg",
+      "bytes": 29965,
+      "sha256": "b38d33d4b0e7041b87c2751b83a233d24e07bc5856a8da2a702f485a1d6a7f8d"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/inbound-statistics-390.jpg",
+      "bytes": 32064,
+      "sha256": "b33c563c70aa65f8a74af652a9c9dc0d30ad267028124be59d193236e8935654"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/inventory-390.jpg",
+      "bytes": 33310,
+      "sha256": "33621ea91302885d714ccf455dc5982580e24c48aab453e96a99eb5ada1da704"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/pending-390.jpg",
+      "bytes": 30424,
+      "sha256": "0940ea370a16dfc9730ee3e18764bbd2a7012b89d8666606203963ff46f00682"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/pickup-conflict-390.jpg",
+      "bytes": 33914,
+      "sha256": "c1514c543aad2a25852bf7210397221411ee5679fca506796ac9b2eeb37ad93a"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/pickup-impact-390.jpg",
+      "bytes": 30634,
+      "sha256": "5a8ab4f7963a23b1b8ea49d95d8c3ed3db6e66ab49e7781649f0f0cb12645d5b"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/pickup-pending-390.jpg",
+      "bytes": 23952,
+      "sha256": "f47f01915207b3165c5d8bbbe74aef996010608acc47c7f5edb91711c904637b"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/repair-assistant-390.jpg",
+      "bytes": 29263,
+      "sha256": "2b0d4fa92f9aaad5620e6b4efd244fc245a3ed701a0bab931477fcf5288e08bc"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/reserved-pickup-390.jpg",
+      "bytes": 30770,
+      "sha256": "f5bb88d827b70dae18715177bd2c3cdd1908acdb25fafd341dcb9163177a71fd"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/service-detail-390.jpg",
+      "bytes": 33663,
+      "sha256": "46438e77173aebd21bd374c01e6e4e48572e0fba53bfdaff6b51ac7b4b4fa7ab"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/service-draft-390.jpg",
+      "bytes": 38081,
+      "sha256": "fa16e39cf26fed7b5f8bf6718dbc8bdceb3456a5bef30964b5ba6579bbc64a9d"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/service-draft-desktop.jpg",
+      "bytes": 91550,
+      "sha256": "16e6c0045c04c515344b47e8220b1539daa67990d00aa8ced99f7fb102d92c28"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/service-search-390.jpg",
+      "bytes": 34682,
+      "sha256": "afa57db6fda8242642c1831b184a1c11bfd609bac9705a7d6ec142c6cd0846ec"
+    },
+    {
+      "path": "docs/design/qa/frontend-c/statistics-detail-390.jpg",
+      "bytes": 26413,
+      "sha256": "e44b73e07b9805a7d47b284dedb99cf58427c0ec94534bbcdb6634321208d20e"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/home-review-default.jpg",
+      "bytes": 71767,
+      "sha256": "e7836ffe3386caec6bfef7aaed0579b1c686d0131b386579b5500464d0a5ad73"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inbound-picker-320.jpg",
+      "bytes": 27849,
+      "sha256": "1cf000ca188b205428b7fa50c0c015b2b02587139e97186153b05447e7dcece3"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/inbound-picker-desktop.jpg",
+      "bytes": 92513,
+      "sha256": "70756ea0414cec66283b8cc372a763487b81fd755c271b2db6dc2f1a66d64942"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/manual-dialog-390.jpg",
+      "bytes": 31342,
+      "sha256": "8861de50caf4e623ba7e7b7eacd8c62fc75dbb41c31361ed64e5f4075a3c4c24"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/reservations-result-390.jpg",
+      "bytes": 35034,
+      "sha256": "3fedd6c3c7e25f578354e10e2a6a52285b55ffe5a51ddde4c5a7797afded5136"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/service-picker-390.jpg",
+      "bytes": 41794,
+      "sha256": "987e201484d3ce024d18b27afae5129994dcd0c483573d431b1b5a8a80e8fbae"
+    },
+    {
+      "path": "docs/design/qa/frontend-mock/statistics-390.jpg",
+      "bytes": 33074,
+      "sha256": "c52a4db787be81937b1d9bf515c856d5b2a44b1e04a5e84141eb99cb74cbc94f"
+    },
+    {
+      "path": "docs/design/qa/m1-02/catalog-desktop.jpg",
+      "bytes": 70115,
+      "sha256": "12c36e24f707306788ee14fe79920f52650432be33606e830610a9a7d642bd49"
+    },
+    {
+      "path": "docs/design/qa/m1-02/inventory-320.jpg",
+      "bytes": 30689,
+      "sha256": "0441c9832cfc5a3afbce1d84e159bc819fd3ef22e2fb49046b664a53dc109d79"
+    },
+    {
+      "path": "docs/design/qa/m1-02/inventory-390.jpg",
+      "bytes": 35557,
+      "sha256": "cd1872bba736ea4154ebc90f142de24fc395f2b13841d1a0d6050989a3802876"
+    },
+    {
+      "path": "docs/design/qa/m1-02/login-390.jpg",
+      "bytes": 19939,
+      "sha256": "381b7e61ab37877f9a7eada2906ee731d686bc349b5111966fd1d1531dd3980d"
+    },
+    {
+      "path": "docs/design/qa/m1-02/opening-desktop.jpg",
+      "bytes": 84086,
+      "sha256": "3eecbaca47fe03645ae9e5dd4dc7498690c8f3c607938f5fe956c592f88846c1"
+    },
+    {
+      "path": "docs/design/qa/m1-02/uninitialized-desktop.jpg",
+      "bytes": 59080,
+      "sha256": "963bb34d9670806eda6735ba825e1f841fcf091605d6b449e9b05f377d58b836"
+    },
+    {
+      "path": "docs/design/qa/m1-03/inbound-desktop.jpg",
+      "bytes": 75839,
+      "sha256": "37836d8902ccc7bea64fcb4bd20f724fe7030c61a204b683d5167778d50b6ebe"
+    },
+    {
+      "path": "docs/design/qa/m1-03/inbound-preview-390.jpg",
+      "bytes": 34856,
+      "sha256": "706cf630d1a0b8658eea03eb3af7fba1e0440ac97ef4f43bba2c0e9f5ead0562"
+    },
+    {
+      "path": "docs/design/qa/m1-03/inventory-320.jpg",
+      "bytes": 28154,
+      "sha256": "5d796c549a6b75a1da3b38ecc2fcaa93824e271992bbcf378bf56a2f22944009"
+    },
+    {
+      "path": "docs/design/qa/m1-03/inventory-390.jpg",
+      "bytes": 36269,
+      "sha256": "7b1de161aae26a352e5561ef724f1750467c2f3f7b9526c8ca66794ff9fba517"
+    },
+    {
+      "path": "docs/design/qa/m1-03/pending-390.jpg",
+      "bytes": 23144,
+      "sha256": "95dc7bb6bc01b6a517b704a0fd741cf6ec3ae01b078dc69d67ddde08fc755984"
+    },
+    {
+      "path": "docs/design/qa/m1-04/customers-390.jpg",
+      "bytes": 31738,
+      "sha256": "ea02c19f7d8e1df1899b54bf514a007a6573059e3ee18077326348cd0da00382"
+    },
+    {
+      "path": "docs/design/qa/m1-04/inventory-320.jpg",
+      "bytes": 30716,
+      "sha256": "9b66dafd51d3c5ed0825534e5a58097259666ff81a5017326d1d0dbbdaace652"
+    },
+    {
+      "path": "docs/design/qa/m1-04/inventory-390.jpg",
+      "bytes": 41442,
+      "sha256": "284d8654528f44adc367155e790885b738ebefd8756602af11b89a7ee50aff32"
+    },
+    {
+      "path": "docs/design/qa/m1-04/ledger-320.jpg",
+      "bytes": 26307,
+      "sha256": "954590bdb7901869cfb3ca8dd704bd91d2f4d1f90f514d001cc8ce2f57a80218"
+    },
+    {
+      "path": "docs/design/qa/m1-04/ledger-390.jpg",
+      "bytes": 37818,
+      "sha256": "fb8f7c8f749b3f078d4b5348803309c29110d59cb10d92ac573e6e51811fac4a"
+    },
+    {
+      "path": "docs/design/qa/m1-04/pending-390.jpg",
+      "bytes": 30641,
+      "sha256": "83c8db5b47dab904bf1e77f6502eb7825bd77ec349f57d0d6cca51b2cfafa275"
+    },
+    {
+      "path": "docs/design/qa/m1-04/pickup-preview-390.jpg",
+      "bytes": 38118,
+      "sha256": "c1f95b0d9e1fe4f38e90a378c051ee157556a0cabf05fcbe698d928b270a6960"
+    },
+    {
+      "path": "docs/design/qa/m1-04/reservations-390.jpg",
+      "bytes": 32054,
+      "sha256": "95c9105538fd023a737ca6a939b50ed9bc84ae0dc2fdaf7b693e7b5f6ec5cbe2"
+    },
+    {
+      "path": "docs/design/qa/m1-04/reserve-desktop.jpg",
+      "bytes": 91357,
+      "sha256": "ef21d420eb06fee2aae8a61895adb6680dabf9db49f80dfac60c77fd70d12113"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/catalog-390.jpg",
+      "bytes": 31763,
+      "sha256": "c99cd8009c2cf80aa42fc6cb97dddeea465d23238b260ef501b376647da9d4c7"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/catalog-desktop.jpg",
+      "bytes": 73306,
+      "sha256": "de933ed7bccdc1bb98447542733ebf62c154a2a4688dc5cefc87e784667788e3"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/customers-390.jpg",
+      "bytes": 31427,
+      "sha256": "4ae598f959ee3821986678804657826afa36db3d420ebe507b7932d670d49a1f"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-desktop.jpg",
+      "bytes": 68124,
+      "sha256": "3a96fb683378c311ffd7bf9676393e8afa9f545b33796bc4777df946b1a65779"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-items-320.jpg",
+      "bytes": 28385,
+      "sha256": "85007809e8de0a29d5ed9499c944a13db5ca83c70b794442fc20edd7713a1897"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-items-390.jpg",
+      "bytes": 30826,
+      "sha256": "0aa9b460766cd2600a9529a3c60346b61fb89de17133f3124f5a44e516ec2873"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-query-390.jpg",
+      "bytes": 32157,
+      "sha256": "eae18f6c6d20e345c5c4ecc5363c1ff37d31ac812b571a03a466e9f3866605f2"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-total-390.jpg",
+      "bytes": 33389,
+      "sha256": "dcb40d5a9e7d4ad67da55e1d92715b123a7f26cf044d4f09974250f463ea56de"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/inventory-unknown-390.jpg",
+      "bytes": 39577,
+      "sha256": "9e00c5a830e51dd2cab5aabd82a0404ad2a1556fac2798c20bf479561af0cec3"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/keyboard-focus-390.jpg",
+      "bytes": 32977,
+      "sha256": "d580c5cf53de4edf948dce427ca75bb34a43315beef555c769e81b4526735968"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/opening-390.jpg",
+      "bytes": 34482,
+      "sha256": "f2b2c43a209e2705f8f95601bcfe57773c54cf22ec288117027270d7068884b6"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/reservations-390.jpg",
+      "bytes": 32831,
+      "sha256": "2c9343e5435ef6df3f6227320d49c62f6dbb25155189be30cec052de3d347333"
+    },
+    {
+      "path": "docs/design/qa/m1-04-design-check/reserve-390.jpg",
+      "bytes": 28871,
+      "sha256": "5366f98686f82dba888d25f01eaa9f90720a9827d1c2fc448c9fc9e16c16a234"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/cancel-desktop.jpg",
+      "bytes": 75151,
+      "sha256": "d5c1a3bb8394a4891f536a00bcff7b59c37149139f88d9e9a1ac29808cc0c511"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/customers-desktop.jpg",
+      "bytes": 70677,
+      "sha256": "876d50ced5267948edbdc00f19df834e0d7920b0c28e738cb1c98fa275280e0e"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/desktop-320.jpg",
+      "bytes": 31330,
+      "sha256": "23fce803073b51119e580e07ad0e7e41bd1c7e090e4f8284850ce896a2c0c6c1"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/desktop-initial.jpg",
+      "bytes": 80825,
+      "sha256": "3eb3444c78ef4c2c4eff344523b8ad5d21ba62996f88f94cb7867eb0928f0f59"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/desktop-single-model.jpg",
+      "bytes": 96807,
+      "sha256": "bd3a1eef0cb658f5c082fb8dfe18fd5e872d6e758709ba5ff1242429c969d1de"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/inbound-desktop.jpg",
+      "bytes": 78572,
+      "sha256": "8e7e8b4c530bebf11a0293a9ccc23f4e1be4fe2471c51c2dd2fe6e6d2f6239c4"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/ledger-desktop.jpg",
+      "bytes": 77779,
+      "sha256": "edf6af54015220f88800bcb0ba7c8f732a1a505f8298672d86bad7f12cc4bf63"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/mobile-320.jpg",
+      "bytes": 28222,
+      "sha256": "70100fc6e05ea34a1918954f2700ae0a1254a09285722c9d5d7fc2817072d41f"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/mobile-mode-desktop-window.jpg",
+      "bytes": 44505,
+      "sha256": "69d37abb957fd604a73b319ca125c8f05544790c34035595b3b96eac9c1df2ec"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/opening-desktop.jpg",
+      "bytes": 79593,
+      "sha256": "5fde43f7a17b02a49f319259389cbbd20ea5b8c426cfcf47101910cd92787f37"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/outbound-desktop.jpg",
+      "bytes": 73660,
+      "sha256": "b00b6a84c42fc820df83f7f56dcdf10cb26d011ef7766c9595a64d41290f4d0c"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/pending-desktop.jpg",
+      "bytes": 54140,
+      "sha256": "e267ff4d2d6902f83846aec1c23d83b21cbb45e8f9547878ba65a9f1564ae284"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/pickup-desktop.jpg",
+      "bytes": 74817,
+      "sha256": "fbdc02c6b51580b02a802559c6c9dfc0b7af63ef115fc221ed63a87e890b0c22"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/reservations-desktop.jpg",
+      "bytes": 71147,
+      "sha256": "ec8208988110bbfe59d9e6b07d47987fac57213eb119c1b3150f489449c1c411"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/reserve-desktop.jpg",
+      "bytes": 72074,
+      "sha256": "b58e2629abb9a1ec7ccc032e33000d09e6495e57f8f0c25c85441da334c85daf"
+    },
+    {
+      "path": "docs/design/qa/m1-04-desktop-query/warehouse-list-desktop.jpg",
+      "bytes": 75904,
+      "sha256": "1bd7742c9ff1a196370a54e0f08b9db55da9c77fa917f11f8df4d07b63ea459e"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/candidate-not-queried-390.jpg",
+      "bytes": 30372,
+      "sha256": "88c4916d8b102af20f24a2675c702cfa3b32cabd39ab2a14d61ddf66e6dd8c24"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/hover-primary-desktop.jpg",
+      "bytes": 57865,
+      "sha256": "cdd7e3482ee76d86a4ba7719dddcc9aa5b8f323a67096d03ff738c6d6ca892d0"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/initial-320.jpg",
+      "bytes": 27434,
+      "sha256": "147c2c0d8ef7d3b54d8b8b3ef767727766e19d4ed87ab7d215ad7c36eacbeb38"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/initial-390.jpg",
+      "bytes": 30544,
+      "sha256": "3ce0d875807b8e39a1a13825b6b8fa93e2a2af2ad309473dfe83752085b5433b"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/initial-desktop.jpg",
+      "bytes": 58912,
+      "sha256": "31bae4bfc26210779da7112dedbaa09764bdbf087bc87dea9006c48272d3c3db"
+    },
+    {
+      "path": "docs/design/qa/m1-04-manual-query/manual-result-390.jpg",
+      "bytes": 29831,
+      "sha256": "28d60b83bfc0ea163044db67d489e10e02ca823b0899d4dc3a084ac4e9d15350"
+    },
+    {
+      "path": "docs/design/qa/m1-04-model-picker/initial-390.jpg",
+      "bytes": 30930,
+      "sha256": "e79db487571b411f61cb6218f217ad9dcbb3eff3bdce3de133bbfde00b3dc27b"
+    },
+    {
+      "path": "docs/design/qa/m1-04-model-picker/model-open-320.jpg",
+      "bytes": 27183,
+      "sha256": "688fba8f2b2c6f5b738f32c945e54a6b638d59fb73487867b56b7280545d71fc"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/actions-390.jpg",
+      "bytes": 31003,
+      "sha256": "fcd13183405dc84ba3ab6c6ff8c5913387d927dd580e7f64da7c754643f7fafa"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/catalog-320.jpg",
+      "bytes": 28485,
+      "sha256": "2e0259a53752c3faa7cb18e589b40f1026ded9e050236f9da82728859e4bcbf6"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/catalog-390.jpg",
+      "bytes": 31933,
+      "sha256": "a84f9f1e2b06b2d10f81d10e6332a4935bc356b51bea8eb6c83a9e77c2fec909"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/catalog-desktop.jpg",
+      "bytes": 64936,
+      "sha256": "655c97ef4809d5c5317ebe5344c3a9e36403f69f7c53fabaf14af186a4545efa"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/inventory-desktop.jpg",
+      "bytes": 53871,
+      "sha256": "d2332d1d5899a2324d7dff451d182383870504197783190e6f6517df28c3e2a4"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/inventory-models-320.jpg",
+      "bytes": 28523,
+      "sha256": "3c110b89b6dbf66940c9ccfca2a01be1a6139e0db4b9e27a9a55671e002b7cde"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/inventory-models-desktop.jpg",
+      "bytes": 50125,
+      "sha256": "7366060c192ad5a29b0d6f92c9ea12be831589230ee0facb2eae7f0178cd9503"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/inventory-query-390.jpg",
+      "bytes": 33063,
+      "sha256": "755c4c1531026ae25352f3e03fb3814be74222fa34837055a9d8dc86fe64a80e"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/reservation-query-390.jpg",
+      "bytes": 32985,
+      "sha256": "b304d2ecef44a2fc45afba45766bc32312797f8f18c4fa09c28e02fd88da7235"
+    },
+    {
+      "path": "docs/design/qa/m1-04-refinement/warehouse-candidates-390.jpg",
+      "bytes": 30488,
+      "sha256": "e2110758691e948e8d2019d33cf7d1a4859f7efc82e1a6fea184c0500276283e"
+    },
+    {
+      "path": "docs/design/qa/m1-04-warehouse-position/before-open-390.jpg",
+      "bytes": 31109,
+      "sha256": "8cc43beb3c1434d8213298bcff170699d9ed4ed0f07424dc419f30b7d282aa68"
+    },
+    {
+      "path": "docs/design/qa/m1-04-warehouse-position/desktop-open.jpg",
+      "bytes": 79258,
+      "sha256": "5b9e4b49d63ca55f4341da89b497dbe468c3e69dc056a9e82064843e1290fe01"
+    },
+    {
+      "path": "docs/design/qa/m1-04-warehouse-position/open-320.jpg",
+      "bytes": 27010,
+      "sha256": "91581f588c05fb1a357dfa338f2587337c22d345349b6f5908674f2f14497e25"
+    },
+    {
+      "path": "docs/design/qa/m1-04-warehouse-position/open-390.jpg",
+      "bytes": 29629,
+      "sha256": "715afa42f65ef933a05f0dc5abe3767cc9a6fec616dae41fc5bbf9e246b14e4d"
+    },
+    {
+      "path": "docs/design/qa/m1-04-warehouse-position/selected-390.jpg",
+      "bytes": 30351,
+      "sha256": "9c33df00f2650341acb4d7b1742a7be685fd00539a49275e696af4855d12e32c"
+    },
+    {
+      "path": "docs/design/qa/m1-05/adjustment-preview-390.jpg",
+      "bytes": 41683,
+      "sha256": "2d5a1faa5b598090babeb80b8ea2e8d71439f07df41a482b29fbbe95e3b3f17e"
+    },
+    {
+      "path": "docs/design/qa/m1-05/reconciliation-390.jpg",
+      "bytes": 34364,
+      "sha256": "d71f86c1df8d8f0a84b00f0e989c4c15895f5c09ad87a14a16773e99634f2772"
+    },
+    {
+      "path": "docs/design/qa/m1-05/reconciliation-final-390.jpg",
+      "bytes": 34329,
+      "sha256": "028aef44e0fbbe7292851ddde6a81559ab825cc63163d38ee21a0899225e3c45"
+    },
+    {
+      "path": "docs/design/qa/m1-05/statistics-before-390.jpg",
+      "bytes": 31556,
+      "sha256": "63fa87a561c4fbcce1c0ea91785cda4ed0494668b9edbe6f179d873908839dc6"
+    },
+    {
+      "path": "docs/design/qa/m1-06/home-desktop.jpg",
+      "bytes": 91598,
+      "sha256": "dcf7e2d7cf9627ab03ab10303bc06d2c1709fe63ccc880cd7fd3edfad4db8240"
+    },
+    {
+      "path": "docs/design/qa/m1-06/home-unconfigured-390.jpg",
+      "bytes": 33719,
+      "sha256": "39e5f36c7059417b71b11c7d9e14a46eee31a8ac5fbd1fb81259d54c02a93e01"
+    },
+    {
+      "path": "docs/design/qa/m1-06/task-preview-390.jpg",
+      "bytes": 34207,
+      "sha256": "f6f9e1a9dbb7e201aa510351cb6e991d3ed2b7fb9cc5aa6879011f9dd3487990"
+    },
+    {
+      "path": "docs/design/qa/m1-06/task-preview-desktop.jpg",
+      "bytes": 81385,
+      "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
+    }
+  ],
+  "added_after_curation": 11,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup."
+}

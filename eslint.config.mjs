@@ -14,7 +14,7 @@ const shared = [
   'coverageNames', 'statisticsPage', 'catalogPage', 'customersPage',
   'isMockMode', 'homePage', 'serviceDraftPage', 'serviceSearchPage',
   'serviceDetailPage', 'repairPage', 'settingsPage', 'customerPage',
-  'ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
+  'agentHomePage','agentTaskPage','agentTaskRows','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
 ];
 const browser = [
   'window', 'document', 'location', 'navigator', 'history', 'fetch', 'Headers',

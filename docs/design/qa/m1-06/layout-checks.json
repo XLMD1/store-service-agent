@@ -1,0 +1,43 @@
+[
+  {
+    "confirmButtons": 0,
+    "page": "task-query",
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "bottomLinks": 4,
+    "page": "home",
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "bottomNav": false,
+    "confirmationRequired": true,
+    "page": "task-preview",
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "page": "task-candidates",
+    "pickerStyle": "pointer",
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "page": "pending",
+    "scroll": 375,
+    "width": 390
+  },
+  {
+    "page": "task-preview",
+    "scroll": 305,
+    "width": 320
+  },
+  {
+    "page": "task-preview",
+    "scroll": 1425,
+    "visibleButtons": true,
+    "width": 1440
+  }
+]

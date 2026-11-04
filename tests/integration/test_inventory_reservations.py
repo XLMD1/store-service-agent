@@ -45,6 +45,35 @@ def numbers(client,params):
     return result['on_hand'],result['reserved'],result['available']
 
 
+@pytest.mark.parametrize('note',['','   '])
+def test_outbound_note_optional_without_consuming_reservations_or_repeating(stock,note):
+    client,params=stock
+    item=change(client,'inventory_outbound',params,quantity=2,basis_note=note)
+    assert item['preview']['after']=={'on_hand':8,'reserved':3,'available':5}
+    receipt=confirm(client,item)
+    assert receipt.status_code==200,receipt.text
+    assert confirm(client,item).json()==receipt.json()
+    assert numbers(client,params)==(8,3,5)
+
+
+def test_outbound_without_note_still_checks_t0_and_available_stock(stock):
+    client,params=stock
+    missing=change(client,'inventory_outbound',params,basis_note='',occurred={'precision':'date','date':'2026-10-01'})
+    assert 'occurred.t0_relation' in missing['missing_fields'] and 'basis_note' not in missing['missing_fields']
+    response=client.post('/api/drafts',headers=csrf(client),json={'kind':'inventory_outbound','parameters':{
+        'warehouse_id':params['warehouse_id'],'model_id':params['model_id'],'quantity':8,
+        'occurred':{'precision':'date','date':'2026-10-03'},'basis_note':''}})
+    assert response.status_code==422
+    assert numbers(client,params)==(10,3,7)
+
+
+def test_reservation_basis_remains_required_when_outbound_note_is_optional(stock):
+    client,params=stock
+    item=change(client,'reservation_create',params,basis_note='',basis_kind='oral',
+        customer_id=params['opening_reservations'][0]['customer_id'])
+    assert 'basis_note' in item['missing_fields'] and item['preview'] is None
+
+
 def test_outbound_only_uses_available_and_does_not_consume_reservation(stock):
     client,params=stock
     response=client.post('/api/drafts',headers=csrf(client),json={'kind':'inventory_outbound','parameters':{
@@ -273,11 +302,13 @@ def test_migration_refuses_to_drop_new_reservation_history(application,settings,
     from alembic import command
     from alembic.config import Config
     client,params=stock;reservation(client,params)
+    with application.state.sessions() as db:
+        original_revision=db.scalar(text('SELECT version_num FROM alembic_version'))
     cfg=Config('alembic.ini');cfg.attributes['database_url']=settings.database_url
     with pytest.raises(RuntimeError,match='Cannot downgrade recorded reservation/outbound'):
         command.downgrade(cfg,'0004_document_occurrence')
     with application.state.sessions() as db:
-        assert db.scalar(text('SELECT version_num FROM alembic_version'))=='0006_inventory_corrections'
+        assert db.scalar(text('SELECT version_num FROM alembic_version'))==original_revision
         assert db.scalar(text("SELECT count(*) FROM inventory_documents WHERE kind='reserve' AND reservation_id IS NOT NULL"))==1
 
 

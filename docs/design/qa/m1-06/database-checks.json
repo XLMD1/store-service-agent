@@ -1,0 +1,19 @@
+{
+  "original_review": {
+    "revision": "0006_inventory_corrections",
+    "users": 1,
+    "accounts": 8
+  },
+  "m106_sample": {
+    "revision": "0007_agent_tasks",
+    "users": 1,
+    "accounts": 1,
+    "tasks": 4,
+    "balances": [
+      [
+        10,
+        3
+      ]
+    ]
+  }
+}

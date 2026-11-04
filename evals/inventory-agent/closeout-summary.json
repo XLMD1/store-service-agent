@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-04",
+  "sample_type": "public_development_samples_not_holdout",
+  "first_batch": {
+    "requests": 12,
+    "passed_runs": 7,
+    "failed_runs": 5
+  },
+  "recheck": {
+    "requests": 6,
+    "diagnostic_failed_runs": 1,
+    "post_fix_passed_runs": 5
+  },
+  "total_requests": 18,
+  "known_total_tokens": 32491,
+  "exact_cost_cny": null,
+  "formal_budget_decision": "retain_development_attempt_tool_token_cutoffs_this_phase; determine_CNY_budget_before_deployment",
+  "business_confirmations_after_baseline": 0,
+  "business_unchanged": true,
+  "current_store_unchanged": true,
+  "not_a_uniform_post_fix_full_rerun": true,
+  "final_two_item_followup_quantities": [
+    4,
+    1
+  ],
+  "old_previews_superseded": true,
+  "same_drafts": true,
+  "independent_quality_acceptance": false,
+  "backend_tests": 247,
+  "frontend_tests": 60,
+  "lint": "passed",
+  "typecheck": "passed",
+  "build_files": 20,
+  "user_final_review": "pending",
+  "committed_or_pushed": false,
+  "local_link_checks": 741,
+  "git_diff_check": "passed",
+  "credential_pattern_check": "passed",
+  "current_service_verified": "8002 login configured=true test_double=false tasks=[]",
+  "current_business_empty": true
+}

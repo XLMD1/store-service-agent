@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-04",
+  "backend": {
+    "passed": 259,
+    "seconds": 204.19,
+    "database": "dedicated store_agent_m1_test PostgreSQL"
+  },
+  "frontend": {
+    "tests": 67,
+    "lint": "passed",
+    "typecheck": "passed; strict interface declarations only",
+    "build_files": 20
+  },
+  "pending_month_change": "withdrawn by user; unchanged",
+  "current_store_tables_fingerprint_unchanged": 13,
+  "actual_key_changed": false,
+  "paid_model_requests_this_revision": 0,
+  "database_migrations_this_revision": false,
+  "user_review": "pending",
+  "committed_or_pushed": false,
+  "local_links_checked": 829,
+  "retained_screenshot_hashes_verified": 72,
+  "credential_pattern_check": "passed",
+  "git_diff_check": "passed",
+  "design_version": "V1.20",
+  "record_scope": "verification before Git commit",
+  "git_delivery_authorized": true
+}
