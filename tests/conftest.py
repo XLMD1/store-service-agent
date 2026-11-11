@@ -19,7 +19,8 @@ def settings(tmp_path_factory):
     url = make_url(config.database_url)
     if url.host != '127.0.0.1' or url.database != 'store_agent_m1_test':
         pytest.fail('Refusing destructive fixtures outside the dedicated loopback test database')
-    return replace(config,deepseek_settings_file=str(tmp_path_factory.mktemp('provider')/'deepseek.json'))
+    return replace(config,deepseek_settings_file=str(tmp_path_factory.mktemp('provider')/'deepseek.json'),
+                   source_files_dir=str(tmp_path_factory.mktemp('service-sources')))
 
 
 @pytest.fixture(scope='session')

@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.20 · 整理日期：2026-11-04 · 视觉基准：C / 沉稳专业型。
+版本：V1.21 · 整理日期：2026-11-11 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -292,6 +292,17 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | m1-outbound | 既有普通出库增加侧栏直达；备注可选，T0/预留/可售/确认不变。旧缺备注草稿提示重新保存预览，读取不自动修改 | [390px](qa/m1-06-navigation/outbound-optional-390.jpg) |
 
 [本轮核对/文件清单](qa/m1-06-navigation/README.md)、[几何](qa/m1-06-navigation/layout-checks.json)、[截图尺寸与哈希](qa/m1-06-navigation/screenshot-manifest.json)。259项真实PostgreSQL、67项前端及lint/类型/构建通过。当前13张表指纹不变，未提交业务或密钥，保留工作台未发送文字与用户日期选择。截图为浏览器视口，不是真机/生产验收；1.19旧侧栏截图属于历史版本，其余未改页面证据继续保留。
+
+### 1.21 M2-01 售后来源保存与阅读
+
+2026-11-11，本机技术验证和用户审核均已完成。沿用 C 方向，参照[售后草稿效果图](assets/mobile-c/01-service-draft.png)的原件信息层级。采用[来源页](../../app/web/sources.js)和[真实页面入口](../../app/web/index.html#sources)。
+
+| 页面编号 | 当前行为 | 证据 |
+| --- | --- | --- |
+| sources | 保存文字或单张照片、显示服务端上限、查看自己提交的来源 | [手机提交](qa/m2-01/sources-photo-390.jpg) |
+| source | 查看原文或原图，显示已知来源信息，原图不可用时重试 | [手机阅读](qa/m2-01/source-photo-390.jpg) · [电脑对照](qa/m2-01/source-photo-1440.jpg) |
+
+[浏览器核对与测试记录](qa/m2-01/README.md)使用独立测试库及虚构样例。
 
 ## 2. HTML样板
 

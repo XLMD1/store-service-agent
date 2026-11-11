@@ -102,6 +102,8 @@ packaging==26.3
     #   langchain-core
     #   langsmith
     #   pytest
+pillow==13.0.0
+    # via -r requirements.in
 pluggy==1.7.0
     # via pytest
 psycopg==3.3.6

@@ -14,8 +14,15 @@ class Settings:
     cookie_secure: bool = True
     deepseek_settings_file: str = '.local/deepseek-settings.json'
     source_text_max_chars: int = 12_000
+    source_files_dir: str = '.local/service-sources'
+    source_photo_max_bytes: int = 5 * 1024 * 1024
 
     def __post_init__(self):
+        web_root = Path(__file__).resolve().parent / 'web'
+        if not self.source_files_dir or Path(self.source_files_dir).resolve().is_relative_to(web_root):
+            raise ValueError('Store service originals outside the public web directory')
+        if type(self.source_photo_max_bytes) is not int or not 1 <= self.source_photo_max_bytes <= 10 * 1024 * 1024:
+            raise ValueError('source_photo_max_bytes must be an integer between 1 and 10485760')
         if type(self.source_text_max_chars) is not int or not 1 <= self.source_text_max_chars <= 100_000:
             raise ValueError('source_text_max_chars must be an integer between 1 and 100000')
         if make_url(self.database_url).drivername != 'postgresql+psycopg':

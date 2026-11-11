@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-04",
+  "date": "2026-11-11",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 72,
+  "retained_count": 75,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -366,6 +366,21 @@
       "path": "docs/design/qa/m1-06-navigation/sidebar-settings-expanded.jpg",
       "bytes": 58316,
       "sha256": "1403ee88ff6671bfca531ce2ead3c4e787525488df1ed845a37e305361a69dd6"
+    },
+    {
+      "path": "docs/design/qa/m2-01/source-photo-1440.jpg",
+      "bytes": 119196,
+      "sha256": "e5573182b806ef21bc7738f35fd10a766705efe9d2b9357f9f3226a6c70d54d7"
+    },
+    {
+      "path": "docs/design/qa/m2-01/source-photo-390.jpg",
+      "bytes": 45649,
+      "sha256": "e54ab7fae05b289089db669a8f454bf347b1c7e1db76bcd3a0a456e41f3946d3"
+    },
+    {
+      "path": "docs/design/qa/m2-01/sources-photo-390.jpg",
+      "bytes": 48663,
+      "sha256": "fcc1fbc6bf7d524db99d27bea4ac7afc76204a6f908503e9c3835c2c820b9a98"
     }
   ],
   "removed": [
@@ -890,6 +905,6 @@
       "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
     }
   ],
-  "added_after_curation": 11,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup."
+  "added_after_curation": 14,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added."
 }
