@@ -19,7 +19,7 @@ const shared = [
 const browser = [
   'window', 'document', 'location', 'navigator', 'history', 'fetch', 'Headers',
   'Request', 'Response', 'FormData', 'URL', 'URLSearchParams', 'AbortController',
-  'MutationObserver', 'Event', 'CustomEvent', 'HTMLElement', 'HTMLSelectElement',
+  'MutationObserver', 'FileReader', 'Event', 'CustomEvent', 'HTMLElement', 'HTMLSelectElement',
   'HTMLInputElement', 'Node', 'NodeFilter', 'crypto', 'localStorage', 'sessionStorage',
   'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'queueMicrotask',
   'requestAnimationFrame', 'cancelAnimationFrame', 'console', 'structuredClone',
