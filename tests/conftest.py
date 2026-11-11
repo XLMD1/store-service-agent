@@ -36,7 +36,7 @@ def application(settings, migrated):
     from app.auth.service import initialize_owner
     engine = create_engine(settings.database_url)
     with engine.begin() as connection:
-        connection.execute(text('TRUNCATE login_throttles, account_audit, auth_sessions, user_roles, users, '
+        connection.execute(text('TRUNCATE service_sources, login_throttles, account_audit, auth_sessions, user_roles, users, '
             'warehouses, product_models, customers, catalog_audit, drafts, operations, inventory_accounts, '
             'inventory_reservations, inventory_documents, inventory_ledger, agent_task_items, agent_tasks, '
             'checkpoints, checkpoint_blobs, checkpoint_writes CASCADE'))
