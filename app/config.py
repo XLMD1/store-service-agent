@@ -13,8 +13,11 @@ class Settings:
     origin: str
     cookie_secure: bool = True
     deepseek_settings_file: str = '.local/deepseek-settings.json'
+    source_text_max_chars: int = 12_000
 
     def __post_init__(self):
+        if type(self.source_text_max_chars) is not int or not 1 <= self.source_text_max_chars <= 100_000:
+            raise ValueError('source_text_max_chars must be an integer between 1 and 100000')
         if make_url(self.database_url).drivername != 'postgresql+psycopg':
             raise ValueError('Use an explicit postgresql+psycopg database URL')
         url = urlsplit(self.origin)

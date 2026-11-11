@@ -153,3 +153,36 @@ test('old outbound draft missing only note asks for a new preview without changi
     assert.equal(h.calls.filter(c=>c.method!=='GET').length,0);
   }finally{h.dom.window.close();}
 });
+
+test('service source retains original and request id until a saved response and escapes the reading',async()=>{
+  const original='  <img src="sample">\n虚构原文\n';
+  const saved={id:'source-1',status:'saved',source_label:null,page_label:null,source_kind:null,submitted_at:'2026-11-11T00:00:00Z'};
+  const posts=[];
+  const h=await harness('sources',call=>{
+    const ok=value=>new Response(JSON.stringify(value),{status:200});
+    if(call.path==='/api/auth/me')return ok({username:'sample',permissions:['inventory.read','service.read','service.draft']});
+    if(call.path==='/api/sources/policy')return ok({text_max_chars:12000});
+    if(call.path==='/api/sources?offset=0')return ok({items:[],next_offset:null});
+    if(call.path==='/api/sources'&&call.method==='POST'){
+      posts.push(call.body);
+      if(posts.length===1)throw new Error('simulated lost response');
+      return ok(saved);
+    }
+    if(call.path==='/api/sources/source-1')return ok({...saved,text:original,message_time:null,note:null});
+  });
+  try{
+    const form=h.d.querySelector('#source-form');
+    form.elements.text.value=original;
+    form.requestSubmit();
+    await tick();await tick();
+    assert.equal(form.elements.text.value,original);
+    assert.match(h.d.querySelector('#notice').textContent,/尚未核实/);
+    form.requestSubmit();
+    await tick();await tick();
+    assert.equal(posts[0].request_id,posts[1].request_id);
+    assert.equal(posts[1].text,original);
+    await h.w.renderForTest();
+    assert.equal(h.d.querySelector('.service-source').textContent,original);
+    assert.equal(h.d.querySelector('.service-source img'),null);
+  }finally{h.dom.window.close();}
+});
