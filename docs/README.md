@@ -10,9 +10,9 @@
 | 模块、数据、接口和恢复如何实现 | [架构设计](architecture/store-service-agent-architecture-v1.0.md) | 第5～8节模块/数据/事务、第9～12节任务/来源/接口/运行 |
 | 下一步先做什么、阶段何时完成 | [开发计划](plans/development-plan-v1.0.md) | 阶段任务、退出条件、最小切片和状态记录 |
 
-当前交付状态以开发计划的“状态与阶段完成记录”为准。已交付的[前端样板](../prototypes/frontend/README.md)有手机与电脑布局；样板不代表正式业务模块完成。
+查阅[当前交付状态](plans/development-plan-v1.0.md#13-状态与阶段完成记录)、[按日开发历史](plans/development-history.md)或[前端样板](../prototypes/frontend/README.md)。
 
-当前文件导航见[项目首页](../README.md)，最近整理与数据清空见[维护记录](maintenance/2026-11-04-cleanup.md)。
+目录导航见[项目首页](../README.md)，2026-11-04 的环境整理与数据清空见[维护记录](maintenance/2026-11-04-cleanup.md)。
 
 ## 按任务补充阅读
 
@@ -21,6 +21,7 @@
 | 代码、测试与交付 | [开发规范](guides/development.md) |
 | 后端启动、身份接口与本机测试 | [后端开发说明](guides/backend-development.md)；验收状态仍以开发计划为准 |
 | 库存Agent、DeepSeek配置与任务恢复 | [M1-06运行与接口](guides/inventory-agent.md)；模型实测与本机测试替身分别记录 |
+| 售后原件与手工草稿接口 | [架构第10.1节](architecture/store-service-agent-architecture-v1.0.md#101-售后资料路径)；交付范围和测试见开发计划 |
 | M0构造样例与验收任务 | [样例数据入口](../evals/README.md)；实际缺口与进度仍在开发计划维护 |
 | 提交、推送、PR格式 | [Git规范](guides/git.md) |
 | 页面设计或实现 | [设计规范AI版](design/design-resources.md)及[HTML可视化版](design/design-resources.html)：页面、素材、交互与视觉规则的统一入口 |
