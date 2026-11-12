@@ -6,3 +6,15 @@
 .agent-calendar-head .actions>*{flex:0 0 auto;white-space:nowrap}.agent-calendar-head{flex-wrap:wrap}.agent-calendar-head .actions{margin-left:auto}
 .workspace[data-view=mobile] .agent-calendar-head .actions>button{flex:0 0 auto;width:auto}
 .agent-day-tasks .row>.button{flex:0 0 auto;white-space:nowrap;padding:8px 12px}
+
+.agent-message{margin-top:12px}.agent-message pre{margin:6px 0}.agent-message-assistant{padding:14px 16px;border-left:3px solid var(--primary);border-radius:var(--radius-control);background:var(--primary-soft);overflow-wrap:anywhere}.agent-message-assistant p{margin:6px 0 0}
+
+.agent-thinking:not([hidden]){display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.agent-thinking-dots{display:inline-flex;gap:4px;color:var(--primary)}
+.agent-thinking-dots i{width:5px;height:5px;border-radius:50%;background:currentColor}
+@media(prefers-reduced-motion:no-preference){
+  .agent-thinking-dots i{animation:agent-thinking-pulse 1.2s ease-in-out infinite}
+  .agent-thinking-dots i:nth-child(2){animation-delay:.15s}
+  .agent-thinking-dots i:nth-child(3){animation-delay:.3s}
+}
+@keyframes agent-thinking-pulse{0%,65%,100%{opacity:.4}30%{opacity:1}}

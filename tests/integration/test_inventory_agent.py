@@ -155,10 +155,11 @@ def test_model_failure_budget_and_manual_queries_still_work(application, stock):
         def parse(self,*args):raise ProviderUnavailable('do not echo external content')
     application.state.agent_planner=Broken()
     task=create_task(client)
-    for _ in range(4):
+    assert task['budget']['max_model_attempts']==6
+    for _ in range(7):
         response=run(client,task);assert response.status_code==200,response.text
         task=response.json()
-    assert task['budget']['model_attempts']==3
+    assert task['budget']['model_attempts']==6
     assert '上限' in task['question']
     assert 'do not echo' not in str(task)
     assert numbers(client,params)==(10,3,7)
@@ -210,10 +211,15 @@ def test_natural_followup_updates_only_pending_draft_and_invalidates_old_preview
     client,params=stock;planner=application.state.agent_planner=Planner([plan_inbound()])
     task=run(client,create_task(client)).json();old=task['items'][0]['draft']
     planner.steps=[{**plan_inbound(),'id':task['items'][0]['id'],'quantity':4}]
-    result=run(client,task,reply='数量改成4台')
-    assert result.status_code==200,result.text
-    assert result.json()['followups']==['数量改成4台']
-    updated=result.json()['items'][0]['draft']
+    replies=['数量改成4台','数量改成4台，请再次核对','确认预览数量为4台','仍是4台','请按4台预览']
+    for reply in replies:
+        result=run(client,task,reply=reply)
+        assert result.status_code==200,result.text
+        task=result.json()
+        assert task['state']=='awaiting_confirmation'
+    assert task['followups']==replies
+    assert task['budget']['model_attempts']==6
+    updated=task['items'][0]['draft']
     assert updated['id']==old['id'] and updated['version']>old['version']
     assert confirm(client,old).status_code==409
     assert confirm(client,updated).status_code==200
@@ -275,7 +281,8 @@ def test_new_instruction_invalidates_old_confirmation_even_if_followup_fails(app
             def parse(self,*args):raise ProviderUnavailable('temporary')
         application.state.agent_planner=Broken()
     elif mode=='budget':
-        with application.state.sessions.begin() as db:db.get(AgentTask,task['id']).model_attempts=3
+        with application.state.sessions.begin() as db:
+            db.get(AgentTask,task['id']).model_attempts=task['budget']['max_model_attempts']
     else:
         planner.steps=[{**plan_inbound(),'id':task['items'][0]['id'],**({'warehouse':'未知新库'} if mode=='ambiguous' else {'quantity':999})}]
         if mode=='invalid_quantity':planner.steps[0]['action']='inventory_outbound'
@@ -514,3 +521,122 @@ def test_completed_tasks_leave_pending_but_history_and_partial_task_remain(appli
     history=client.get('/api/agent/tasks/'+first['id']).json()
     assert history['state']=='completed' and history['items'][0]['result']['business_id']
     assert numbers(client,params)==(14,3,11)
+
+
+def test_reservation_conversation_requests_all_fields_and_resumes_in_same_task(application, stock):
+    client, params = stock
+    plan = {'action':'reservation_create', 'warehouse':'示例2号库', 'model':'型号', 'quantity':1}
+    planner = application.state.agent_planner = Planner([plan])
+    task = run(client, create_task(client, '示例2号库型号预留一台')).json()
+    item = task['items'][0]
+    assert task['state'] == 'missing'
+    assert item['candidates'] == {}
+    for label in ('具体型号', '客户及地址', '实际发生日期或时刻', '留货依据类型'):
+        assert label in item['question']
+    assert '本次数量' not in item['question']
+    assert item['draft'] is None and numbers(client, params) == (10, 3, 7)
+
+    planner.steps = [{**plan, 'id':item['id'], 'model':'示例型号A', 'customer':'示例客户甲', 'basis_kind':'oral',
+                      'occurred':{'precision':'date','date':'2026-10-03'}}]
+    response = run(client, task, reply='示例型号A，客户示例客户甲，10月3日口头约定')
+    assert response.status_code == 200, response.text
+    updated = response.json()
+    assert updated['id'] == task['id'] and updated['state'] == 'awaiting_confirmation'
+    assert updated['items'][0]['draft']['parameters']['quantity'] == 1
+    assert numbers(client, params) == (10, 3, 7)
+
+
+def test_bare_outbound_asks_for_kind_before_model_or_catalog(application, stock):
+    client, params = stock
+    planner = application.state.agent_planner = Planner([])
+    task = run(client, create_task(client, '准备出库')).json()
+    assert task['state'] == 'missing' and task['items'] == []
+    assert '普通出库' in task['question'] and '预留提货' in task['question']
+    assert planner.calls == 0
+    planner.steps = [{**plan_inbound(), 'action':'inventory_outbound'}]
+    updated = run(client, task, reply='普通出库，示例2号库，示例型号A，2台，10月3日').json()
+    assert updated['id'] == task['id'] and updated['state'] == 'awaiting_confirmation'
+    assert numbers(client, params) == (10, 3, 7)
+
+
+def test_deleted_draft_invalidates_confirmation_and_agent_cannot_restore_it(application, stock):
+    client, params = stock
+    planner = application.state.agent_planner = Planner([plan_inbound()])
+    task = run(client, create_task(client)).json()
+    draft = task['items'][0]['draft']
+    path = '/api/drafts/'+draft['id']
+    target = f"{path}?expected_version={draft['version']}"
+    assert client.delete(target).status_code == 403
+    assert client.delete(target, headers=csrf(client)).status_code == 204
+    assert client.delete(target, headers=csrf(client)).status_code == 204
+    assert client.get(path).status_code == 404
+    assert all(row['id'] != draft['id'] for row in client.get('/api/drafts').json())
+    month = datetime.fromisoformat(task['created_at']).astimezone(timezone(timedelta(hours=8))).strftime('%Y-%m')
+    assert all(row['id'] != task['id'] for row in client.get('/api/agent/tasks?month='+month).json())
+    assert all(row['id'] != task['id'] for row in client.get('/api/agent/tasks').json())
+    assert confirm(client,draft).status_code == 409
+    assert client.patch(path, headers=csrf(client),json={
+        'expected_version':draft['version']+1,'parameters':draft['parameters']}).status_code == 409
+    updated = client.get('/api/agent/tasks/'+task['id']).json()
+    assert updated['items'][0]['draft'] is None and updated['items'][0]['state'] == 'cancelled'
+    assert run(client,updated,reply='数量改为3').status_code == 409
+    assert planner.calls == 1 and numbers(client, params) == (10,3,7)
+
+
+def test_delete_partial_task_hides_task_and_preserves_submitted_receipt(application, stock):
+    client, params = stock
+    application.state.agent_planner = Planner([plan_inbound(),{**plan_inbound(),'quantity':1}])
+    task = run(client, create_task(client)).json()
+    done, pending = [item['draft'] for item in task['items']]
+    receipt = confirm(client,done).json()
+    draft_url = f"/api/drafts/{pending['id']}?expected_version={pending['version']}"
+    assert client.delete(draft_url, headers=csrf(client)).status_code == 204
+    visible = client.get('/api/agent/tasks').json()
+    assert [row['id'] for row in visible] == [task['id']]
+    assert visible[0]['items'][0]['result'] == receipt
+    path = '/api/agent/tasks/'+task['id']
+    target = f"{path}?expected_version={task['version']}"
+    create_user(client)
+    with TestClient(application) as other:
+        login(other, {'username':'demo-stock','password':'Sample-Stock-Password-123'})
+        assert other.delete(target, headers=csrf(other)).status_code == 404
+    assert client.delete(target, headers=csrf(client)).status_code == 204
+    assert client.delete(target, headers=csrf(client)).status_code == 204
+    assert client.get(path).status_code == 404
+    assert client.get('/api/agent/tasks').json() == []
+    assert client.get('/api/agent/tasks?pending_only=true').json() == []
+    assert confirm(client, pending).status_code == 409
+    assert confirm(client, done).json() == receipt
+    assert numbers(client,params) == (12,3,9)
+
+
+def test_inventory_actions_explain_missing_fields_before_confirmation(application, stock):
+    client, params = stock
+    planner = application.state.agent_planner = Planner([])
+    required = {
+        'query_inventory': ('具体库房',),
+        'query_reservations': (),
+        'query_statistics': ('统计开始日期', '统计结束日期'),
+        'query_ledger': ('具体库房', '具体型号'),
+        'inventory_opening': ('建账起点', '实际盘点数量', '期初预留数量', '办理依据'),
+        'inventory_inbound': ('具体库房', '具体型号', '本次数量', '实际发生日期'),
+        'inventory_outbound': ('具体库房', '具体型号', '本次数量', '实际发生日期'),
+        'reservation_create': ('客户及地址', '具体型号', '本次数量', '实际发生日期', '留货依据类型'),
+        'reservation_pickup': ('要办理的预留单', '本次数量', '实际发生日期', '办理依据'),
+        'reservation_cancel': ('要办理的预留单', '本次数量', '实际发生日期', '办理依据'),
+        'inventory_adjustment': ('实际盘点数量', '实际发生日期', '办理依据'),
+        'inventory_correction': ('要更正的原单', '更正后的有效数量', '办理依据'),
+    }
+    for action, labels in required.items():
+        planner.steps = [{'action': action}]
+        response = run(client, create_task(client, '虚构任务：'+action))
+        assert response.status_code == 200, response.text
+        item = response.json()['items'][0]
+        if labels:
+            assert item['state'] == 'missing', action
+            assert item['candidates'] == {}, action
+            assert all(label in item['question'] for label in labels), (action,item['question'])
+            assert item['draft'] is None or item['draft']['operation_id'] is None
+        else:
+            assert item['state'] == 'completed' and item['result'] is not None
+    assert numbers(client,params) == (10,3,7)

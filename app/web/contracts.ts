@@ -89,6 +89,7 @@ export interface MockAPI {
   request(path: '/auth/login', method: 'POST', body: {username: string; password: 'demo' | '演示'}): Promise<Identity>;
   request(path: '/auth/logout', method: 'POST'): Promise<{demo: true}>;
   request(path: '/drafts', method: 'POST', body: DraftCreate): Promise<Draft>;
+  request(path: `/drafts/${UUID}?expected_version=${number}`, method: 'DELETE'): Promise<null>;
   request<K extends BusinessKind>(path: `/drafts/${UUID}`, method: 'PATCH', body: DraftUpdate<K>): Promise<Draft<K>>;
   request(path: `/operations/${UUID}/confirm`, method: 'POST', body: Confirmation): Promise<Receipt>;
   request(path: '/catalog/warehouses', method: 'POST', body: {confirmed: true; name: string; code?: string}): Promise<Warehouse>;

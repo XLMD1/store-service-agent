@@ -10,19 +10,30 @@ from app.agent.graph import plan_task
 from app.agent.models import AgentTask, AgentTaskItem
 from app.agent.provider import DeepSeekPlanner, ProviderUnavailable
 from app.agent.schemas import PlanStep
-from app.agent.tools import catalog_context, execute, permission
+from app.agent.tools import catalog_context, execute, inventory_question, missing_question, permission
 from app.auth.models import User
 from app.auth.service import ensure_permission, now
 from app.operations.models import Draft, Operation
 from app.operations.service import draft_result
 
 
-def access(db, actor_id, task_id, locking=False):
+MAX_MODEL_ATTEMPTS = 6
+UNPLANNED_QUESTION = '请补充库房、型号和希望办理的库存事项；尚未产生可确认业务。'
+OUTBOUND_QUESTION = '这次是普通出库，还是客户提走已预留的货？请回复「普通出库」或「预留提货」，也可以一起补充库房、型号、数量和实际发生时间。'
+
+
+def bare_outbound(text):
+    return text.strip(' \t\r\n。！!？?') in ('出库', '准备出库', '要出库', '我要出库', '我想出库', '需要出库', '办理出库', '帮我出库')
+
+
+def access(db, actor_id, task_id, locking=False, *, include_deleted=False):
     user = db.get(User, actor_id)
     if not user:
         raise HTTPException(401, 'Authentication required')
     ensure_permission(db, user, 'inventory.read')
     query = select(AgentTask).where(AgentTask.id == str(task_id), AgentTask.actor_id == actor_id)
+    if not include_deleted:
+        query = query.where(AgentTask.state != 'deleted')
     task = db.scalar(query.with_for_update() if locking else query)
     if not task:
         raise HTTPException(404, 'Task not found')
@@ -46,6 +57,10 @@ def snapshot(db, user, task):
             continue
         if item.draft_id:
             draft = db.get(Draft, item.draft_id)
+            if draft.state in ('deleted', 'cancelled'):
+                view.update(state='cancelled', question='该草稿已删除或取消。', candidates={}, result=None)
+                result.append(view)
+                continue
             view['draft'] = draft_result(db, draft)
             if view['draft']['operation_id']:
                 operation = db.get(Operation, view['draft']['operation_id'])
@@ -53,22 +68,28 @@ def snapshot(db, user, task):
                     view.update(state='completed', result=operation.result, question='')
                 else:
                     view.update(state='awaiting_confirmation', question='')
-            else:
-                view.update(state='cancelled' if draft.state == 'cancelled' else 'missing',
-                            question='草稿已取消。' if draft.state == 'cancelled' else '请在原表单补充并重新预览。')
+            elif view['state'] != 'failed':
+                missing = None if item.candidates else draft.missing_fields
+                question = item.question if draft.missing_fields == ['review_required'] and item.question else missing_question(item.plan, item.candidates, missing)
+                view.update(state='missing', question=question)
+        elif item.state == 'missing' and item.candidates and not item.question:
+            view['question'] = missing_question(item.plan, item.candidates)
         result.append(view)
     state = task.state
     question = task.question
+    if not result and not task.followups and question == UNPLANNED_QUESTION and bare_outbound(task.text):
+        question = OUTBOUND_QUESTION
     if state == 'processing' and task.lease and task.lease_until <= now() and not result:
         state, question = 'awaiting_verification', '上次处理已中断，请继续核验任务；不会自动重复登记。'
-    if state != 'cancelled' and not (task.lease and task.lease_until > now()):
+    if state not in ('cancelled', 'deleted') and not (task.lease and task.lease_until > now()):
         states = {row['state'] for row in result}
         state = ('completed' if states == {'completed'} else 'awaiting_confirmation' if 'awaiting_confirmation' in states
-                 else 'missing' if 'missing' in states else 'failed' if 'failed' in states else state)
+                 else 'missing' if 'missing' in states else 'failed' if 'failed' in states
+                 else 'cancelled' if 'cancelled' in states else state)
     return {'id': task.id, 'text': task.text, 'followups': task.followups, 'version': task.version, 'state': state, 'question': question,
-        'can_retry': task.state != 'cancelled' and task.planned_revision != task.plan_revision,
+        'can_retry': state not in ('cancelled', 'deleted') and task.planned_revision != task.plan_revision,
         'items': result, 'created_at': task.created_at.isoformat(), 'updated_at': task.updated_at.isoformat(),
-        'budget': {'model_attempts': task.model_attempts, 'max_model_attempts': 3,
+        'budget': {'model_attempts': task.model_attempts, 'max_model_attempts': MAX_MODEL_ATTEMPTS,
                    'known_tokens': task.known_tokens, 'tool_calls': task.tool_calls, 'max_tool_calls': 12}}
 
 
@@ -78,6 +99,8 @@ def create_task(db, user, payload):
     db.execute(insert(AgentTask).values(id=task_id, actor_id=user.id, request_id=str(payload.request_id),
         text=payload.text).on_conflict_do_nothing(index_elements=['actor_id','request_id']))
     task = db.scalar(select(AgentTask).where(AgentTask.actor_id == user.id, AgentTask.request_id == str(payload.request_id)))
+    if task.state == 'deleted':
+        raise HTTPException(409, 'Task has been deleted')
     if task.text != payload.text:
         raise HTTPException(409, 'Request identifier is bound to another task')
     return snapshot(db, user, task)
@@ -114,25 +137,32 @@ def run_task(app, actor_id, task_id, payload):
         if task.lease and task.lease_until > now():
             raise HTTPException(409, 'Task is already being processed')
         existing = items(db, task)
+        if not existing and not payload.reply and not task.followups and bare_outbound(task.text):
+            if task.question != OUTBOUND_QUESTION:
+                task.state, task.question = 'missing', OUTBOUND_QUESTION
+                task.planned_revision = task.plan_revision
+                task.version += 1
+                task.updated_at = now()
+            return snapshot(db, user, task)
         if existing and not payload.reply and task.planned_revision == task.plan_revision:
             task.state = snapshot(db, user, task)['state']
             return snapshot(db, user, task)
         if payload.reply:
-            if len(task.followups) >= 3:
+            if len(task.followups) >= MAX_MODEL_ATTEMPTS:
                 raise HTTPException(409, 'Follow-up limit reached')
             ops, drafts = locked_drafts(db, task)
-            if existing and all(v['state'] == 'completed' for v in snapshot(db, user, task)['items']):
+            if existing and all(v['state'] in ('completed', 'cancelled') for v in snapshot(db, user, task)['items']):
                 raise HTTPException(409, 'Completed task requires a separate correction task')
             for operation in ops:
                 if operation.state == 'pending':
                     operation.state = 'superseded'
             for draft in drafts:
-                if draft.state != 'succeeded':
+                if draft.state not in ('succeeded', 'cancelled', 'deleted'):
                     draft.version += 1
                     draft.state, draft.preview, draft.missing_fields = 'missing', None, ['review_required']
             for item in existing:
-                if item.state != 'completed' and (not item.draft_id or db.get(Draft, item.draft_id).state != 'succeeded'):
-                    item.state, item.result, item.candidates = 'missing', None, {}
+                if item.state != 'completed' and (not item.draft_id or db.get(Draft, item.draft_id).state not in ('succeeded', 'cancelled', 'deleted')):
+                    item.state, item.result, item.candidates, item.question = 'missing', None, {}, ''
             task.followups = task.followups+[payload.reply]
             task.plan_revision += 1
             task.version += 1
@@ -141,7 +171,7 @@ def run_task(app, actor_id, task_id, payload):
             task.state, task.question = 'failed', '尚未配置DeepSeek服务端密钥；仍可使用库存查询和人工表单。'
             task.version += 1
             return snapshot(db, user, task)
-        if task.model_attempts >= 3 or task.tool_calls >= 12 or task.known_tokens >= 12000:
+        if task.model_attempts >= MAX_MODEL_ATTEMPTS or task.tool_calls >= 12 or task.known_tokens >= 12000:
             task.state, task.question = 'failed', '本任务已达到开发调用上限，请核对已有结果并改用原表单。'
             return snapshot(db, user, task)
         token = task.lease = str(uuid4())
@@ -151,8 +181,9 @@ def run_task(app, actor_id, task_id, payload):
         task.version += 1
         text = task.text+'\n补充：'+'\n'.join(task.followups) if task.followups else task.text
         context = catalog_context(db)
-        previous = [{**row.plan, 'id': row.id} for row in existing
-                    if next(v for v in snapshot(db,user,task)['items'] if v['id']==row.id)['state'] != 'completed']
+        active_ids = {view['id'] for view in snapshot(db,user,task)['items']
+                      if view['state'] not in ('completed', 'cancelled')}
+        previous = [{**row.plan, 'id': row.id} for row in existing if row.id in active_ids]
         thread = task.id+':'+str(task.plan_revision)
     try:
         planned = plan_task(app.state.settings, thread, planner, text, context, previous)
@@ -174,7 +205,7 @@ def run_task(app, actor_id, task_id, payload):
         views = {v['id']: v for v in snapshot(db,user,task)['items']}
         for position, plan in enumerate(plans):
             item = by_id.get(plan.get('id'))
-            if item and views[item.id]['state'] == 'completed':
+            if item and views[item.id]['state'] in ('completed', 'cancelled'):
                 continue
             if item:
                 merged = {**item.plan, **{k:v for k,v in plan.items() if v not in (None,'')}}
@@ -194,16 +225,11 @@ def run_task(app, actor_id, task_id, payload):
                 item.state, item.question = 'failed', '已达到工具调用上限，请改用原表单。'
                 continue
             task.tool_calls += 1
-            try:
-                with db.begin_nested():
-                    execute(db, user, item)
-            except HTTPException as error:
-                item.state, item.question = 'failed', ('当前账号没有此项权限。' if error.status_code==403
-                    else '资料、时间或库存已变化，请核对原表单；未自动登记。')
+            execute_item(db, user, item)
         usage = planned.get('usage', {}).get('total_tokens', 0)
         task.known_tokens += usage if isinstance(usage,int) and 0 <= usage <= 100000 else 0
         task.lease = task.lease_until = None
-        task.question = '请补充库房、型号和希望办理的库存事项；尚未产生可确认业务。' if not plans else ''
+        task.question = UNPLANNED_QUESTION if not plans else ''
         task.planned_revision = task.plan_revision
         task.state = 'missing' if not plans else snapshot(db,user,task)['state']
         task.version += 1
@@ -211,6 +237,15 @@ def run_task(app, actor_id, task_id, payload):
         db.flush()
         task.state = snapshot(db,user,task)['state']
         return snapshot(db,user,task)
+
+
+def execute_item(db, user, item):
+    try:
+        with db.begin_nested():
+            execute(db, user, item)
+    except HTTPException as error:
+        item.state = 'failed'
+        item.question = '当前账号没有此项权限。' if error.status_code == 403 else inventory_question(error.detail)
 
 
 def select_candidate(db, user, task, payload):
@@ -225,24 +260,31 @@ def select_candidate(db, user, task, payload):
     if payload.field in ['warehouse', 'model', 'customer']:
         selected.pop('reference', None)
     item.selections = {**selected, payload.field: str(payload.value)}
-    execute(db,user,item)
+    execute_item(db, user, item)
     task.tool_calls += 1
     task.version += 1
     task.updated_at = now()
     return snapshot(db,user,task)
 
 
-def cancel_task(db, user, task, payload):
-    if task.version != payload.expected_version:
+def stop_task(db, task, expected_version, *, delete=False):
+    if task.state == 'deleted':
+        return
+    if task.version != expected_version:
         raise HTTPException(409, 'Task version changed')
     ops, drafts = locked_drafts(db, task)
     for operation in ops:
         if operation.state == 'pending':
             operation.state = 'superseded'
     for draft in drafts:
-        if draft.state != 'succeeded':
-            draft.state = 'cancelled'
-    task.state, task.question = 'cancelled', '已停止未提交部分；已成功事实保留，更正须单独办理。'
+        if draft.state not in ('succeeded', 'deleted'):
+            draft.state = 'deleted' if delete else 'cancelled'
+    task.state = 'deleted' if delete else 'cancelled'
+    task.question = '已停止未提交部分。已登记的事项可查原回执。'
+    task.updated_at = now()
     task.lease = task.lease_until = None
     task.version += 1
+
+def cancel_task(db, user, task, payload):
+    stop_task(db, task, payload.expected_version)
     return snapshot(db,user,task)

@@ -7,6 +7,18 @@ const movementTypes={
 };
 const hasPermission=permission=>state.user?.permissions.includes(permission);
 const movementLink=(kind,id)=>`#movement?kind=${kind}${id?'&reservation='+id:''}`;
+function outboundEntry(){
+  if(hasPermission('inventory.outbound'))return movementLink('inventory_outbound');
+  if(hasPermission('reservation.pickup'))return movementLink('reservation_pickup');
+  return '';
+}
+function outboundModes(current){
+  const kinds=['inventory_outbound','reservation_pickup'].filter(kind=>hasPermission(movementTypes[kind].permission));
+  if(kinds.length<2)return '';
+  return `<nav class="outbound-modes" aria-label="出库方式">${kinds.map(kind=>
+    `<a class="button" href="${movementLink(kind)}"${current===kind?' aria-current="page"':''}>${movementTypes[kind].name}</a>`
+  ).join('')}</nav>`;
+}
 function movementParameters(form,kind,selected,originalAt){
   const value=inboundParameters(form,originalAt),fields=new FormData(form);
   if(kind==='reservation_cancel'||kind==='reservation_pickup')return {
@@ -19,16 +31,25 @@ function reservationDetails(row){return `<h3>${esc(row.customer.display_name)}</
 function movementReceipt(receipt){const type=movementTypes[receipt.kind];return `<div class="state success"><strong>${isMockMode()?'模拟完成：':''}${type.name}${isMockMode()?'':'已登记'}</strong><p>${isMockMode()?'前端模拟数量':'本次实际'}${receipt.quantity}台；${isMockMode()?'未写入真实台账。':'以下为提交时库存，最新数据请重新查询。'}</p></div><h3>${esc(receipt.balance.warehouse.name)} · ${esc(receipt.balance.model.name)}</h3>${metrics(receipt.balance)}${receipt.reservation?reservationDetails(receipt.reservation):''}<p class="muted">发生：${occurredText(receipt.occurred)}<br>登记：${stamp(receipt.registered_at)}</p><div class="receipt-id">原单：${esc(receipt.business_id)}<br>操作：${esc(receipt.operation_id)}<br>流水：${esc(receipt.ledger_ids.join('、'))}<br>操作者：${esc(receipt.actor_id)}</div><div class="actions"><a class="button primary" href="#inventory">查询库存</a><a class="button" href="#reservations">预留查询</a></div>`;}
 function movementTimeFields(value){return `<label class="field"><span>发生时间精度</span><select name="precision"><option value="date" ${value.precision!=='datetime'?'selected':''}>只知道日期</option><option value="datetime" ${value.precision==='datetime'?'selected':''}>知道精确时刻</option></select></label><div id="movement-date">${field('实际发生日期','date',value.date||'','','date')}<details id="movement-boundary"><summary>T0同日先后不明？核实起点边界</summary><p class="muted">旧事件不能重复记账；同日必须核实在T0之后并保留依据。</p><label class="field"><span>与T0关系</span><select name="t0_relation"><option value="unknown" ${!value.t0_relation||value.t0_relation==='unknown'?'selected':''}>尚未核实</option><option value="after" ${value.t0_relation==='after'?'selected':''}>已核实在T0之后</option><option value="at_or_before" ${value.t0_relation==='at_or_before'?'selected':''}>在T0或之前</option></select></label>${field('边界核实依据','boundary_note',value.boundary_note||'','maxlength="1000"')}</details></div><div id="movement-time">${field('实际发生时刻 · 北京时间','at',localInboundTime(value.at),'step="any"','datetime-local')}</div>`;}
 async function movementPage(params){
+  const route=location.hash;
   let current=params.get('draft')?await api('/drafts/'+encodeURIComponent(params.get('draft'))):null;
   const kind=current?.kind||params.get('kind'),type=movementTypes[kind];
   if(!type||!hasPermission(type.permission))throw new Error('当前账号无权办理此操作。');
+  const id=current?.parameters.reservation_id||params.get('reservation');
+  const pickup=kind==='reservation_pickup';
+  if(pickup&&!id&&!current)return reservationsPage(params,true);
+  const pickupSearch=pickup&&params.get('from')==='outbound';
+  const reservationList=pickupSearch?movementLink('reservation_pickup'):'#reservations';
+  const noteOptional=['inventory_outbound','reservation_create'].includes(kind);
   await loadCatalog();const value=current?.parameters||{},isSelected=['reservation_cancel','reservation_pickup'].includes(kind);
-  const id=value.reservation_id||params.get('reservation');let selected=null,customers=[];
+  let selected=null,customers=[];
   if(id){const rows=await api('/inventory/reservations?active_only=false&q='+encodeURIComponent(id));selected=rows.find(row=>row.id===id);if(!selected)throw new Error('未找到指定预留，请返回列表人工选择。');}
   if(kind==='reservation_create')customers=await api('/catalog/customers');
-  const objectFields=isSelected?`<a href="#reservations">返回预留列表</a><div class="state">${selected?`${esc(selected.warehouse.name)} · ${esc(selected.model.name)}`:'尚未选择具体预留'}</div>${selected?reservationDetails(selected):'<a href="#reservations">先查找具体客户预留</a>'}`:`<div class="grid two">${select('库房','warehouse_id',state.warehouses,value.warehouse_id,true)}${select('型号','model_id',state.models,value.model_id,true)}</div>`;
+  if(route!==location.hash)return;
+  const objectFields=isSelected?`<a href="${reservationList}">返回预留列表</a><div class="state">${selected?`${esc(selected.warehouse.name)} · ${esc(selected.model.name)}`:'尚未选择具体预留'}</div>${selected?reservationDetails(selected):''}`:`<div class="grid two">${select('库房','warehouse_id',state.warehouses,value.warehouse_id,true)}${select('型号','model_id',state.models,value.model_id,true)}</div>`;
   const customerFields=kind==='reservation_create'?`${select('客户','customer_id',customers.map(row=>({...row,name:row.display_name+' · 编号 '+row.id})),value.customer_id)}<a href="#customers">登记或核对客户资料</a><label class="field"><span>留货依据类型</span><select name="basis_kind"><option value="">请选择</option>${['oral','deposit','paid'].map(x=>`<option value="${x}" ${value.basis_kind===x?'selected':''}>${basisLabel(x)}</option>`).join('')}</select></label>`:'';
-  shell(type.name,type.hint,`<div class="grid opening-grid"><section class="panel"><p class="step">01 / 核对资料</p><h2>本次${type.name}</h2><form id="movement-form" class="fields">${objectFields}${customerFields}${field('本次数量','quantity',value.quantity??'','min="1" step="1"','number')}${movementTimeFields(value.occurred||{})}${field(kind==='inventory_outbound'?'办理依据与备注（可选）':'办理依据与备注','basis_note',value.basis_note||'','maxlength="1000"')}<button class="primary">保存草稿并预览</button></form></section><aside class="panel"><p class="step">02 / 人工确认</p><h2>数量影响</h2><div id="movement-preview"><div class="state">先保存草稿，${isMockMode()?'由前端模拟':'由后端计算'}影响。未确认不会改变库存或预留。</div></div></aside></div>`,'',true);
+  const modes=kind==='inventory_outbound'||pickup?outboundModes(kind):'';
+  shell(type.name,type.hint,`${modes}<div class="grid opening-grid"><section class="panel"><p class="step">01 / 核对资料</p><h2>本次${type.name}</h2><form id="movement-form" class="fields">${objectFields}${customerFields}${field('本次数量','quantity',value.quantity??'','min="1" step="1"','number')}${movementTimeFields(value.occurred||{})}${field(noteOptional?'办理依据与备注（可选）':'办理依据与备注','basis_note',value.basis_note||'','maxlength="1000"')}<button class="primary">保存草稿并预览</button></form></section><aside class="panel"><p class="step">02 / 人工确认</p><h2>数量影响</h2><div id="movement-preview"><div class="state">先保存草稿，${isMockMode()?'由前端模拟':'由后端计算'}影响。未确认不会改变库存或预留。</div></div></aside></div>`,'',true);
   const form=$('#movement-form'),panel=$('#movement-preview');let dirty=false;
   const originalAt={displayed:form.elements.at.value,raw:value.occurred?.at};
   function toggleTime(){const exact=form.elements.precision.value==='datetime';$('#movement-date').hidden=exact;$('#movement-time').hidden=!exact;}toggleTime();
@@ -38,7 +59,7 @@ async function movementPage(params){
     if(!current)return;
     if(current.state==='succeeded'){const operation=await api('/operations/'+current.operation_id);panel.innerHTML=movementReceipt(operation.result);form.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);return;}
     if(!current.preview){
-      const missing=current.missing_fields.filter(key=>kind!=='inventory_outbound'||key!=='basis_note');
+      const missing=current.missing_fields.filter(key=>!noteOptional||key!=='basis_note');
       const labels={...Object.fromEntries(missing.map(x=>[x,inboundMissing(x)])),customer_id:'具体客户',basis_kind:'留货依据类型',reservation_id:'具体预留'};
       panel.innerHTML=`<div class="state warning">${missing.length?'草稿已保存，尚待补齐：'+esc(missing.map(x=>labels[x]).join('、'))+'。没有可执行操作。':'备注现为可选，请重新保存草稿并预览，核对当前库存。'}</div>`;
       if(missing.some(x=>x==='occurred.t0_relation'||x==='occurred.boundary_note'))$('#movement-boundary').open=true;return;
@@ -48,16 +69,55 @@ async function movementPage(params){
     $('#movement-verify').onclick=async()=>{try{const result=await api('/operations/'+bound.operation_id);if(!form.isConnected)return;if(result.state==='succeeded'){current.state='succeeded';await show();}else{notify(result.state==='pending'?'原操作尚待确认，无已提交回执。':'操作已失效，请重新预览。');if(result.state==='pending')$('#movement-confirm button').disabled=false;}}catch(error){notify(error.message);}};
     $('#movement-confirm').onsubmit=async event=>{event.preventDefault();if(dirty)return notify('请先重新保存草稿。');const button=event.target.querySelector('button');button.disabled=true;try{const receipt=await FormState.freezeWhile(form,()=>api('/operations/'+bound.operation_id+'/confirm','POST',{draft_id:bound.id,draft_version:bound.version,parameters:bound.parameters}));if(!form.isConnected)return;current.state='succeeded';panel.innerHTML=movementReceipt(receipt);form.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);}catch(error){notify(error.message);button.disabled=true;}};
   }
-  form.onsubmit=async event=>{event.preventDefault();const payload={parameters:movementParameters(form,kind,selected,originalAt)};try{const saved=await FormState.freezeWhile(form,()=>current?api('/drafts/'+current.id,'PATCH',{...payload,expected_version:current.version}):api('/drafts','POST',{...payload,kind}));if(!form.isConnected)return;current=saved;history.replaceState(null,'','#movement?draft='+current.id);dirty=false;await show();}catch(error){notify(error.message);}};
+  form.onsubmit=async event=>{event.preventDefault();const payload={parameters:movementParameters(form,kind,selected,originalAt)};try{const saved=await FormState.freezeWhile(form,()=>current?api('/drafts/'+current.id,'PATCH',{...payload,expected_version:current.version}):api('/drafts','POST',{...payload,kind}));if(!form.isConnected)return;current=saved;history.replaceState(null,'','#movement?draft='+current.id+(pickupSearch?'&from=outbound':''));dirty=false;await show();}catch(error){notify(error.message);}};
   await show();
 }
-async function reservationsPage(params=new URLSearchParams()){
+async function reservationsPage(params=new URLSearchParams(),pickup=false){
+  const route=location.hash;
   await loadCatalog();
-  let saved=state.reservationSearch?.actor===state.user.id?state.reservationSearch:null;
+  if(route!==location.hash)return;
+  const searchKey=pickup?'pickupSearch':'reservationSearch';
+  let saved=state[searchKey]?.actor===state.user.id?state[searchKey]:null;
   if(params.get('warehouse'))saved={q:'',warehouse_id:params.get('warehouse'),model_id:params.get('model')||'',active_only:true};
-  shell('预留查询','按客户、电话、地址或预留编号查找；同名多单请人工选定',`<section class="panel"><h2>查找具体预留</h2><form id="reservation-search" class="fields">${field('客户、电话、地址或预留编号','q','','maxlength="100"')}<div class="grid two">${select('库房','warehouse_id',state.warehouses)}${select('型号','model_id',state.models)}</div><label class="check"><input name="active_only" type="checkbox" checked><span>仅显示尚未提走、未取消的留货</span></label><button class="primary">查询预留</button></form></section><section class="panel" id="reservation-results"><div class="state">填写条件后查询；也可不填条件查看当前预留。</div></section>`,'',true);
-  const search=$('#reservation-search');if(saved){for(const key of ['q','warehouse_id','model_id'])search.elements[key].value=saved[key];search.elements.active_only.checked=saved.active_only;}
-  search.onsubmit=async event=>{event.preventDefault();const form=event.target,values=new FormData(form),query=new URLSearchParams();for(const key of ['q','warehouse_id','model_id'])if(values.get(key))query.set(key,values.get(key));query.set('active_only',String(form.elements.active_only.checked));state.reservationSearch={actor:state.user.id,...Object.fromEntries(values),active_only:form.elements.active_only.checked};try{const rows=await api('/inventory/reservations?'+query);$('#reservation-results').innerHTML=rows.length?rows.map(row=>`<article class="reservation"><h3>${esc(row.warehouse.name)} · ${esc(row.model.name)}</h3>${reservationDetails(row)}${row.remaining_quantity?`<div class="actions">${hasPermission('reservation.pickup')?`<a class="button primary" href="${movementLink('reservation_pickup',row.id)}">办理提货</a>`:''}${hasPermission('reservation.cancel')?`<a class="button" href="${movementLink('reservation_cancel',row.id)}">取消留货</a>`:''}</div>`:''}<a href="#ledger?warehouse=${row.warehouse.id}&model=${row.model.id}&reservation=${row.id}">查看关联流水</a></article>`).join(''):'<div class="state">当前登记范围内没有匹配预留，请核对条件。不能据此认定客户从未留货。</div>';}catch(error){notify(error.message);}};
+  const filter=pickup?'':'<label class="check"><input name="active_only" type="checkbox" checked><span>仅显示尚未提走、未取消的留货</span></label>';
+  const title=pickup?movementTypes.reservation_pickup.name:'预留查询';
+  const subtitle=pickup?'先找到客户的预留单，再办理本次提货。':'按客户、电话、地址或预留编号查找；同名多单请人工选定';
+  shell(title,subtitle,`${pickup?outboundModes('reservation_pickup'):''}
+    <section class="panel"><h2>${pickup?'查找待提预留':'查找具体预留'}</h2>
+      <form id="reservation-search" class="fields">
+        ${field('客户、电话、地址或预留编号','q','','maxlength="100"')}
+        <div class="grid two">${select('库房','warehouse_id',state.warehouses)}${select('型号','model_id',state.models)}</div>
+        ${filter}<button class="primary">${pickup?'查询待提预留':'查询预留'}</button>
+      </form>
+    </section>
+    <section class="panel" id="reservation-results"><div class="state">填写条件后查询；也可不填条件查看当前预留。</div></section>`,'',true);
+  const search=$('#reservation-search'),results=$('#reservation-results');
+  let queryVersion=0;
+  if(saved){
+    for(const key of ['q','warehouse_id','model_id'])search.elements[key].value=saved[key];
+    if(!pickup)search.elements.active_only.checked=saved.active_only;
+  }
+  search.onsubmit=async event=>{
+    event.preventDefault();
+    const version=++queryVersion;
+    const values=new FormData(search),query=new URLSearchParams();
+    for(const key of ['q','warehouse_id','model_id'])if(values.get(key))query.set(key,values.get(key));
+    const activeOnly=pickup||search.elements.active_only.checked;
+    query.set('active_only',String(activeOnly));
+    state[searchKey]={actor:state.user.id,...Object.fromEntries(values),active_only:activeOnly};
+    try{
+      const rows=await api('/inventory/reservations?'+query);
+      if(!results.isConnected||version!==queryVersion)return;
+      results.innerHTML=rows.length?rows.map(row=>{
+        const pickupHref=movementLink('reservation_pickup',encodeURIComponent(row.id))+(pickup?'&from=outbound':'');
+        const pickupButton=hasPermission('reservation.pickup')?`<a class="button primary" href="${pickupHref}">办理提货</a>`:'';
+        const cancelButton=!pickup&&hasPermission('reservation.cancel')?`<a class="button" href="${movementLink('reservation_cancel',row.id)}">取消留货</a>`:'';
+        const actions=row.remaining_quantity&&(pickupButton||cancelButton)?`<div class="actions">${pickupButton}${cancelButton}</div>`:'';
+        const ledger=pickup?'':`<a href="#ledger?warehouse=${row.warehouse.id}&model=${row.model.id}&reservation=${row.id}">查看关联流水</a>`;
+        return `<article class="reservation"><h3>${esc(row.warehouse.name)} · ${esc(row.model.name)}</h3>${reservationDetails(row)}${actions}${ledger}</article>`;
+      }).join(''):pickup?'<div class="state">没有匹配的待提预留，请核对查询条件。</div>':'<div class="state">当前登记范围内没有匹配预留，请核对条件。不能据此认定客户从未留货。</div>';
+    }catch(error){if(results.isConnected&&version===queryVersion)notify(error.message);}
+  };
   if(saved)search.requestSubmit();
 }
 async function customerPage(){

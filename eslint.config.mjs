@@ -6,7 +6,7 @@ const shared = [
   'FormState', 'FrontendMock', 'FrontendPickers', 'servicePages',
   'canInbound', 'occurredText', 'inboundMissing', 'localInboundTime',
   'inboundParameters', 'inboundReceipt', 'inboundImpact', 'inboundPage', 'pendingPage',
-  'movementTypes', 'hasPermission', 'movementLink', 'movementParameters',
+  'movementTypes', 'hasPermission', 'movementLink', 'outboundEntry', 'movementParameters',
   'basisLabel', 'reservationDetails', 'movementReceipt', 'movementTimeFields',
   'movementPage', 'reservationsPage', 'ledgerPage', 'warehouseCandidates',
   'inventoryResults', 'inventoryPage', 'correctionNames', 'documentNames',
@@ -14,7 +14,7 @@ const shared = [
   'coverageNames', 'statisticsPage', 'catalogPage', 'customersPage',
   'isMockMode', 'homePage', 'serviceDraftPage', 'serviceSearchPage',
   'serviceDetailPage', 'repairPage', 'settingsPage', 'customerPage',
-  'sourcesPage','sourcePage','agentHomePage','agentTaskPage','agentTaskRows','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
+  'sourcesPage','sourcePage','agentHomePage','agentTaskPage','agentTaskRows','bindAgentDeletes','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
 ];
 const browser = [
   'window', 'document', 'location', 'navigator', 'history', 'fetch', 'Headers',

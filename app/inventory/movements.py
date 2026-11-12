@@ -28,7 +28,7 @@ def movement_preview(db, kind, params, *, locking=False, expected_versions=None)
         account = db.get(InventoryAccount, selected.account_id)
         context = {**params, 'warehouse_id': account.warehouse_id, 'model_id': account.model_id}
     missing, account, warehouse, model, versions = stock_event_context(
-        db, context, locking=locking, expected_versions=expected_versions, basis_required=kind!='inventory_outbound')
+        db, context, locking=locking, expected_versions=expected_versions, basis_required=kind not in ('inventory_outbound', 'reservation_create'))
     if kind == 'reservation_create':
         missing += [key for key in ['customer_id', 'basis_kind'] if params[key] is None]
     if missing:

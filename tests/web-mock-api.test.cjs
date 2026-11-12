@@ -27,7 +27,7 @@ test('query snapshots are detached; uninitialized balance remains unknown',async
 test('inbound / reserve / pickup / cancel / outbound preserve all stock invariants',async()=>{
   const {base,customers}=await fixture();
   const draft=await save('inventory_inbound',{...base,quantity:5});assert.equal((await readBalance(base)).on_hand,12);assert.equal(draft.preview.after.on_hand,17);await confirm(draft);
-  const reserveDraft=await save('reservation_create',{...base,quantity:4,customer_id:customers[0].id,basis_kind:'deposit'});assert.equal(reserveDraft.preview.customer.id,customers[0].id);assert.equal(reserveDraft.preview.customer.display_name,customers[0].display_name);const reserve=await confirm(reserveDraft);const rid=reserve.reservation.id;
+  const reserveDraft=await save('reservation_create',{...base,quantity:4,customer_id:customers[0].id,basis_kind:'deposit',basis_note:''});assert.equal(reserveDraft.preview.customer.id,customers[0].id);assert.equal(reserveDraft.preview.customer.display_name,customers[0].display_name);const reserve=await confirm(reserveDraft);const rid=reserve.reservation.id;
   assert.equal(reserve.balance.reserved,6);assert.equal(reserve.balance.available,11);
   const pickup=await commit('reservation_pickup',{reservation_id:rid,quantity:2,occurred,basis_note:'样例提货'});assert.equal(pickup.balance.on_hand,15);assert.equal(pickup.balance.reserved,4);assert.equal(pickup.balance.available,11);
   await commit('reservation_cancel',{reservation_id:rid,quantity:2,occurred,basis_note:'样例取消'});

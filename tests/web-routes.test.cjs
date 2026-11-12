@@ -20,6 +20,35 @@ test('all listed routes mount actual mock pages, shared selectors and no network
     assert.equal(network(),0);
   }finally{dom.window.close();}
 });
+test('outbound modes lead to explicit pickup selection and retain independent reservation lookup',async()=>{
+  const {dom,w,d,network}=await harness();
+  const go=async hash=>{w.history.replaceState(null,'',hash);await w.testApp.render();};
+  const tick=()=>new Promise(resolve=>setImmediate(resolve));
+  try{
+    await go('#movement?kind=inventory_outbound');
+    const pickup=d.querySelector('.outbound-modes a[href="#movement?kind=reservation_pickup"]');
+    assert.ok(pickup);
+    await go(pickup.hash);
+    assert.equal(d.querySelector('.outbound-modes [aria-current=page]').textContent,'预留提货');
+    assert.equal(d.querySelector('#movement-form'),null);
+    assert.equal(d.querySelector('#reservation-results a'),null);
+    const search=d.querySelector('#reservation-search');
+    assert.equal(search.elements.active_only,undefined);
+    search.requestSubmit();await tick();
+    const choice=d.querySelector('#reservation-results a[href*="&reservation="]');
+    assert.ok(choice);
+    assert.equal(d.querySelector('#reservation-results a[href*="reservation_cancel"]'),null);
+    await go(choice.hash);
+    assert.ok(d.querySelector('#movement-form a[href="#movement?kind=reservation_pickup"]'));
+    assert.match(d.querySelector('#movement-form').textContent,/剩余/);
+    await go('#reservations');
+    const lookup=d.querySelector('#reservation-search');
+    assert.ok(lookup.elements.active_only.checked);
+    lookup.requestSubmit();await tick();
+    assert.ok(d.querySelector('#reservation-results a[href*="reservation_cancel"]'));
+    assert.equal(network(),0);
+  }finally{dom.window.close();}
+});
 test('reset clears both stores and toolbar values, normal scenario retains resumable operation',async()=>{
   const {dom,w,d}=await harness();
   try{w.testApp.serviceStore.createDraft('额外虚构草稿');

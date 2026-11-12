@@ -56,6 +56,66 @@ test('task shows the saved user followup beside the original request and escapes
   try{assert.match(h.d.querySelector('#main').textContent,/改为4台/);assert.equal(h.d.querySelector('#main script'),null);assert.equal(h.calls.filter(c=>c.path.includes('/confirm')).length,0);}finally{h.dom.window.close();}
 });
 
+test('initial planning and follow-up show an in-chat indicator only while the request is pending',async()=>{
+  const releases=[];
+  const task=taskSeed();
+  const h=await harness('home',call=>{
+    if(call.path==='/api/agent/tasks/task-1/run')return new Promise(resolve=>releases.push(resolve));
+    if(call.path==='/api/agent/tasks/task-1')return new Response(JSON.stringify(task));
+  });
+  const thinking=()=>h.d.querySelector('#agent-thinking');
+  try{
+    const form=h.d.querySelector('#agent-task-form');
+    form.elements.text.value='样例任务';
+    form.requestSubmit();
+    await tick();await h.w.renderForTest();
+    assert.equal(thinking().hidden,false);
+    assert.equal(thinking().closest('[role=status]').getAttribute('role'),'status');
+    assert.equal(h.d.querySelector('#agent-reply button').disabled,true);
+    task.question='请核对库存影响';
+    releases.shift()(new Response(JSON.stringify(task)));
+    await tick();await tick();
+    assert.equal(thinking().hidden,true);
+    assert.match(h.d.querySelector('.agent-conversation').textContent,/请核对库存影响/);
+    const reply=h.d.querySelector('#agent-reply');
+    reply.elements.reply.value='数量改为两台';
+    reply.requestSubmit();
+    await tick();
+    assert.equal(thinking().hidden,false);
+    assert.equal(reply.elements.reply.disabled,true);
+    releases.shift()(new Response('{}',{status:503}));
+    await tick();await tick();
+    assert.equal(thinking().hidden,true);
+    assert.equal(h.d.querySelector('#agent-reply button').disabled,false);
+    assert.match(h.d.querySelector('#notice').textContent,/需要核验/);
+  }finally{h.dom.window.close();}
+});
+
+test('a single incomplete draft uses the conversation form link while preview and multi-item details remain',async()=>{
+  const task=taskSeed(),item=task.items[0],preview=item.draft.preview;
+  item.action=item.draft.kind='inventory_outbound';
+  task.state=item.state='missing';
+  item.question='请补充实际发生日期。';
+  item.draft.preview=null;
+  const h=await harness('task?id=task-1',call=>call.path==='/api/agent/tasks/task-1'?new Response(JSON.stringify(task)):undefined);
+  try{
+    const original='#movement?draft=draft-1',link=()=>h.d.querySelector('.agent-conversation a.button').getAttribute('href');
+    assert.equal(link(),original);
+    assert.match(h.d.querySelector('.agent-message-assistant').textContent,/请补充实际发生日期/);
+    assert.equal(h.d.querySelector('[data-agent-item]'),null);
+    item.draft.preview=preview;
+    task.state=item.state='awaiting_confirmation';
+    await h.w.renderForTest();
+    assert.ok(h.d.querySelector('[data-agent-confirm]'));
+    assert.equal(h.d.querySelectorAll(`#main a[href="${original}"]`).length,1);
+    task.items.push({...clone(item),id:'item-2',draft:{...clone(item.draft),id:'draft-2'}});
+    await h.w.renderForTest();
+    assert.equal(link(),'#inventory');
+    assert.deepEqual([...h.d.querySelectorAll('[data-agent-item] a.button')].map(a=>a.getAttribute('href')),
+      [original,'#movement?draft=draft-2']);
+  }finally{h.dom.window.close();}
+});
+
 test('home calendar loads full month, selects dates, changes month and removes paste button',async()=>{
   const h=await harness('home');
   try{
@@ -65,6 +125,8 @@ test('home calendar loads full month, selects dates, changes month and removes p
     assert.equal(h.d.querySelector('#agent-day-tasks a'),null);
     h.d.querySelector('[data-agent-date="2026-11-03"]').click();
     assert.ok(h.d.querySelector('#agent-day-tasks a[href="#task?id=task-1"]'));
+    assert.match(h.d.querySelector('.agent-calendar-head').textContent,/\u5df2\u5b8c\u6210 0/);
+    assert.match(h.d.querySelector('[data-agent-date="2026-11-03"]').getAttribute('aria-label'),/0\u9879\u5df2\u5b8c\u6210/);
     h.d.querySelector('[data-agent-date="2026-11-03"]').dispatchEvent(new h.w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
     assert.equal(h.d.activeElement.dataset.agentDate,'2026-11-04');
     h.d.querySelector('#agent-month-prev').click();await tick();await tick();

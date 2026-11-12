@@ -35,7 +35,7 @@ function inventoryHarness(){
     state.warehouses=[{id:'w1',name:'示例1号库'},{id:'w2',name:'示例2号库'}];state.models=[{id:'m1',name:'示例型号A'},{id:'m2',name:'示例型号B'}];
     state.inventorySearch={actor:'owner',warehouse_id:'w1',model_id:'m1'};
     loadCatalog=async()=>{};shell=captureShell;notify=warn;api=request;
-    canInbound=()=>false;hasPermission=()=>false;`,context);
+    canInbound=()=>false;hasPermission=()=>false;outboundEntry=()=>'';`,context);
   return {form,panel,choices,toggle,modelToggle,modelChoices,modelButtons,listeners,candidates,calls,html,warnings,autoSubmissions:()=>autoSubmissions,
     enter:()=>vm.runInContext('inventoryPage()',context),submit:()=>form.onsubmit({preventDefault(){}})};
 }
