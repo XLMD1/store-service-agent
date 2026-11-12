@@ -22,6 +22,7 @@
 | 后端启动、身份接口与本机测试 | [后端开发说明](guides/backend-development.md)；验收状态仍以开发计划为准 |
 | 库存Agent、DeepSeek配置与任务恢复 | [M1-06运行与接口](guides/inventory-agent.md)；模型实测与本机测试替身分别记录 |
 | 售后原件与手工草稿接口 | [架构第10.1节](architecture/store-service-agent-architecture-v1.0.md#101-售后资料路径)；交付范围和测试见开发计划 |
+| 安装与维修工费台账 | [业务规则 FR-13](prd/store-service-agent-prd-v1.0.md#713-fr-13-安装与维修工费台账--p0)、[架构第8.5节](architecture/store-service-agent-architecture-v1.0.md#85-工费台账的权限事务与查询)、[M2 实施顺序](plans/development-plan-v1.0.md#7-m2售后档案闭环) |
 | M0构造样例与验收任务 | [样例数据入口](../evals/README.md)；实际缺口与进度仍在开发计划维护 |
 | 提交、推送、PR格式 | [Git规范](guides/git.md) |
 | 页面设计或实现 | [设计规范AI版](design/design-resources.md)及[HTML可视化版](design/design-resources.html)：页面、素材、交互与视觉规则的统一入口 |
