@@ -2,7 +2,7 @@
   "date": "2026-11-12",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 87,
+  "retained_count": 90,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -441,6 +441,27 @@
       "path": "docs/design/qa/outbound-entry/pickup-title-1440.jpg",
       "bytes": 109798,
       "sha256": "d74c32e58683be225bb7f14eb07c850763dafee275dab5500f1cdc82739a70c2"
+    },
+    {
+      "path": "docs/design/qa/m2-02/service-draft-photo-1440.jpg",
+      "bytes": 109839,
+      "sha256": "7184991b39344fb7e57607779cb3b08f7af32e5d6e6dcb9544ba9cf57367a06e",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-02/service-draft-text-390.jpg",
+      "bytes": 45250,
+      "sha256": "4464f03ad5c90ba31e26ef5e2b6e36815dffc396478b6e54e316b522ea1fd254",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-02/source-draft-list-1440.jpg",
+      "bytes": 118504,
+      "sha256": "cb733e143ad612935cfdab7b22c1ea5f1f265230416d47e519d01c1185169ecc",
+      "width": 1440,
+      "height": 900
     }
   ],
   "removed": [
@@ -965,6 +986,6 @@
       "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
     }
   ],
-  "added_after_curation": 26,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added."
+  "added_after_curation": 29,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added."
 }

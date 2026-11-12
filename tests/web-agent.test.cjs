@@ -246,5 +246,6 @@ test('service source retains original and request id until a saved response and 
     await h.w.renderForTest();
     assert.equal(h.d.querySelector('.service-source').textContent,original);
     assert.equal(h.d.querySelector('.service-source img'),null);
+    assert.ok(h.d.querySelector('#source-drafts-retry'));
   }finally{h.dom.window.close();}
 });

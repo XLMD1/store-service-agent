@@ -8,7 +8,7 @@
   },
   "evaluation_sets": {
     "development": {
-      "count": 38,
+      "count": 44,
       "status": "partially_run",
       "purpose": "公开需求驱动开发和回归；前置/权限为M0测试设计。"
     },
@@ -1908,6 +1908,279 @@
           "tests/integration/test_inventory_reports.py",
           "docs/design/qa/m1-05/README.md"
         ]
+      }
+    },
+    {
+      "id": "AC-39",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "师傅补录口头安排的维修，上门后因缺配件未修好，申报上门费 60 元，老板确认 50 元",
+      "preconditions": [
+        "师傅有本人申报权限，维修可关联已归档售后记录。老板可核对工费。"
+      ],
+      "actors": {
+        "roles": [
+          "technician",
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "记录实际上门及未修好原因，保留申报金额。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "只有老板确认金额后才计入待付。"
+      },
+      "expected_results": [
+        "工作结果按实际记录，确认前不计应付，确认后待付 50 元，保留申报 60 元和调整原因"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-39"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
+      }
+    },
+    {
+      "id": "AC-40",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "同一次安装由两位师傅参加，老板核实甲应付 100 元且已扣、乙应付 50 元且未付",
+      "preconditions": [
+        "准备一张两位师傅参加的安装工作单，两位师傅分别申报，老板有已扣的核对依据。"
+      ],
+      "actors": {
+        "roles": [
+          "technician",
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "两位师傅各自核对实际工费和已结情况。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "老板分别确认两笔金额并核实甲的已扣事实。"
+      },
+      "expected_results": [
+        "两笔工费均能查回同一张工作单，甲显示已扣 100 元，乙显示待付 50 元"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-40"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
+      }
+    },
+    {
+      "id": "AC-41",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "已扣旧单金额为 120 元，代收和交回金额未知，再尝试登记为门店已付",
+      "preconditions": [
+        "旧单在补录边界之后，已核实全额扣款及依据，缺少代收和交回凭据。"
+      ],
+      "actors": {
+        "roles": [
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "代收和交回金额缺失时保持未知。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "已扣由老板确认，已经结清的记录拒绝再登记付款。"
+      },
+      "expected_results": [
+        "扣款金额和依据可查，未知金额留空，重复结付被拒绝，待付不增加"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-41"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
+      }
+    },
+    {
+      "id": "AC-42",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "一笔 80 元工费误记已扣，老板更正为待付，之后实际付款并登记",
+      "preconditions": [
+        "准备一笔有效工费，当前误标为已扣。核实原登记有误后，门店另行完成线下付款。"
+      ],
+      "actors": {
+        "roles": [
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "记录更正原因、时间和操作者。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "老板分别确认更正及实际已付，重复提交按原操作核验。"
+      },
+      "expected_results": [
+        "待付汇总先增加再减少 80 元，保留原已扣记录、更正原因和实际付款记录"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-42"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
+      }
+    },
+    {
+      "id": "AC-43",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "工费结清边界前后各有一批旧单，边界后的旧单包含已扣、已付及待付",
+      "preconditions": [
+        "使用已确认的虚构结清边界，准备边界前后的独立旧单及核对依据。"
+      ],
+      "actors": {
+        "roles": [
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "按工作发生日期核对边界，同日顺序不明时由老板查明。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "老板逐笔核实范围内的应付金额及已结事实。"
+      },
+      "expected_results": [
+        "只补录结清后的旧单，三个状态和金额可分别核对"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-43"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
+      }
+    },
+    {
+      "id": "AC-44",
+      "requirements": [
+        "FR-13"
+      ],
+      "tasks": [
+        "M2-05"
+      ],
+      "dataset_split": "development",
+      "input": "同单两位师傅登录，甲尝试读取乙的工费和直接更改自己的结算状态",
+      "preconditions": [
+        "准备同一工作单的两名独立师傅账号和负责人账号，两笔工费已分别确认。"
+      ],
+      "actors": {
+        "roles": [
+          "technician",
+          "owner"
+        ],
+        "policy_source": {
+          "document": "docs/prd/store-service-agent-prd-v1.0.md",
+          "section": "7.13"
+        },
+        "scope": "虚构样例，各角色使用独立账号验证实际权限。"
+      },
+      "clarification": "通过列表、详情及直接请求检查记录归属。",
+      "confirmation": {
+        "required_for_valid_business_write": true,
+        "expectation": "工费正式更改仅由老板确认，师傅请求被拒绝。"
+      },
+      "expected_results": [
+        "甲只能查看自己的工费，越权读写被拒绝，老板可查询两人的工费"
+      ],
+      "source": {
+        "document": "docs/prd/store-service-agent-prd-v1.0.md",
+        "section": "13.2",
+        "case": "AC-44"
+      },
+      "fixture_refs": [],
+      "execution": {
+        "status": "not_run",
+        "environment": null,
+        "command": null,
+        "result": null,
+        "evidence": []
       }
     }
   ]

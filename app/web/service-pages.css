@@ -3,3 +3,13 @@
 .service-task.material-ink h2,.service-task.material-ink .field>span{color:white}.service-task.material-ink .muted{color:#d4e2e6}.service-task .actions{margin-top:0}.service-task .fields{gap:12px}
 .service-task.material-ink{background:var(--ink) url("assets/ink-grain.png") repeat;background-size:628px 628px;border-color:var(--ink)}
 @media(min-width:900px) and (max-width:1199px){.service-home{grid-template-columns:minmax(0,1fr)}.service-home>*{grid-column:auto;grid-row:auto}}
+
+.service-review-fields{border:0;margin:0;padding:0;min-inline-size:0}
+.service-review-fields .check{width:fit-content;color:var(--muted)}
+.service-review-fields #service-repair-date{margin-top:12px}
+.service-review-original .service-source{max-height:24rem;overflow:auto}
+#service-review-status:empty{display:none}
+#service-review-reload{margin-top:12px}
+@media(min-width:1000px){
+  .workspace[data-view=desktop] .service-review-original{position:sticky;top:24px}
+}
