@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.28 · 整理日期：2026-11-12 · 视觉基准：C / 沉稳专业型。
+版本：V1.29 · 整理日期：2026-11-12 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -364,6 +364,17 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | m1-outbound / m1-pickup | 电脑侧栏和手机库存页的「出库」入口提供普通出库与预留提货。提货页标题为「预留提货」，选定待提预留后继续原提货表单。 | [电脑出库](qa/outbound-entry/outbound-entry-1440.jpg) · [手机待提预留](qa/outbound-entry/pickup-search-390.jpg) · [电脑提货页标题](qa/outbound-entry/pickup-title-1440.jpg) |
 
 「预留查询」继续提供独立查找、查看流水和按权限办理取消或提货。 已完成本机浏览器核对，待用户审核。[出库入口](http://127.0.0.1:8002/#movement?kind=inventory_outbound) · [核对记录](qa/outbound-entry/README.md)
+
+### 1.29 M2-02 手工草稿核对
+
+本机浏览器核对通过。沿用 C 方向的[售后草稿效果图](assets/mobile-c/01-service-draft.png)与共用表单样式。由[售后来源入口](../../app/web/index.html#sources)打开已保存的原件，再新建或打开草稿。实现见[来源及草稿页面](../../app/web/sources.js)。
+
+| 页面编号 | 当前行为 | 截图 |
+| --- | --- | --- |
+| source | 原件及其草稿列表，可新建多条独立草稿 | [电脑 1440px](qa/m2-02/source-draft-list-1440.jpg) |
+| service-draft | 手机纵向、电脑并排对照原件与字段，保存后可刷新恢复，版本冲突时保留输入 | [手机 390px](qa/m2-02/service-draft-text-390.jpg) · [电脑 1440px](qa/m2-02/service-draft-photo-1440.jpg) |
+
+[本机核对记录](qa/m2-02/README.md)使用专用测试库和虚构样例。文字提取、照片 OCR 和正式归档待接入。
 
 ## 2. HTML样板
 
