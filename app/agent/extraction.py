@@ -84,6 +84,8 @@ def grounded_plan(plan, text):
             if not valid:
                 setattr(step, field, None)
                 step.evidence.pop(field, None)
+        if step.model and unicodedata.normalize('NFKC', step.model).casefold() not in unicodedata.normalize('NFKC', text).casefold():
+            step.model = ''
         if step.basis_note not in text:
             step.basis_note = ''
     return plan

@@ -1,6 +1,8 @@
-from datetime import date
+import re
+from datetime import date, datetime
 from typing import Annotated, Literal
 from uuid import UUID
+from zoneinfo import ZoneInfo
 
 from pydantic import AwareDatetime, Field, SecretStr, field_validator
 
@@ -33,6 +35,16 @@ class PlanStep(StrictModel):
     group_by: Literal['date', 'warehouse', 'model'] = 'date'
     evidence: dict[Literal['quantity','on_hand','opening_reserved','new_quantity','basis_kind'],
                    Annotated[str, Field(min_length=1, max_length=100)]] = Field(default_factory=dict)
+
+    @field_validator('occurred', mode='before')
+    @classmethod
+    def local_occurrence_time(cls, value):
+        if isinstance(value, dict) and value.get('precision') == 'datetime':
+            timestamp = value.get('at')
+            if isinstance(timestamp, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d{1,6})?)?', timestamp):
+                local = datetime.fromisoformat(timestamp).replace(tzinfo=ZoneInfo('Asia/Shanghai'))
+                return {**value, 'at': local}
+        return value
 
 
 class Plan(StrictModel):

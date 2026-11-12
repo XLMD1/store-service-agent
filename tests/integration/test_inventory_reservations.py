@@ -67,11 +67,29 @@ def test_outbound_without_note_still_checks_t0_and_available_stock(stock):
     assert numbers(client,params)==(10,3,7)
 
 
-def test_reservation_basis_remains_required_when_outbound_note_is_optional(stock):
-    client,params=stock
-    item=change(client,'reservation_create',params,basis_note='',basis_kind='oral',
-        customer_id=params['opening_reservations'][0]['customer_id'])
-    assert 'basis_note' in item['missing_fields'] and item['preview'] is None
+@pytest.mark.parametrize('extra', [{}, {'basis_note': ''}, {'basis_note': '   '}])
+def test_reservation_note_is_optional_but_basis_type_is_required(stock, extra):
+    client, params = stock
+    payload = {'warehouse_id': params['warehouse_id'], 'model_id': params['model_id'],
+               'customer_id': params['opening_reservations'][0]['customer_id'], 'quantity': 2,
+               'occurred': {'precision': 'date', 'date': '2026-10-02'}, **extra}
+
+    response = client.post('/api/drafts', headers=csrf(client),
+                           json={'kind': 'reservation_create', 'parameters': payload})
+    assert response.status_code == 201, response.text
+    assert response.json()['missing_fields'] == ['basis_kind']
+
+    response = client.post('/api/drafts', headers=csrf(client),
+                           json={'kind': 'reservation_create', 'parameters': {**payload, 'basis_kind': 'oral'}})
+    assert response.status_code == 201, response.text
+    draft = response.json()
+    assert draft['missing_fields'] == []
+    assert numbers(client, params) == (10, 3, 7)
+    receipt = confirm(client, draft)
+    assert receipt.status_code == 200, receipt.text
+    assert receipt.json()['reservation']['basis_kind'] == 'oral'
+    assert confirm(client, draft).json() == receipt.json()
+    assert numbers(client, params) == (10, 5, 5)
 
 
 def test_outbound_only_uses_available_and_does_not_consume_reservation(stock):

@@ -54,6 +54,24 @@ def test_missing_key_never_attempts_network(monkeypatch):
     with pytest.raises(ProviderUnavailable,match='尚未配置'):DeepSeekPlanner().parse('测试',{},[])
 
 
+@pytest.mark.parametrize(('reply', 'occurred', 'expected'), [
+    ('2台今天', {'precision': 'date', 'date': '2026-11-12'}, {'date': '2026-11-12', 'at': None}),
+    ('2台今天下午14点', {'precision': 'datetime', 'at': '2026-11-12T14:00:00'},
+     {'date': None, 'at': '2026-11-12T06:00:00Z'}),
+    ('2台今天下午14点', {'precision': 'datetime', 'at': '2026-11-12T14:00:00+08:00'},
+     {'date': None, 'at': '2026-11-12T06:00:00Z'}),
+])
+def test_stock_followup_preserves_occurrence_precision(monkeypatch, reply, occurred, expected):
+    monkeypatch.setenv('DEEPSEEK_API_KEY', 'synthetic-unit-key')
+    content = json.dumps({'steps': [{'action': 'inventory_outbound', 'quantity': 2,
+                                    'evidence': {'quantity': '2台'}, 'occurred': occurred}]})
+    monkeypatch.setattr('app.agent.provider.urlopen', lambda *a, **kw: Response(envelope(content)))
+    step = DeepSeekPlanner().parse('样例出库\n补充：' + reply, {'today': '2026-11-12'}, [])[0]['steps'][0]
+    assert step['quantity'] == 2
+    assert step['occurred']['precision'] == occurred['precision']
+    assert {key: step['occurred'][key] for key in expected} == expected
+
+
 @pytest.mark.parametrize('error',[TimeoutError('sensitive'),HTTPError('https://api.deepseek.com',401,'sensitive',{},None),IncompleteRead(b'partial'),ConnectionResetError('sensitive')])
 def test_network_errors_do_not_echo_sensitive_external_content(monkeypatch,capsys,error):
     monkeypatch.setenv('DEEPSEEK_API_KEY','synthetic-unit-key')

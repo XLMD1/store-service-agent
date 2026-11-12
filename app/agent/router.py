@@ -5,13 +5,14 @@ from zoneinfo import ZoneInfo
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
 from sqlalchemy import select
 
-from app.agent.models import AgentTask
+from app.agent.models import AgentTask, AgentTaskItem
 from app.agent.provider import DeepSeekPlanner
 from app.agent.schemas import Selection, TaskCreate, TaskRun, ProviderSettings
 from app.agent.settings import configuration, save_key
-from app.agent.service import access, cancel_task, create_task, run_task, select_candidate, snapshot
+from app.agent.service import access, cancel_task, create_task, run_task, select_candidate, snapshot, stop_task
 from app.auth.router import check_write, current_user, database
 from app.auth.service import ensure_permission
+from app.operations.models import Draft
 
 
 router = APIRouter(prefix='/api/agent')
@@ -66,7 +67,12 @@ def create(payload: TaskCreate, user=Depends(current_user), db=Depends(database,
 def listing(month: str | None = Query(default=None, pattern=r'^\d{4}-\d{2}$'), pending_only: bool = False,
             user=Depends(current_user), db=Depends(database,scope='function')):
     ensure_permission(db,user,'inventory.read')
-    query = select(AgentTask).where(AgentTask.actor_id==user.id)
+    task_items = select(AgentTaskItem.id).where(AgentTaskItem.task_id == AgentTask.id)
+    remaining_items = task_items.outerjoin(Draft, Draft.id == AgentTaskItem.draft_id).where(
+        Draft.state.is_distinct_from('deleted'))
+    query = select(AgentTask).where(
+        AgentTask.actor_id == user.id, AgentTask.state != 'deleted',
+        ~task_items.exists() | remaining_items.exists())
     if month:
         try:
             year, number = map(int, month.split('-'))
@@ -87,6 +93,13 @@ def listing(month: str | None = Query(default=None, pattern=r'^\d{4}-\d{2}$'), p
 def get(task_id: UUID, user=Depends(current_user), db=Depends(database,scope='function')):
     user, task = access(db,user.id,task_id)
     return snapshot(db,user,task)
+
+
+@router.delete('/tasks/{task_id}', status_code=204, dependencies=[Depends(check_write)])
+def delete_task(task_id: UUID, expected_version: int = Query(ge=1),
+                user=Depends(current_user), db=Depends(database,scope='function')):
+    _, task = access(db, user.id, task_id, True, include_deleted=True)
+    stop_task(db, task, expected_version, delete=True)
 
 
 @router.post('/tasks/{task_id}/run')

@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.21 · 整理日期：2026-11-11 · 视觉基准：C / 沉稳专业型。
+版本：V1.28 · 整理日期：2026-11-12 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -303,6 +303,67 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | source | 查看原文或原图，显示已知来源信息，原图不可用时重试 | [手机阅读](qa/m2-01/source-photo-390.jpg) · [电脑对照](qa/m2-01/source-photo-1440.jpg) |
 
 [浏览器核对与测试记录](qa/m2-01/README.md)使用独立测试库及虚构样例。
+
+### 1.22 二级页返回入口
+
+共用页头沿用 C 方向，将返回入口设为带图标和浅色描边的链接，保留 44px 点击区域和键盘焦点。使用[共用页头](../../app/web/app.js)及[样式](../../app/web/app.css)。
+
+| 页面编号 | 页面 | 截图 |
+| --- | --- | --- |
+| m1-inbound | [入库登记](http://127.0.0.1:8002/#inbound) | [电脑 1754px](qa/header-back/inbound-1754.jpg) |
+| m1-outbound | [普通出库](http://127.0.0.1:8002/#movement?kind=inventory_outbound) | [手机 390px](qa/header-back/outbound-390.jpg) |
+
+本机浏览器已核对两页的返回目标、点击区域、键盘焦点及横向边界。[验收记录](qa/header-back/README.md)
+
+### 1.23 办理留货备注选填
+
+| 页面编号 | 当前交互 | 证据 |
+| --- | --- | --- |
+| m1-reserve | 办理依据与备注可空，留货依据类型仍需选择。旧草稿可按原编号重新保存并预览。 | [手机 390px](qa/reservation-note/reserve-note-390.jpg) |
+
+[浏览器核对与测试记录](qa/reservation-note/README.md)
+
+### 1.24 库存任务对话、删除与月历
+
+| 页面编号 | 当前交互 | 证据 |
+| --- | --- | --- |
+| task | 库存助手汇总缺项，回复后继续原任务，候选可直接选择 | [手机对话](qa/agent-conversation/agent-conversation-390.jpg) |
+| home | 月历只计算已完成任务，日期内仍可查看和删除任务 | [电脑月历](qa/agent-conversation/agent-calendar-1440.jpg) |
+| m1-pending | 库存草稿与任务分别提供删除入口 | [电脑待核对](qa/agent-conversation/pending-deletes-1440.jpg) |
+
+[浏览器核对记录](qa/agent-conversation/README.md)
+
+### 1.25 库存任务表单入口
+
+| 页面编号 | 当前交互 | 截图 |
+| --- | --- | --- |
+| task | 单笔普通出库待补信息时，若已有原草稿且无候选或预览，只在对话区保留“使用库存表单”，直接打开原草稿。候选、预览与回执仍按需展示，多笔任务保留各自的表单入口。 | [电脑 1440px](qa/agent-conversation/single-outbound-task-1440.jpg) |
+
+沿用 C 方向，已完成本机浏览器核对，待用户审核。[页面代码](../../app/web/agent-pages.js) · [核对记录](qa/agent-conversation/README.md)
+
+### 1.26 库存任务对话等待提示
+
+| 页面编号 | 当前交互 | 截图 |
+| --- | --- | --- |
+| task | 首次整理、发送补充和重新整理时，对话显示「库存助手正在整理」和三个依次淡入的圆点。收到结果或请求结束后收起提示。系统偏好减少动态效果时显示静止圆点。 | [手机 390px](qa/agent-conversation/agent-thinking-390.jpg) |
+
+已完成本机浏览器核对，待用户审核。[页面代码](../../app/web/agent-pages.js) · [核对记录](qa/agent-conversation/README.md)
+
+### 1.27 库存任务追问与候选
+
+| 页面编号 | 当前交互 | 截图 |
+| --- | --- | --- |
+| task | 仅说「准备出库」时先追问普通出库或预留提货。缺少对象信息时直接补充文字。同名、模糊匹配及有明确筛选条件的预留单可通过候选核对。 | [手机 390px](qa/agent-conversation/outbound-clarification-390.jpg) |
+
+已完成本机浏览器核对，待用户审核。[核对记录](qa/agent-conversation/README.md)
+
+### 1.28 出库统一入口
+
+| 页面编号 | 当前交互 | 截图 |
+| --- | --- | --- |
+| m1-outbound / m1-pickup | 电脑侧栏和手机库存页的「出库」入口提供普通出库与预留提货。提货页标题为「预留提货」，选定待提预留后继续原提货表单。 | [电脑出库](qa/outbound-entry/outbound-entry-1440.jpg) · [手机待提预留](qa/outbound-entry/pickup-search-390.jpg) · [电脑提货页标题](qa/outbound-entry/pickup-title-1440.jpg) |
+
+「预留查询」继续提供独立查找、查看流水和按权限办理取消或提货。 已完成本机浏览器核对，待用户审核。[出库入口](http://127.0.0.1:8002/#movement?kind=inventory_outbound) · [核对记录](qa/outbound-entry/README.md)
 
 ## 2. HTML样板
 

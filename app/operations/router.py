@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 
 from app.auth.router import check_write, current_user, database
@@ -33,6 +33,8 @@ def get_draft(draft_id: UUID, user=Depends(current_user), db=Depends(database, s
     if not row:
         raise HTTPException(404, 'Draft not found')
     check_actor(db, user, row.created_by, row.kind)
+    if row.state == 'deleted':
+        raise HTTPException(404, 'Draft not found')
     return draft_result(db, row)
 
 
@@ -44,9 +46,29 @@ def edit_draft(draft_id: UUID, payload: DraftUpdate, user=Depends(current_user),
     if not row:
         raise HTTPException(404, 'Draft not found')
     check_actor(db, user, row.created_by, row.kind)
-    if row.version != payload.expected_version or row.state == 'succeeded':
+    if row.version != payload.expected_version or row.state not in ('missing', 'ready'):
         raise HTTPException(409, 'Draft version changed or already submitted')
     return prepare_draft(db, user, payload.parameters, row)
+
+
+@router.delete('/drafts/{draft_id}', status_code=204, dependencies=[Depends(check_write)])
+def delete_draft(draft_id: UUID, expected_version: int = Query(ge=1),
+                 user=Depends(current_user), db=Depends(database, scope='function')):
+    operations = db.scalars(select(Operation).where(Operation.draft_id == str(draft_id))
+                            .order_by(Operation.id).with_for_update()).all()
+    row = db.scalar(select(Draft).where(Draft.id == str(draft_id)).with_for_update())
+    if not row:
+        raise HTTPException(404, 'Draft not found')
+    check_actor(db, user, row.created_by, row.kind)
+    if row.state == 'deleted':
+        return
+    if row.version != expected_version or row.state not in ('missing', 'ready'):
+        raise HTTPException(409, 'Draft changed or already submitted')
+    for operation in operations:
+        if operation.state == 'pending':
+            operation.state = 'superseded'
+    row.state = 'deleted'
+    row.version += 1
 
 
 @router.post('/operations/{operation_id}/confirm', dependencies=[Depends(check_write)])

@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 75,
+  "retained_count": 87,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -381,6 +381,66 @@
       "path": "docs/design/qa/m2-01/sources-photo-390.jpg",
       "bytes": 48663,
       "sha256": "fcc1fbc6bf7d524db99d27bea4ac7afc76204a6f908503e9c3835c2c820b9a98"
+    },
+    {
+      "path": "docs/design/qa/header-back/inbound-1754.jpg",
+      "bytes": 134108,
+      "sha256": "36372362b189d7c43988fc341b81dadb9515c368ddeb2d9ca6906b615330eab0"
+    },
+    {
+      "path": "docs/design/qa/header-back/outbound-390.jpg",
+      "bytes": 45589,
+      "sha256": "2f953ee0d5f0880fefd8c22f3544eb1f0801fe7678f0726dff13846d3dec4d7f"
+    },
+    {
+      "path": "docs/design/qa/reservation-note/reserve-note-390.jpg",
+      "bytes": 46375,
+      "sha256": "0b5e1c901c6a9e7d5a395209a3000a85dce7a55e8110e0d69b476b0970e90f28"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/agent-calendar-1440.jpg",
+      "bytes": 101637,
+      "sha256": "a10dbfa8f1dec6f777327c7307d58fd7fb2633b2808caa9896262d1682e8e0f5"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/agent-conversation-390.jpg",
+      "bytes": 48284,
+      "sha256": "3f32f8bbbc38bd5386f91f6ee811b4173c9d3dc1dcad201ed2da72548fa97178"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/single-outbound-task-1440.jpg",
+      "bytes": 104202,
+      "sha256": "34a878ffa4621b395577859689011c1f92bade019bb372249fef4544a2b2a7bf"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/agent-thinking-390.jpg",
+      "bytes": 52182,
+      "sha256": "2ad6df705d15489af60b8c413520f57f01c0087f3c8ae0b7d703c07f8aa2deb5"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/outbound-clarification-390.jpg",
+      "bytes": 45760,
+      "sha256": "e9d28c14fa422fdbf81dbc3c5504f0315538d752783c0e57f859a5dc2f72bb3a"
+    },
+    {
+      "path": "docs/design/qa/agent-conversation/pending-deletes-1440.jpg",
+      "bytes": 109327,
+      "sha256": "d64fb34c48084d7a475a5d4e3af723f1afcf47c6e27fd45fa5ee69b26f6e9bf8"
+    },
+    {
+      "path": "docs/design/qa/outbound-entry/outbound-entry-1440.jpg",
+      "bytes": 119319,
+      "sha256": "e0ba36dea4097760b1c005d5cd4407283301a9b1ea4ace289f8305e052e3ae31"
+    },
+    {
+      "path": "docs/design/qa/outbound-entry/pickup-search-390.jpg",
+      "bytes": 44492,
+      "sha256": "0afac29375575d2fcd2f43e9918e126a058e0589fd3eaca9b85f6fbe3a7c9cc3"
+    },
+    {
+      "path": "docs/design/qa/outbound-entry/pickup-title-1440.jpg",
+      "bytes": 109798,
+      "sha256": "d74c32e58683be225bb7f14eb07c850763dafee275dab5500f1cdc82739a70c2"
     }
   ],
   "removed": [
@@ -905,6 +965,6 @@
       "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
     }
   ],
-  "added_after_curation": 14,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added."
+  "added_after_curation": 26,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added."
 }

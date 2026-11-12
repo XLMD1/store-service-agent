@@ -55,11 +55,12 @@
   function preview(kind,p) {
     let required=kind==='inventory_correction'?['document_id','new_quantity','basis_note']:kind==='inventory_opening'?['warehouse_id','model_id','t0','on_hand','basis_note']:(kind==='reservation_cancel'||kind==='reservation_pickup'?['reservation_id','quantity','occurred','basis_note']:['warehouse_id','model_id',kind==='inventory_adjustment'?'on_hand':'quantity','occurred','basis_note']);
     if(kind==='reservation_create')required.push('customer_id','basis_kind');
-    if(['inventory_inbound','inventory_outbound'].includes(kind))required=required.filter(key=>key!=='basis_note');
+    const noteOptional=['inventory_inbound','inventory_outbound','reservation_create'].includes(kind);
+    if(noteOptional)required=required.filter(key=>key!=='basis_note');
     const missing=required.filter(key=>p[key]===null||p[key]===undefined||p[key]==='');
     if(p.occurred){const field=p.occurred.precision==='date'?'date':'at';if(!p.occurred[field])missing.push('occurred.'+field);}
     for(const field of ['quantity','on_hand','new_quantity'])if(p[field]!=null&&!integer(p[field],field==='quantity'?1:0))fail(422,'数量必须是合法整数');
-    if(!['inventory_inbound','inventory_outbound'].includes(kind)&&p.basis_note&&!p.basis_note.trim())missing.push('basis_note');
+    if(!noteOptional&&p.basis_note&&!p.basis_note.trim())missing.push('basis_note');
     if(missing.length)return {missing,preview:null,versions:{}};
     const {w,m,r,original}=targets(p),before=balance(w,m),account=db.accounts[accountKey(w,m)];
     if(!before.warehouse.enabled||!before.model.enabled)fail(422,'请选择启用的库房和型号');
@@ -168,7 +169,14 @@
     if(parts[0]==='drafts') {
       if(method==='GET'&&parts.length===1)return db.drafts.filter(row=>row.actor_id===user.id&&user.permissions.includes(permissions[row.kind])&&['missing','ready'].includes(row.state));
       if(method==='POST'&&parts.length===1)return saveDraft(body);
-      if(parts.length===2){const row=find(db.drafts,parts[1],'草稿');actorDraft(row);if(method==='GET')return row;if(method==='PATCH')return saveDraft(body,row);}
+      if(parts.length===2){const row=find(db.drafts,parts[1],'草稿');actorDraft(row);if(method==='DELETE'){
+          if(row.state==='deleted')return null;
+          if(!['missing','ready'].includes(row.state)||row.version!==Number(q.get('expected_version')))fail(409,'草稿已变化或已提交');
+          for(const op of db.operations)if(op.draft_id===row.id&&op.state==='pending')op.state='superseded';
+          row.state='deleted';row.version+=1;return null;
+        }
+        if(row.state==='deleted')fail(404,'草稿已删除');
+        if(method==='GET')return row;if(method==='PATCH')return saveDraft(body,row);}
     }
     if(parts[0]==='operations'&&parts.length>=2) {
       if(method==='POST'&&parts.length===3&&parts[2]==='confirm')return confirm(parts[1],body);
