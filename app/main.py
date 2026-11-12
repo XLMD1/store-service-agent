@@ -13,6 +13,7 @@ from app.inventory.router import router as inventory_router
 from app.operations.router import router as operations_router
 from app.agent.router import router as agent_router
 from app.sources.router import router as sources_router
+from app.service_records.router import router as service_records_router
 
 
 def create_app(settings: Settings | None = None):
@@ -41,6 +42,7 @@ def create_app(settings: Settings | None = None):
     app.include_router(operations_router)
     app.include_router(agent_router)
     app.include_router(sources_router)
+    app.include_router(service_records_router)
     web = Path(__file__).parent / 'web'
     app.mount('/web', StaticFiles(directory=web), name='web')
 

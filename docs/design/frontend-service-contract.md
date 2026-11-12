@@ -1,8 +1,8 @@
 # 工作台、售后、维修与设置前端契约
 
-2026-11-03。维护源：`app/web/service-pages.js`、`service-pages.css`。这是未来后端接入的拟定契约与当前内存演示边界，**不是已存在的API**。页面采用C方向；原图和历史`prototypes/frontend`保持不变。页面状态及截图由设计资源两版统一登记。
+本文保留 2026-11-03 的内存演示边界及后续接口草案。演示源码为 `app/web/service-pages.js`、`service-pages.css`，页面和截图见设计资源两版。已实现的原件保存、受控读取与手工草稿接口统一查阅[架构第10.1节](../architecture/store-service-agent-architecture-v1.0.md#101-售后资料路径)，来源上传细节见[M2-01 实施记录](../plans/m2-01-implementation.md)。
 
-## 当前演示边界
+## 当时的演示边界
 
 仅存在全局`FrontendMock`时开放交互；普通入口直接访问这些路由仅显示未接入说明，不调用API。六个页面使用全局shell与原生select，选择外观交由公共增强器。`servicePendingItems()`提供当前待核对`{id,type,title,hint,href}`给待核对页，`type`为`service`。全部对象虚构，刷新丢失；不写本地持久存储、不上传文件、不调用AI或未实现接口。
 
@@ -10,15 +10,12 @@
 
 确认采用草稿版本、用户勾选和预览；重复同一内存草稿确认返回相同记录。结果补充生成独立草稿，确认后新增修订，原始来源保留；目标记录版本变化拒绝旧补充。内存不等于服务端事务、权限或持久幂等保证。
 
-## 拟定服务端接口
+## 后续功能的接口草案
 
 统一JSON，以下路径均在`/api`下。请求按当前登录身份授权，不接受模型文本代替人工授权。写入需要CSRF、当前草稿/目标版本和操作标识；服务端负责事务和幂等。响应仅返回当前账号可见数据。错误使用`401`登录失效、`403`无权、`404`对象不存在、`409`版本/幂等冲突（返回最新版本）、`422`缺字段或非法状态。字段命名为未来建议，不影响当前库存API。
 
 | 接口 | 请求 | 响应与边界 |
 | --- | --- | --- |
-| `POST /service/sources` | multipart `file`或`text`，可选`source_kind`与已知页码 | `{id,kind,text,file_url,known_location}`；未知来源定位不补造；附件须经服务端类型、大小、权限检查 |
-| `POST /service/drafts` | `{source_ids,fields:{name,phone_raw,address,problem,model,code,date,date_precision,method,parts,result}}` | `{id,version,state,fields,missing_fields,candidates}`；可以只保存材料，不能自动归档 |
-| `PATCH /service/drafts/{id}` | `{expected_version,fields,association:{customer_id,address_id}|{create_new:true}}` | 更新后的草稿、缺项、候选与新版本；身份变化使旧关联待重核 |
 | `POST /service/drafts/{id}/preview` | `{expected_version}` | `{draft_version,fields,sources,association,target_version,operation_id}`；仅预览 |
 | `POST /service/drafts/{id}/confirm` | `{draft_version,target_version,operation_id,confirmed:true}` | `{record_id,revision,registered_at,actor_id}`；后端检查当前权限、版本、最低字段和人工确认，原操作重试仅一次效果 |
 | `GET /service/records?q=...` | 手机号或地址关键词 | `{candidates:[{customer_id,address_id,name,phone,address,models}],scope}`；同号不同地址完整列出，无匹配仅说明归档范围 |
