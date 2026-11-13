@@ -10,6 +10,7 @@ from app.operations import models as operation_models  # noqa: F401
 from app.agent import models as agent_models  # noqa: F401
 from app.sources import models as source_models  # noqa: F401
 from app.service_records import models as service_record_models  # noqa: F401
+from app.work_fees import models as work_fee_models  # noqa: F401
 
 
 url = context.config.attributes.get('database_url') or Settings.load().database_url

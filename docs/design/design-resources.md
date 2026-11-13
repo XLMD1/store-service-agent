@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.29 · 整理日期：2026-11-12 · 视觉基准：C / 沉稳专业型。
+版本：V1.32 · 整理日期：2026-11-13 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -374,7 +374,32 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | source | 原件及其草稿列表，可新建多条独立草稿 | [电脑 1440px](qa/m2-02/source-draft-list-1440.jpg) |
 | service-draft | 手机纵向、电脑并排对照原件与字段，保存后可刷新恢复，版本冲突时保留输入 | [手机 390px](qa/m2-02/service-draft-text-390.jpg) · [电脑 1440px](qa/m2-02/service-draft-photo-1440.jpg) |
 
-[本机核对记录](qa/m2-02/README.md)使用专用测试库和虚构样例。文字提取、照片 OCR 和正式归档待接入。
+[本机核对记录](qa/m2-02/README.md)使用专用测试库和虚构样例。现行归档入口见 M2-03。
+
+### 1.30 M2-03 手工归档与查询
+
+沿用 C 方向的[查询效果图](assets/mobile-c/02-service-search.png)和[档案详情效果图](assets/mobile-c/03-service-detail.png)。从[售后档案](../../app/web/index.html#service-search)按手机号或地址查询。草稿归档时需选已有客户与服务地址，或明确新建，再人工确认。源码见[售后归档与查询](../../app/web/service-archive.js)。
+
+| 页面编号 | 本机已验证行为 | 截图 |
+| --- | --- | --- |
+| service-draft | 核对关联、预览并确认，归档后显示正式编号 | [手机回执](qa/m2-03/archive-receipt-390.jpg) |
+| source | 原件可追溯，列表显示归档状态 | [手机原件](qa/m2-03/source-archived-390.jpg) |
+| service-search | 手机号或地址查询，同号多址由人员选择 | [电脑查询](qa/m2-03/service-search-1440.jpg) |
+| service-detail | 显示所选地址的历史、处理方法和原件入口，未知维修日期明确标记 | [电脑历史](qa/m2-03/service-history-1440.jpg) |
+
+[本机核对记录](qa/m2-03/README.md)使用专用测试库和虚构样例。
+
+### 1.31 M2-05 工费台账
+
+沿用 C 方向共用表单、候选选择、状态卡与二级页返回。登录后由工作台或电脑侧栏进入[工费台账](../../app/web/index.html#work-fees)。角色决定可见操作，结算状态来自服务端。实现见[工费页面](../../app/web/work-fees.js)。
+
+| 页面编号 | 本机核对范围 | 截图 |
+| --- | --- | --- |
+| work-fees | 老板安排工作及补录旧单，按师傅、工作日期和状态查询，汇总待付、已扣及已付 | [电脑台账](qa/m2-05/work-fees-1440.jpg) |
+| work-fee | 师傅填写本人实际工作，老板核对应付、登记结算和更正，历史保留核对依据 | [手机申报](qa/m2-05/work-fee-report-390.jpg) · [手机结算明细](qa/m2-05/work-fee-settled-390.jpg) |
+| technicians | 从工费台账进入，负责人创建维修师傅账号、启用和停用，安排列表随账号状态更新 | [手机](qa/m2-05/technician-accounts-390.jpg) · [电脑](qa/m2-05/technician-accounts-1440.jpg) |
+
+[本机核对记录](qa/m2-05/README.md)使用专用测试库与虚构样例。
 
 ## 2. HTML样板
 

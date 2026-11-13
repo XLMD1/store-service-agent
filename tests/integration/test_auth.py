@@ -30,6 +30,30 @@ def create_user(client, username='demo-stock', roles=None):
     return response.json()
 
 
+def test_technician_directory_includes_disabled_accounts_only_for_owner(application):
+    with TestClient(application) as owner, TestClient(application) as worker:
+        login(owner)
+        account = create_user(owner, username='sample-technician', roles=['technician'])
+        login(worker, {'username': 'sample-technician', 'password': 'Sample-Stock-Password-123'})
+        path = '/api/accounts/technicians'
+        assert worker.get(path).status_code == 403
+        expected = {'id': account['id'], 'username': 'sample-technician', 'enabled': True}
+        result = owner.get(path)
+        assert result.status_code == 200
+        assert result.json()['items'] == [expected]
+        assert owner.patch('/api/accounts/' + account['id'], headers=csrf(owner),
+                           json={'enabled': False, 'confirmed': True}).status_code == 200
+        assert owner.get(path).json()['items'] == [{**expected, 'enabled': False}]
+        assert owner.get('/api/work-fees/workers').json()['items'] == []
+        assert worker.get('/api/auth/me').status_code == 401
+        assert owner.patch('/api/accounts/' + account['id'], headers=csrf(owner),
+                           json={'enabled': True, 'confirmed': True}).status_code == 200
+        assert owner.get('/api/work-fees/workers').json()['items'] == [
+            {'id': account['id'], 'name': 'sample-technician'},
+        ]
+        assert worker.get('/api/auth/me').status_code == 401
+
+
 def test_anonymous_cannot_read_identity_or_manage_accounts(application):
     with TestClient(application) as client:
         assert client.get('/api/auth/me').status_code == 401

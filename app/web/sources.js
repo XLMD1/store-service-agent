@@ -130,8 +130,8 @@ async function sourcePage(params){
   if(route!==location.hash)return;
   const photo=row.material_type==='photo';
   const entries=drafts?.items.map(draft=>`<article class="row"><div><h3>${esc(draft.fields.problem?.trim().slice(0,80)||'问题未填写')}</h3>
-    <p>${stamp(draft.created_at)} · 第 ${esc(draft.version)} 版</p></div>
-    <a class="button" data-draft-link href="${serviceReviewLink(row.id,draft.id)}">打开草稿</a></article>`).join('');
+    <p>${stamp(draft.created_at)} · ${draft.archive?'已归档':'第 '+esc(draft.version)+' 版'}</p></div>
+    <a class="button" data-draft-link href="${serviceReviewLink(row.id,draft.id)}">${draft.archive?'查看归档结果':'打开草稿'}</a></article>`).join('');
   const draftPage='#source?id='+encodeURIComponent(row.id)+'&amp;offset=';
   shell('来源原件',photo?'售后来源照片':'售后来源文字',`<div class="grid opening-grid">
     <section class="panel">${sourceMaterial(row)}</section>
@@ -178,25 +178,27 @@ function serviceReviewField(fields,[name,label,max,multiline]){
 async function sourceDraftReviewPage(params){
   let route=location.hash;
   const sourceId=params.get('source'), draftId=params.get('draft');
-  const writable=hasPermission('service.draft');
-  if(!sourceId||!hasPermission('service.read')||(!draftId&&!writable)){
+  const canWrite=hasPermission('service.draft');
+  if(!sourceId||!hasPermission('service.read')||(!draftId&&!canWrite)){
     throw new Error('请从有权查看的售后来源进入草稿。');
   }
   const sourcePath='/sources/'+encodeURIComponent(sourceId), draftsPath=sourcePath+'/drafts';
   const [source,saved]=await Promise.all([api(sourcePath),draftId?api(draftsPath+'/'+encodeURIComponent(draftId)):null]);
   if(route!==location.hash)return;
   let draft=saved;
+  const writable=canWrite&&!draft?.archive;
   const fields=draft?.fields||{};
   const extra=serviceReviewFields.slice(6);
   const showExtra=extra.some(([name])=>fields[name]||fields.uncertain_fields?.includes(name));
-  shell('售后草稿核对','对照原件填写，每条记录单独保存',`<div class="grid service-compare service-review">
+  shell('售后草稿核对',draft?.archive?'查看归档回执和原件':'对照原件填写，每条记录单独保存',`<div class="grid service-compare service-review">
     <section class="panel service-review-original">${sourceMaterial(source)}
       ${source.source_label||source.page_label?`<p class="muted">${esc([source.source_label,source.page_label].filter(Boolean).join(' · '))}</p>`:''}
     </section>
-    <section class="panel"><h2>待核对字段</h2>
+    <section class="panel"><h2>${draft?.archive?'已归档字段':'待核对字段'}</h2>
+      <div id="service-archive-receipt"></div>
       <form id="service-review-form">
         <fieldset class="service-review-fields fields" aria-label="待核对字段" ${writable?'':'disabled'}>
-          <p class="muted">不确定的字段可以留空或标记为待核对。</p>
+          ${writable?'<p class="muted">不确定的字段可以留空或标记为待核对。</p>':''}
           ${serviceReviewFields.slice(0,6).map(item=>serviceReviewField(fields,item)).join('')}
           <div>
             <label class="field"><span>维修日期精度</span><select name="repair_date_precision">
@@ -209,14 +211,17 @@ async function sourceDraftReviewPage(params){
           <details ${showExtra?'open':''}><summary>处理方法、配件与实际结果</summary>
             <div class="fields">${extra.map(item=>serviceReviewField(fields,item)).join('')}</div>
           </details>
-          <div class="actions"><button class="primary" type="submit">保存草稿</button></div>
+          ${writable?'<div class="actions"><button class="primary" type="submit">保存草稿</button></div>':''}
         </fieldset>
-        <p id="service-review-status" class="section-note" role="status">${draft?'已保存 · 第 '+esc(draft.version)+' 版':''}</p>
+        <p id="service-review-status" class="section-note" role="status">${draft&&!draft.archive?'已保存 · 第 '+esc(draft.version)+' 版':''}</p>
         <button type="button" id="service-review-reload" hidden>放弃本次修改，载入最新版</button>
       </form>
+      <div id="service-archive-actions" class="section-note" hidden></div>
     </section></div>`,'',true);
   bindSourcePhoto(source);
   const form=$('#service-review-form'), status=$('#service-review-status'), reload=$('#service-review-reload');
+  const archivePanel=$(draft?.archive?'#service-archive-receipt':'#service-archive-actions');
+  renderArchiveControls(archivePanel,source,draft,form);
   const precision=form.elements.repair_date_precision, date=form.elements.repair_date;
   const setPrecision=()=>{
     const format=repairDateFormats[precision.value];
@@ -229,6 +234,10 @@ async function sourceDraftReviewPage(params){
   precision.onchange=setPrecision;
   setPrecision();
   if(!writable)return;
+  form.oninput=()=>{
+    archivePanel.hidden=true;
+    archivePanel.replaceChildren();
+  };
   reload.onclick=()=>render();
   let requestId, previousFields;
   form.onsubmit=async event=>{
@@ -254,6 +263,7 @@ async function sourceDraftReviewPage(params){
       history.replaceState(history.state,'',route);
       status.className='section-note state success';
       status.textContent='草稿已保存 · 第 '+draft.version+' 版';
+      renderArchiveControls(archivePanel,source,draft,form);
     }catch(error){
       if(!form.isConnected||route!==location.hash)return;
       status.className='section-note state warning';

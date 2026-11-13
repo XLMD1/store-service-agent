@@ -66,3 +66,38 @@ class DraftCreate(DraftInput):
 
 class DraftUpdate(DraftInput):
     version: int = Field(ge=1, strict=True)
+
+
+class ArchivePreview(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    version: int = Field(ge=1, strict=True)
+    contact_id: UUID | None = None
+    create_new: bool = Field(default=False, strict=True)
+
+    @model_validator(mode='after')
+    def exactly_one_association(self):
+        if (self.contact_id is not None) == self.create_new:
+            raise ValueError('Choose one existing contact or explicitly create one')
+        return self
+
+
+class ArchiveConfirm(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    operation_id: UUID
+    confirmed: bool = Field(strict=True)
+
+    @field_validator('confirmed')
+    @classmethod
+    def explicit_confirmation(cls, value):
+        if not value:
+            raise ValueError('Explicit confirmation is required')
+        return value
+
+
+class ArchiveSearch(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    q: str = Field(min_length=1, max_length=500)
+    offset: int = Field(default=0, ge=0, strict=True)
