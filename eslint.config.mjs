@@ -13,8 +13,9 @@ const shared = [
   'correctionParameters', 'correctionReceipt', 'correctionPage', 'reconciliationPage',
   'coverageNames', 'statisticsPage', 'catalogPage', 'customersPage',
   'isMockMode', 'homePage', 'serviceDraftPage', 'serviceSearchPage',
+  'workFeesPage','workFeePage','technicianAccountsPage',
   'serviceDetailPage', 'repairPage', 'settingsPage', 'customerPage',
-  'sourcesPage','sourcePage','sourceDraftReviewPage','agentHomePage','agentTaskPage','agentTaskRows','bindAgentDeletes','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
+  'sourcesPage','sourcePage','sourceDraftReviewPage','archiveSearchPage','archiveHistoryPage','renderArchiveControls','agentHomePage','agentTaskPage','agentTaskRows','bindAgentDeletes','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
 ];
 const browser = [
   'window', 'document', 'location', 'navigator', 'history', 'fetch', 'Headers',

@@ -40,7 +40,7 @@ def application(settings, migrated):
         connection.execute(text('TRUNCATE service_sources, login_throttles, account_audit, auth_sessions, user_roles, users, '
             'warehouses, product_models, customers, catalog_audit, drafts, operations, inventory_accounts, '
             'inventory_reservations, inventory_documents, inventory_ledger, agent_task_items, agent_tasks, '
-            'checkpoints, checkpoint_blobs, checkpoint_writes CASCADE'))
+            'checkpoints, checkpoint_blobs, checkpoint_writes, service_contacts, work_orders CASCADE'))
     app = create_app(settings)
     with app.state.sessions.begin() as db:
         initialize_owner(db, 'demo-owner', 'Sample-Owner-Password-123', confirmed=True)

@@ -1,6 +1,6 @@
 # 工作台、售后、维修与设置前端契约
 
-本文保留 2026-11-03 的内存演示边界及后续接口草案。演示源码为 `app/web/service-pages.js`、`service-pages.css`，页面和截图见设计资源两版。已实现的原件保存、受控读取与手工草稿接口统一查阅[架构第10.1节](../architecture/store-service-agent-architecture-v1.0.md#101-售后资料路径)，来源上传细节见[M2-01 实施记录](../plans/m2-01-implementation.md)。
+本文保留 2026-11-03 的内存演示边界及后续接口草案。演示源码为 `app/web/service-pages.js`、`service-pages.css`，页面和截图见设计资源两版。现行原件保存、手工草稿、归档及查询接口统一查阅[架构第10.1节](../architecture/store-service-agent-architecture-v1.0.md#101-售后资料路径)，来源上传细节见[M2-01 实施记录](../plans/m2-01-implementation.md)。
 
 ## 当时的演示边界
 
@@ -16,10 +16,6 @@
 
 | 接口 | 请求 | 响应与边界 |
 | --- | --- | --- |
-| `POST /service/drafts/{id}/preview` | `{expected_version}` | `{draft_version,fields,sources,association,target_version,operation_id}`；仅预览 |
-| `POST /service/drafts/{id}/confirm` | `{draft_version,target_version,operation_id,confirmed:true}` | `{record_id,revision,registered_at,actor_id}`；后端检查当前权限、版本、最低字段和人工确认，原操作重试仅一次效果 |
-| `GET /service/records?q=...` | 手机号或地址关键词 | `{candidates:[{customer_id,address_id,name,phone,address,models}],scope}`；同号不同地址完整列出，无匹配仅说明归档范围 |
-| `GET /service/records/{id}` | 记录编号 | `{id,customer,address,fields,date_precision,sources,revisions,version}`；来源与每次修订可追溯 |
 | `POST /service/records/{id}/supplement-drafts` | `{target_version,result,source_ids}` | 待确认修订草稿；继续使用preview/confirm，不直接覆盖结果 |
 | `POST /repair/queries` | `{exact_model,code,problem,conditions,manual_version_ids?}` | `{query_id,coverage,gaps,prerequisites,conditional_advice,citations:[{document_id,version,page,source_url}]}`；仅已发布且精确适用的资料；资料不足先列缺口 |
 | `POST /repair/queries/{id}/feedback` | `{rating,note?}` | `{feedback_id}`；反馈不是实际维修结果，条件变化应产生新查询 |

@@ -61,6 +61,7 @@ $env:APP_CONFIG_FILE = '.local/dev.json'
 | `GET /api/auth/me` | 返回当前账号、职责及权限，不包含密码派生值 |
 | `POST /api/auth/logout` | 撤销本会话，其他会话保持有效 |
 | `POST /api/accounts` | 负责人创建账号：`username/password/roles/confirmed:true` |
+| `GET /api/accounts/technicians` | 负责人读取维修师傅账号、编号和启用状态，包含已停用账号 |
 | `PATCH /api/accounts/{id}` | 负责人更新 `roles` 或 `enabled`，要求 `confirmed:true`；禁止移除最后可用负责人 |
 
 所有 POST/PATCH，包括登录和退出，都要求精确匹配配置的 `Origin` 和同一会话的 `X-CSRF-Token`。Cookie 为 HttpOnly、SameSite=Strict，HTTPS 必须使用 Secure。未知字段拒绝，错误响应不回显密码。数据库只保存密码派生值及令牌摘要。CSRF 以会话随机令牌为 HMAC 密钥派生，同会话跨标签页稳定，登录轮换后随之改变。

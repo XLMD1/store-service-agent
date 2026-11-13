@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 90,
+  "retained_count": 99,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -461,6 +461,69 @@
       "bytes": 118504,
       "sha256": "cb733e143ad612935cfdab7b22c1ea5f1f265230416d47e519d01c1185169ecc",
       "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-03/archive-receipt-390.jpg",
+      "bytes": 45361,
+      "sha256": "4109d10f6a6bf6423909d60374b108209fd3577dfcfdb4c25f278081936c6b14",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-03/service-history-1440.jpg",
+      "bytes": 105571,
+      "sha256": "71084e1874026c588d6b7071db5c0f7bf043eed067f7caa3aef351b641de9c2d",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-03/service-search-1440.jpg",
+      "bytes": 104203,
+      "sha256": "8839e1ca2c0265d79e5afa68f8186e488f47cec1e57e28d66054a2a1e6246bf0",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-03/source-archived-390.jpg",
+      "bytes": 42165,
+      "sha256": "8c8ee25466a7162f0a6e32e7da278512cff8300a27f60b757f0a2d412cb72ced",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-05/work-fee-report-390.jpg",
+      "bytes": 35381,
+      "sha256": "32f1e885afcc38c100c95fb9d9f2bc19a632e1bbd535cc400981fbd65fa8a727",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-05/work-fee-settled-390.jpg",
+      "bytes": 52798,
+      "sha256": "d8a40b2435ecdfc2de82d4a226a93589092e4b7cd17ae86be6a64fa13705cf55",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-05/work-fees-1440.jpg",
+      "bytes": 119329,
+      "sha256": "3a11f0a420708aa25e2d83d7db759c5168619595e0beceaa5867add397833086",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-05/technician-accounts-1440.jpg",
+      "bytes": 111326,
+      "sha256": "60782bc348c0ded8077587909f2749c1d3a0adcdfe7ea102a024c11b204d2ee6",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-05/technician-accounts-390.jpg",
+      "bytes": 46901,
+      "sha256": "e574491d60c2edc51fc4c5aa70ceadd2802a10d3d29437af65cf032e49feaa9b",
+      "width": 390,
       "height": 900
     }
   ],
@@ -986,6 +1049,6 @@
       "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
     }
   ],
-  "added_after_curation": 29,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added."
+  "added_after_curation": 38,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added. Four M2-03 service archive and lookup screenshots added. Three M2-05 work fee ledger screenshots added. Two technician account management screenshots added."
 }

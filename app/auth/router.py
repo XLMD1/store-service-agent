@@ -109,6 +109,14 @@ def logout(response: Response, session=Depends(check_write), user=Depends(curren
     response.delete_cookie(COOKIE, path='/')
 
 
+@router.get('/accounts/technicians')
+def list_technicians(actor=Depends(account_manager), db=Depends(database, scope='function')):
+    rows = db.execute(select(User.id, User.username, User.enabled)
+                      .join(UserRole, UserRole.user_id == User.id)
+                      .where(UserRole.role == 'technician').order_by(User.username))
+    return {'items': [dict(row._mapping) for row in rows]}
+
+
 @router.post('/accounts', status_code=201, dependencies=[Depends(check_write)])
 def add_account(payload: AccountCreate, actor=Depends(account_manager), db=Depends(database, scope='function')):
     try:
