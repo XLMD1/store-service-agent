@@ -1,0 +1,548 @@
+[
+  {
+    "width": 1440,
+    "route": "home",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "工作台"
+  },
+  {
+    "width": 1440,
+    "route": "inventory",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 1440,
+    "route": "pending",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 1440,
+    "route": "task",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "待核对"
+  },
+  {
+    "width": 1440,
+    "route": "sources",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "售后来源"
+  },
+  {
+    "width": 1440,
+    "route": "source",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "来源原件"
+  },
+  {
+    "width": 1440,
+    "route": "service-draft",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "售后草稿核对"
+  },
+  {
+    "width": 1440,
+    "route": "service-search",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "售后档案"
+  },
+  {
+    "width": 1440,
+    "route": "service-detail",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "售后历史"
+  },
+  {
+    "width": 1440,
+    "route": "work-fees",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "工费台账"
+  },
+  {
+    "width": 1440,
+    "route": "work-fee",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "工费明细"
+  },
+  {
+    "width": 1440,
+    "route": "technicians",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "师傅账号"
+  },
+  {
+    "width": 1440,
+    "route": "deepseek-settings",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "DeepSeek设置"
+  },
+  {
+    "width": 1440,
+    "route": "inbound",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "入库登记"
+  },
+  {
+    "width": 1440,
+    "route": "movement",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "普通出库"
+  },
+  {
+    "width": 1440,
+    "route": "movement",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "办理留货"
+  },
+  {
+    "width": 1440,
+    "route": "reservations",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 1440,
+    "route": "reserved-pickup",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 1440,
+    "route": "ledger",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "库存流水"
+  },
+  {
+    "width": 1440,
+    "route": "statistics",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "进货统计"
+  },
+  {
+    "width": 1440,
+    "route": "correction",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "原单数量更正"
+  },
+  {
+    "width": 1440,
+    "route": "correction",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "盘点调整"
+  },
+  {
+    "width": 1440,
+    "route": "reconciliation",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "库存对账"
+  },
+  {
+    "width": 1440,
+    "route": "opening",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "期初建账"
+  },
+  {
+    "width": 1440,
+    "route": "customers",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "客户资料"
+  },
+  {
+    "width": 1440,
+    "route": "catalog",
+    "mode": "desktop",
+    "overflow": false,
+    "title": "库房与型号"
+  },
+  {
+    "width": 390,
+    "route": "home",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工作台"
+  },
+  {
+    "width": 390,
+    "route": "inventory",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 390,
+    "route": "pending",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 390,
+    "route": "task",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存任务"
+  },
+  {
+    "width": 390,
+    "route": "sources",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后来源"
+  },
+  {
+    "width": 390,
+    "route": "source",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "来源原件"
+  },
+  {
+    "width": 390,
+    "route": "service-draft",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后草稿核对"
+  },
+  {
+    "width": 390,
+    "route": "service-search",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后档案"
+  },
+  {
+    "width": 390,
+    "route": "service-detail",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后历史"
+  },
+  {
+    "width": 390,
+    "route": "work-fees",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工费台账"
+  },
+  {
+    "width": 390,
+    "route": "work-fee",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工费明细"
+  },
+  {
+    "width": 390,
+    "route": "technicians",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "师傅账号"
+  },
+  {
+    "width": 390,
+    "route": "deepseek-settings",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "DeepSeek设置"
+  },
+  {
+    "width": 390,
+    "route": "inbound",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "入库登记"
+  },
+  {
+    "width": 390,
+    "route": "movement",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "普通出库"
+  },
+  {
+    "width": 390,
+    "route": "movement",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "办理留货"
+  },
+  {
+    "width": 390,
+    "route": "reservations",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 390,
+    "route": "reserved-pickup",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 390,
+    "route": "ledger",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存流水"
+  },
+  {
+    "width": 390,
+    "route": "statistics",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "进货统计"
+  },
+  {
+    "width": 390,
+    "route": "correction",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "原单数量更正"
+  },
+  {
+    "width": 390,
+    "route": "correction",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "盘点调整"
+  },
+  {
+    "width": 390,
+    "route": "reconciliation",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存对账"
+  },
+  {
+    "width": 390,
+    "route": "opening",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "期初建账"
+  },
+  {
+    "width": 390,
+    "route": "customers",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "客户资料"
+  },
+  {
+    "width": 390,
+    "route": "catalog",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库房与型号"
+  },
+  {
+    "width": 320,
+    "route": "home",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工作台"
+  },
+  {
+    "width": 320,
+    "route": "inventory",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 320,
+    "route": "pending",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 320,
+    "route": "task",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存任务"
+  },
+  {
+    "width": 320,
+    "route": "sources",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后来源"
+  },
+  {
+    "width": 320,
+    "route": "source",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "来源原件"
+  },
+  {
+    "width": 320,
+    "route": "service-draft",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后草稿核对"
+  },
+  {
+    "width": 320,
+    "route": "service-search",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后档案"
+  },
+  {
+    "width": 320,
+    "route": "service-detail",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "售后历史"
+  },
+  {
+    "width": 320,
+    "route": "work-fees",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工费台账"
+  },
+  {
+    "width": 320,
+    "route": "work-fee",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "工费明细"
+  },
+  {
+    "width": 320,
+    "route": "technicians",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "师傅账号"
+  },
+  {
+    "width": 320,
+    "route": "deepseek-settings",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "DeepSeek设置"
+  },
+  {
+    "width": 320,
+    "route": "inbound",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "入库登记"
+  },
+  {
+    "width": 320,
+    "route": "movement",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "普通出库"
+  },
+  {
+    "width": 320,
+    "route": "movement",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "办理留货"
+  },
+  {
+    "width": 320,
+    "route": "reservations",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 320,
+    "route": "reserved-pickup",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 320,
+    "route": "ledger",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存流水"
+  },
+  {
+    "width": 320,
+    "route": "statistics",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "进货统计"
+  },
+  {
+    "width": 320,
+    "route": "correction",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "原单数量更正"
+  },
+  {
+    "width": 320,
+    "route": "correction",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "盘点调整"
+  },
+  {
+    "width": 320,
+    "route": "reconciliation",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库存对账"
+  },
+  {
+    "width": 320,
+    "route": "opening",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "期初建账"
+  },
+  {
+    "width": 320,
+    "route": "customers",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "客户资料"
+  },
+  {
+    "width": 320,
+    "route": "catalog",
+    "mode": "mobile",
+    "overflow": false,
+    "title": "库房与型号"
+  }
+]

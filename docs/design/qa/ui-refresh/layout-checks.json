@@ -1,0 +1,242 @@
+[
+  {
+    "width": 390,
+    "route": "home",
+    "overflow": false,
+    "title": "工作台"
+  },
+  {
+    "width": 390,
+    "route": "inventory",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 390,
+    "route": "inbound",
+    "overflow": false,
+    "title": "入库登记"
+  },
+  {
+    "width": 390,
+    "route": "pending",
+    "overflow": false,
+    "title": "待核对"
+  },
+  {
+    "width": 390,
+    "route": "reservations",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 390,
+    "route": "ledger",
+    "overflow": false,
+    "title": "库存流水"
+  },
+  {
+    "width": 390,
+    "route": "statistics",
+    "overflow": false,
+    "title": "进货统计"
+  },
+  {
+    "width": 390,
+    "route": "correction",
+    "overflow": false,
+    "title": "原单数量更正"
+  },
+  {
+    "width": 390,
+    "route": "correction?kind=inventory_adjustment",
+    "overflow": false,
+    "title": "盘点调整"
+  },
+  {
+    "width": 390,
+    "route": "reconciliation",
+    "overflow": false,
+    "title": "库存对账"
+  },
+  {
+    "width": 390,
+    "route": "opening",
+    "overflow": false,
+    "title": "期初建账"
+  },
+  {
+    "width": 390,
+    "route": "catalog",
+    "overflow": false,
+    "title": "库房与型号"
+  },
+  {
+    "width": 390,
+    "route": "customers",
+    "overflow": false,
+    "title": "客户资料"
+  },
+  {
+    "width": 390,
+    "route": "service-search",
+    "overflow": false,
+    "title": "售后档案"
+  },
+  {
+    "width": 390,
+    "route": "service-draft?draft=demo-d1",
+    "overflow": false,
+    "title": "售后草稿核对"
+  },
+  {
+    "width": 390,
+    "route": "service-detail?id=DEMO-SH-2",
+    "overflow": false,
+    "title": "售后档案详情"
+  },
+  {
+    "width": 390,
+    "route": "movement?kind=inventory_outbound",
+    "overflow": false,
+    "title": "普通出库"
+  },
+  {
+    "width": 390,
+    "route": "movement?kind=reservation_create",
+    "overflow": false,
+    "title": "办理留货"
+  },
+  {
+    "width": 390,
+    "route": "repair-assistant",
+    "overflow": false,
+    "title": "维修辅助"
+  },
+  {
+    "width": 390,
+    "route": "settings",
+    "overflow": false,
+    "title": "资料与设置"
+  },
+  {
+    "width": 1440,
+    "route": "home",
+    "overflow": false,
+    "title": "工作台"
+  },
+  {
+    "width": 1440,
+    "route": "inventory",
+    "overflow": false,
+    "title": "库存"
+  },
+  {
+    "width": 1440,
+    "route": "inbound",
+    "overflow": false,
+    "title": "入库登记"
+  },
+  {
+    "width": 1440,
+    "route": "pending",
+    "overflow": false,
+    "title": "待核对"
+  },
+  {
+    "width": 1440,
+    "route": "reservations",
+    "overflow": false,
+    "title": "预留查询"
+  },
+  {
+    "width": 1440,
+    "route": "ledger",
+    "overflow": false,
+    "title": "库存流水"
+  },
+  {
+    "width": 1440,
+    "route": "statistics",
+    "overflow": false,
+    "title": "进货统计"
+  },
+  {
+    "width": 1440,
+    "route": "correction",
+    "overflow": false,
+    "title": "原单数量更正"
+  },
+  {
+    "width": 1440,
+    "route": "correction?kind=inventory_adjustment",
+    "overflow": false,
+    "title": "盘点调整"
+  },
+  {
+    "width": 1440,
+    "route": "reconciliation",
+    "overflow": false,
+    "title": "库存对账"
+  },
+  {
+    "width": 1440,
+    "route": "opening",
+    "overflow": false,
+    "title": "期初建账"
+  },
+  {
+    "width": 1440,
+    "route": "catalog",
+    "overflow": false,
+    "title": "库房与型号"
+  },
+  {
+    "width": 1440,
+    "route": "customers",
+    "overflow": false,
+    "title": "客户资料"
+  },
+  {
+    "width": 1440,
+    "route": "service-search",
+    "overflow": false,
+    "title": "售后档案"
+  },
+  {
+    "width": 1440,
+    "route": "service-draft?draft=demo-d1",
+    "overflow": false,
+    "title": "售后草稿核对"
+  },
+  {
+    "width": 1440,
+    "route": "service-detail?id=DEMO-SH-2",
+    "overflow": false,
+    "title": "售后档案详情"
+  },
+  {
+    "width": 1440,
+    "route": "movement?kind=inventory_outbound",
+    "overflow": false,
+    "title": "普通出库"
+  },
+  {
+    "width": 1440,
+    "route": "movement?kind=reservation_create",
+    "overflow": false,
+    "title": "办理留货"
+  },
+  {
+    "width": 1440,
+    "route": "repair-assistant",
+    "overflow": false,
+    "title": "维修辅助"
+  },
+  {
+    "width": 1440,
+    "route": "settings",
+    "overflow": false,
+    "title": "资料与设置"
+  }
+]

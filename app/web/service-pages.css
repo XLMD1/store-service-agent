@@ -14,3 +14,8 @@
   .workspace[data-view=desktop] .service-review-original{position:sticky;top:24px}
 }
 .fee-totals dd{font-size:clamp(14px,4vw,26px);overflow-wrap:anywhere}
+.fee-totals>div:first-child{background:var(--primary-soft);border-radius:var(--radius-control)}
+.fee-totals>div:first-child dt,.fee-totals>div:first-child dd{color:var(--primary);font-weight:700}
+.fee-totals>div:last-child dd{color:var(--text)}
+.service-review-original .service-source{line-height:1.75}
+.service-facts dd{line-height:1.65}

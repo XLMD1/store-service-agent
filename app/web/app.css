@@ -41,3 +41,27 @@ a[href],summary,select,input[type=checkbox],.check{cursor:pointer}
 .outbound-modes .button{min-height:44px;background:var(--surface)}
 .outbound-modes [aria-current=page]{background:var(--primary-soft);border-color:var(--primary);color:var(--primary);font-weight:700}
 .workspace[data-view=mobile] .outbound-modes .button{flex:1}
+
+/* Keep the existing page layouts and refine shared controls and data tables. */
+.workspace .top h1,.workspace .panel>h2{line-height:1.35}
+.workspace .field>span,.workspace .inventory-picker>label{font-weight:600}
+.view-switch button[aria-pressed=true]{box-shadow:inset 0 -2px 0 var(--primary)}
+.workspace .primary:enabled:focus-visible{outline-offset:4px}
+.workspace .row>div:first-child{min-width:0}
+.workspace .row p+p,.workspace .service-row p+p{margin-top:4px}
+.impact,.service-facts,.receipt-id{font-variant-numeric:tabular-nums}
+.impact th{background:var(--page);color:var(--muted);font-weight:600}
+.impact th,.impact td{padding:10px 6px}
+:is(.stock-card,.stock-total) .metrics>div:last-child{
+  background:var(--primary-soft);
+  border-radius:var(--radius-control);
+}
+:is(.stock-card,.stock-total) .metrics>div:last-child dt{color:var(--primary);font-weight:700}
+.workspace[data-view=mobile] .mobile-primary{
+  padding-bottom:max(4px,env(safe-area-inset-bottom));
+}
+body:has(.workspace[data-view=mobile] .mobile-primary) .notice{
+  bottom:calc(68px + env(safe-area-inset-bottom));
+  max-height:45dvh;
+  overflow:auto;
+}
