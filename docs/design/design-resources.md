@@ -401,6 +401,19 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 
 [本机核对记录](qa/m2-05/README.md)使用专用测试库与虚构样例。
 
+### 1.32 正式版前端细修（2026-11-13）
+
+以正式版为基线，沿用墨青页头、任务输入卡、分组侧栏和各业务页布局。工作台保持原月历及任务入口，电脑端任务进度的按钮两列排列；今天、选中日期和键盘焦点各有视觉反馈。库存强调可售，工费强调待付。保留中文系统字体，细调标题行高、字段字重、记录间距和数字排版。
+
+| 页面编号 | 入口与状态 | 正式入口本机样例截图 |
+| --- | --- | --- |
+| home | [工作台](http://127.0.0.1:8000/#home)，已核对月份切换、回到今天和工费入口 | [电脑工作台](qa/ui-refresh/official-home-1440.png) · [电脑月历](qa/ui-refresh/official-calendar-1440.png) · [手机月历](qa/ui-refresh/official-calendar-390.png) |
+| inventory | [库存](http://127.0.0.1:8000/#inventory)，已查询并核对可售显示 | [电脑结果](qa/ui-refresh/official-inventory-1440.png) |
+| work-fees | [工费台账](http://127.0.0.1:8000/#work-fees)，已核对样例待付金额 | [电脑工费](qa/ui-refresh/official-fees-1440.png) |
+| service-draft | 售后来源进入草稿，已核对原文与表单布局 | [手机草稿](qa/ui-refresh/official-service-draft-390.png) |
+
+其余页面沿用既有编号和路由。正式入口登录后 26 个页面状态已做三种宽度的布局检查。2026-11-13 用户审核通过。演示版 `shell-stock-sidebar` 复用正式版三个分区。参见[正式入口与历史演示核对](qa/ui-refresh/README.md)。
+
 ## 2. HTML样板
 
 | 编号 | 入口 | 实际范围 |

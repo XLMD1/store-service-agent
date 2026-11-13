@@ -20,3 +20,23 @@ test('电脑和手机切换只更新布局，不重建表单或发起请求，�
   mobile.onclick();vm.runInContext(`shell('流水','','下一页');`,context);
   assert.equal(workspace.dataset.view,'mobile');assert.equal(renders,2);
 });
+
+test('演示电脑侧栏复用正式版分区，保留演示专属入口并展开当前分区',()=>{
+  const {JSDOM}=require('jsdom');
+  const dom=new JSDOM('<div id="app"></div>',{url:'http://localhost/mock.html#settings',runScripts:'outside-only'});
+  try{
+    const w=dom.window;
+    w.FrontendMock={};
+    w.module={exports:{}};
+    w.scrollTo=()=>{};
+    w.matchMedia=()=>({matches:true});
+    const scripts=['movements','app'].map(name=>fs.readFileSync(require.resolve('../app/web/'+name+'.js'),'utf8')).join('\n');
+    w.eval(scripts+`\nstate.user={username:'样例',permissions:['inventory.read','repair.query']};shell('资料与设置','','');`);
+    const sidebar=w.document.querySelector('.desktop-sidebar.sidebar-organized');
+    assert.ok(sidebar);
+    assert.ok(sidebar.querySelector('[data-sidebar-group=daily] a[href="#repair-assistant"]'));
+    assert.ok(sidebar.querySelector('[data-sidebar-group=reports] a[href="#statistics"]'));
+    assert.ok(sidebar.querySelector('[data-sidebar-group=setup][open] a[href="#settings"][aria-current=page]'));
+    assert.equal(sidebar.querySelector('a[href="#work-fees"], a[href="#catalog"]'),null);
+  }finally{dom.window.close();}
+});

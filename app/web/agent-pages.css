@@ -7,6 +7,16 @@
 .workspace[data-view=mobile] .agent-calendar-head .actions>button{flex:0 0 auto;width:auto}
 .agent-day-tasks .row>.button{flex:0 0 auto;white-space:nowrap;padding:8px 12px}
 
+.agent-calendar-grid button{font-variant-numeric:tabular-nums}
+.agent-calendar-grid [aria-pressed=true]{border-color:var(--primary)}
+.agent-calendar-grid [aria-current=date]:not([aria-pressed=true]){box-shadow:inset 0 -2px 0 var(--primary)}
+.agent-calendar-head .actions>button,.workspace[data-view=mobile] .agent-calendar-head .actions>button{min-width:44px}
+.agent-day-tasks .row>.actions{flex:0 1 auto;margin-top:0}
+.agent-day-tasks .row>.actions>*{flex:0 0 auto}
+.workspace[data-view=desktop] .service-pending>.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.workspace[data-view=desktop] .service-pending>.actions>.button{padding-inline:8px;text-align:center}
+@media(max-width:600px){.agent-day-tasks .row{flex-wrap:wrap}}
+
 .agent-message{margin-top:12px}.agent-message pre{margin:6px 0}.agent-message-assistant{padding:14px 16px;border-left:3px solid var(--primary);border-radius:var(--radius-control);background:var(--primary-soft);overflow-wrap:anywhere}.agent-message-assistant p{margin:6px 0 0}
 
 .agent-thinking:not([hidden]){display:flex;align-items:center;flex-wrap:wrap;gap:10px}
