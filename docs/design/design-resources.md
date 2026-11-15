@@ -1,6 +1,6 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.32 · 整理日期：2026-11-13 · 视觉基准：C / 沉稳专业型。
+版本：V1.38 · 整理日期：2026-11-15 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
 
 ## 使用约定与必读顺序
@@ -413,6 +413,67 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | service-draft | 售后来源进入草稿，已核对原文与表单布局 | [手机草稿](qa/ui-refresh/official-service-draft-390.png) |
 
 其余页面沿用既有编号和路由。正式入口登录后 26 个页面状态已做三种宽度的布局检查。2026-11-13 用户审核通过。演示版 `shell-stock-sidebar` 复用正式版三个分区。参见[正式入口与历史演示核对](qa/ui-refresh/README.md)。
+
+### 1.33 M2-02 从原件生成草稿
+
+由[售后来源](../../app/web/index.html#sources)打开原件。沿用 C 方向与[售后草稿效果图](assets/mobile-c/01-service-draft.png)的对照布局。
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| source | 文字提取或照片识别，显示草稿条数，可打开各条或手工新建 | [电脑照片分条](qa/m2-02/source-photo-extracted-1440.jpg) · [手机手工回退](qa/m2-02/source-extraction-fallback-390.jpg) |
+| service-draft | 对照原件，OCR 字段默认待核对，保留维修日期精度 | [电脑照片核对](qa/m2-02/service-draft-ocr-1440.jpg) |
+
+已用虚构样例在专用测试库和 Edge 视口核对。门店实物与手写质量待验证。[本机核对记录](qa/m2-02/README.md)
+
+### 1.34 M2-04 补充维修结果
+
+由[售后档案](../../app/web/index.html#service-search)查到客户和服务地址，在选中的历史记录下展开「补充处理结果」。沿用 C 方向的[档案详情效果图](assets/mobile-c/03-service-detail.png)和现有预览确认样式。
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| service-detail | 查看归档时结果及最新补充；选择本人保存的新来源，核对后确认。档案版本变更时读取最新结果并保留输入 | [手机预览](qa/m2-04/service-supplement-preview-390.jpg) · [电脑冲突提示](qa/m2-04/service-supplement-conflict-1440.jpg) |
+
+已用独立测试库和 Edge 双会话核对。门店资料与实体设备待验证。[本机核对记录](qa/m2-04/README.md)
+
+### 1.35 M2-04 档案修订与售后助手
+
+沿用 C 方向的档案详情、共用候选表单、确认和回执布局。
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| home、service-agent | 工作台进入[售后助手](../../app/web/index.html#service-agent)，在「我的售后任务」找回已保存任务 | [手机入口](qa/m2-04/service-agent-home-390.jpg) |
+| service-task | 核对同号不同地址的候选，按具体档案预览，刷新后恢复待确认内容与回执 | [手机恢复预览](qa/m2-04/service-task-restored-390.jpg) |
+| service-detail | 更正维修字段，负责人确认作废；原件和更正记录保留 | [电脑更正与作废](qa/m2-04/service-void-and-revision-1440.jpg) |
+
+[本机核对记录](qa/m2-04/README.md)使用虚构原件与专用测试库。
+
+### 1.36 我的来源删除
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| sources | 在[我的来源](../../app/web/index.html#sources)逐条删除可移除的来源，取消确认保留该条。被引用的来源显示须保留。刷新列表保留提交区的当前输入 | [手机来源列表](qa/m2-01/sources-delete-390.jpg) |
+
+[删除验证记录](qa/m2-01/README.md)使用虚构原件与专用测试库。
+
+### 1.37 工作台统一任务入口
+
+沿用 C 方向的任务卡片。桌面右列、手机输入卡片下方显示待办。
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| home | 模式切换分别保留输入。示例和提交按钮跟随当前模式，库存模式显示 DeepSeek 状态 | [手机售后模式](qa/workbench-task-modes/workbench-service-390.jpg) · [电脑库存模式和待办](qa/workbench-task-modes/workbench-all-1440.jpg) |
+| home | 我的任务使用同一月历，可按创建日期和业务类型查询 | [电脑历史筛选](qa/workbench-task-modes/workbench-history-1440.jpg) |
+
+[本机核对记录](qa/workbench-task-modes/README.md)使用虚构样例与专用测试库。
+
+### 1.38 工作台入口精简
+
+| 页面编号 | 本机核对行为 | 截图 |
+| --- | --- | --- |
+| home | 从「新建任务 → 售后」创建售后任务，从「待我处理」或「我的任务」继续。首页移除重复的售后助手快捷卡 | [手机售后模式](qa/workbench-task-modes/workbench-simplified-service-390.jpg) |
+| home | DeepSeek 状态移到新建任务标题旁，仅库存模式显示。完整型号和配置在 DeepSeek 设置中查阅 | [电脑库存模式](qa/workbench-task-modes/workbench-simplified-inventory-1440.jpg) |
+
+[工作台核对记录](qa/workbench-task-modes/README.md)
 
 ## 2. HTML样板
 

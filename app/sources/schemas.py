@@ -38,6 +38,18 @@ class PhotoSourceCreate(SourceCreate):
     image_base64: str = Field(min_length=1)
 
 
+class SourceDelete(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    confirmed: bool = Field(strict=True)
+
+    @field_validator('confirmed')
+    @classmethod
+    def explicit_confirmation(cls, value):
+        if not value:
+            raise ValueError('Explicit confirmation is required')
+        return value
+
+
 def check_text(value):
     value.encode('utf-8')
     if '\x00' in value:

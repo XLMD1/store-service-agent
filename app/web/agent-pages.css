@@ -4,6 +4,16 @@
 @media(min-width:1200px){.service-home .service-pending{grid-row:1 / span 2}.service-home .service-recent{grid-column:1 / -1;grid-row:3}}
 .workspace[data-view=mobile] .agent-calendar-content,.workspace[data-view=mobile] .agent-settings{grid-template-columns:minmax(0,1fr)}.workspace[data-view=mobile] .agent-calendar-head{align-items:flex-start}.workspace[data-view=mobile] .agent-calendar-head .actions{gap:4px}.workspace[data-view=mobile] .agent-calendar-head button{min-width:32px;padding:6px 8px}
 .agent-calendar-head .actions>*{flex:0 0 auto;white-space:nowrap}.agent-calendar-head{flex-wrap:wrap}.agent-calendar-head .actions{margin-left:auto}
+.workbench-modes{display:flex;gap:6px;flex-wrap:wrap}
+.workbench-modes button{min-width:76px}
+.workbench-modes button[aria-pressed=true]{background:var(--primary);color:white;border-color:var(--primary)}
+.material-ink .workbench-modes button[aria-pressed=true]{background:var(--primary);color:white;border-color:#82c3b6}
+.workbench-task-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.workbench-task-heading h2,.workbench-task-heading p{margin:0}
+#workbench-provider{font-size:13px}
+#workbench-provider a{color:inherit}
+#workbench-pending .row{gap:10px}
+#workbench-pending .row .button{white-space:nowrap}
 .workspace[data-view=mobile] .agent-calendar-head .actions>button{flex:0 0 auto;width:auto}
 .agent-day-tasks .row>.button{flex:0 0 auto;white-space:nowrap;padding:8px 12px}
 

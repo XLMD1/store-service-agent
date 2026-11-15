@@ -14,6 +14,7 @@ const shared = [
   'coverageNames', 'statisticsPage', 'catalogPage', 'customersPage',
   'isMockMode', 'homePage', 'serviceDraftPage', 'serviceSearchPage',
   'workFeesPage','workFeePage','technicianAccountsPage',
+  'serviceAgentPage','serviceTaskPage','serviceTaskPath','serviceTaskHref','serviceContactTitle','serviceContactLine','serviceHistoryLink','serviceRecordFacts','serviceReviewLink',
   'serviceDetailPage', 'repairPage', 'settingsPage', 'customerPage',
   'sourcesPage','sourcePage','sourceDraftReviewPage','archiveSearchPage','archiveHistoryPage','renderArchiveControls','agentHomePage','agentTaskPage','agentTaskRows','bindAgentDeletes','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',
 ];

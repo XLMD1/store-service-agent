@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.auth.models import new_id
@@ -32,4 +33,6 @@ class Source(Base):
     message_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     page_label: Mapped[str | None] = mapped_column(String(40))
     note: Mapped[str | None] = mapped_column(String(500))
+    extracted_draft_ids: Mapped[list[str] | None] = mapped_column(JSONB)
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

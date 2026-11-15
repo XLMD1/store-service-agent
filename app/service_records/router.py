@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
@@ -8,8 +8,11 @@ from app.auth.router import check_write, current_user, database
 from app.auth.models import new_id
 from app.auth.service import digest, ensure_permission, lock_accounts
 from app.service_records.archive import archive_receipt, contact_summary, find_contact, saved_archive, verified_contact_fields
+from app.service_records.extraction import extract_fields
 from app.service_records.models import ServiceContact, ServiceRecord, ServiceRecordDraft
+from app.service_records.ocr import recognize_photo
 from app.service_records.schemas import ArchiveConfirm, ArchivePreview, DraftCreate, DraftUpdate
+from app.sources.photos import read_original
 from app.sources.router import visible_source
 
 
@@ -21,8 +24,9 @@ def draft_source(source_id: UUID, user=Depends(current_user), db=Depends(databas
     return visible_source(db, user, source_id)
 
 
-def writable_source(source=Depends(draft_source), user=Depends(current_user),
+def writable_source(source_id: UUID, user=Depends(current_user),
                     db=Depends(database, scope='function')):
+    source = visible_source(db, user, source_id, for_update=True)
     ensure_permission(db, user, 'service.draft')
     return source
 
@@ -61,6 +65,48 @@ def create_draft(payload: DraftCreate, source=Depends(writable_source), db=Depen
     return summary(draft, saved_archive(db, draft))
 
 
+@router.post('/extract')
+def extract_drafts(source_id: UUID, request: Request):
+    state = request.app.state
+    with state.sessions.begin() as db:
+        check_write(request, db)
+        user = current_user(request, db)
+        ensure_permission(db, user, 'service.draft')
+        source = visible_source(db, user, source_id)
+        if source.extracted_draft_ids:
+            return {'draft_ids': source.extracted_draft_ids}
+
+    raw = source.text
+    if source.photo_type:
+        try:
+            recognize = getattr(state, 'service_ocr', recognize_photo)
+            raw = recognize(read_original(state.settings, source))
+        except OSError as error:
+            raise HTTPException(503, 'Photo recognition temporarily unavailable') from error
+    try:
+        entries = extract_fields(raw, from_photo=bool(source.photo_type))
+    except ValueError as error:
+        raise HTTPException(422, 'Source could not be separated into labeled records') from error
+
+    # Recheck access after recognition and serialize concurrent saves for this source.
+    with state.sessions.begin() as db:
+        lock_accounts(db)
+        check_write(request, db)
+        user = current_user(request, db)
+        ensure_permission(db, user, 'service.draft')
+        source = visible_source(db, user, source_id, for_update=True)
+        if not source.extracted_draft_ids:
+            drafts = [
+                ServiceRecordDraft(source_id=source.id, request_id=new_id(),
+                                   request_digest=digest(fields.model_dump_json()), fields=fields.model_dump())
+                for fields in entries
+            ]
+            db.add_all(drafts)
+            db.flush()
+            source.extracted_draft_ids = [draft.id for draft in drafts]
+        return {'draft_ids': source.extracted_draft_ids}
+
+
 @router.get('')
 def list_drafts(offset: int = Query(0, ge=0), source=Depends(draft_source),
                 db=Depends(database, scope='function')):
@@ -91,9 +137,10 @@ def update_draft(draft_id: UUID, payload: DraftUpdate, source=Depends(writable_s
     return summary(draft)
 
 
-def archive_access(source=Depends(draft_source), user=Depends(current_user),
+def archive_access(source_id: UUID, user=Depends(current_user),
                    db=Depends(database, scope='function')):
     lock_accounts(db)
+    source = visible_source(db, user, source_id, for_update=True)
     ensure_permission(db, user, 'service.confirm')
     return source
 

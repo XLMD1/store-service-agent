@@ -40,26 +40,49 @@ function sourceForm(policy){
   </section>`;
 }
 
+function sourceList(result,offset,canWrite){
+  const rows=result.items.map(row=>`<article class="row">
+    <div><h3>${esc(row.source_label||sourceKinds[row.source_kind]||(row.material_type==='photo'?'售后照片':'售后原文'))}</h3>
+    <p>保存于 ${stamp(row.submitted_at)}${row.page_label?' · '+esc(row.page_label):''}</p>
+    ${row.can_delete===false?'<p class="muted">已关联档案或任务，保留原件。</p>':''}</div>
+    <div class="actions"><a class="button" href="#source?id=${encodeURIComponent(row.id)}">查看原件</a>
+      ${canWrite&&row.can_delete?`<button type="button" data-remove-source="${esc(row.id)}">删除</button>`:''}</div>
+  </article>`).join('');
+  return `${rows||'<p class="state">这一页没有来源。</p>'}
+      <div class="actions">${offset>0?`<a class="button" href="#sources?offset=${Math.max(0,offset-50)}">上一页</a>`:''}
+      ${result.next_offset!==null?`<a class="button" href="#sources?offset=${esc(result.next_offset)}">下一页</a>`:''}</div>`;
+}
+
 async function sourcesPage(params){
   const route=location.hash;
   if(!hasPermission('service.read'))throw new Error('当前账号无权查看售后来源。');
   const offset=Math.max(0,Number.parseInt(params.get('offset'),10)||0);
-  const [policy,result]=await Promise.all([
-    hasPermission('service.draft')?api('/sources/policy'):null,
-    api('/sources?offset='+offset),
-  ]);
+  const listPath='/sources?offset='+offset;
+  const [policy,result]=await Promise.all([hasPermission('service.draft')?api('/sources/policy'):null,api(listPath)]);
   if(route!==location.hash)return;
-  const rows=result.items.map(row=>`<article class="row">
-    <div><h3>${esc(row.source_label||sourceKinds[row.source_kind]||(row.material_type==='photo'?'售后照片':'售后原文'))}</h3>
-    <p>保存于 ${stamp(row.submitted_at)}${row.page_label?' · '+esc(row.page_label):''}</p></div>
-    <a class="button" href="#source?id=${encodeURIComponent(row.id)}">查看原件</a>
-  </article>`).join('');
   shell('售后来源','保存和查阅自己提交的文字和照片',`<div class="grid opening-grid">${policy?sourceForm(policy):''}
-    <section class="panel"><h2>我的来源</h2>${rows||'<p class="state">这一页没有来源。</p>'}
-      <div class="actions">${offset>0?`<a class="button" href="#sources?offset=${Math.max(0,offset-50)}">上一页</a>`:''}
-      ${result.next_offset!==null?`<a class="button" href="#sources?offset=${result.next_offset}">下一页</a>`:''}</div>
-    </section></div>`,'',true);
+    <section class="panel"><h2>我的来源</h2><div id="source-list">${sourceList(result,offset,!!policy)}</div></section></div>`,'',true);
   if(!policy)return;
+  const list=$('#source-list');
+  list.onclick=async event=>{
+    const button=event.target.closest('[data-remove-source]');
+    if(!button||button.disabled||!confirm('删除这份来源及其未归档草稿？'))return;
+    try{
+      await FormState.freezeWhile(list,async()=>{
+        await api('/sources/'+encodeURIComponent(button.dataset.removeSource),'DELETE',{confirmed:true});
+        if(!list.isConnected)return;
+        button.closest('article').remove();
+        try{
+          const fresh=await api(listPath);
+          if(list.isConnected)list.innerHTML=sourceList(fresh,offset,true);
+        }catch{
+          if(list.isConnected)notify('来源已删除。列表暂时无法刷新。');
+        }
+      });
+    }catch(error){
+      if(list.isConnected)notify(error.status===409?'该来源已被档案或任务引用，原件会保留。':error.message);
+    }
+  };
   const form=$('#source-form');
   const mode=form.elements.material_type, photo=form.elements.photo, original=form.elements.text;
   if(mode)mode.onchange=()=>{
@@ -129,6 +152,7 @@ async function sourcePage(params){
   const [row,drafts]=await Promise.all([api(path),api(path+'/drafts?offset='+offset).catch(()=>null)]);
   if(route!==location.hash)return;
   const photo=row.material_type==='photo';
+  const canWrite=hasPermission('service.draft');
   const entries=drafts?.items.map(draft=>`<article class="row"><div><h3>${esc(draft.fields.problem?.trim().slice(0,80)||'问题未填写')}</h3>
     <p>${stamp(draft.created_at)} · ${draft.archive?'已归档':'第 '+esc(draft.version)+' 版'}</p></div>
     <a class="button" data-draft-link href="${serviceReviewLink(row.id,draft.id)}">${draft.archive?'查看归档结果':'打开草稿'}</a></article>`).join('');
@@ -138,11 +162,15 @@ async function sourcePage(params){
     <div class="grid"><section class="panel"><h2>该来源的草稿</h2>
       ${drafts?entries||'<p class="muted">这一页没有草稿。</p>':'<p class="state warning" role="status">草稿列表暂时无法读取。</p>'}
       <div class="actions">
-        ${hasPermission('service.draft')?`<a class="button primary" id="new-service-draft" href="${serviceReviewLink(row.id)}">新建草稿</a>`:''}
+        ${canWrite&&!row.extracted_count?`<button class="primary" id="extract-service-drafts" type="button">${photo?'识别照片生成草稿':'从文字生成草稿'}</button>`:''}
+        ${canWrite?`<a class="button" id="new-service-draft" href="${serviceReviewLink(row.id)}">新建草稿</a>`:''}
         ${offset>0?`<a class="button" href="${draftPage+Math.max(0,offset-50)}">上一页</a>`:''}
         ${drafts?.next_offset!=null?`<a class="button" href="${draftPage+esc(drafts.next_offset)}">下一页</a>`:''}
         ${drafts?'':'<button id="source-drafts-retry" type="button">重试草稿列表</button>'}
       </div>
+      <p id="source-extraction-status" class="muted" role="status">${row.extracted_count
+        ?'已生成 '+esc(row.extracted_count)+' 条，请对照原件逐条核对。'
+        :canWrite?'每行填写一个“字段：内容”，多条记录用“第 1 条”“第 2 条”等标明。':''}</p>
     </section><section class="panel"><h2>来源信息</h2><dl>
       <dt>来源类型</dt><dd>${sourceKinds[row.source_kind]||'未提供'}</dd>
       <dt>群名或纸本名称</dt><dd>${esc(row.source_label||'未提供')}</dd>
@@ -154,6 +182,21 @@ async function sourcePage(params){
   bindSourcePhoto(row);
   const retry=$('#source-drafts-retry');
   if(retry)retry.onclick=render;
+  const extract=$('#extract-service-drafts');
+  if(extract)extract.onclick=async()=>{
+    const status=$('#source-extraction-status');
+    extract.disabled=true;
+    status.textContent=photo?'正在识别照片…':'正在读取文字…';
+    try{
+      await api(path+'/drafts/extract','POST');
+      if(route===location.hash)await render();
+    }catch(error){
+      if(route!==location.hash)return;
+      status.textContent=error.status===422?'未能从原件分出可用字段。你可以打开原件手工新建草稿。'
+        :error.status===503?'照片暂时无法识别。你可以重试，或打开原件手工新建草稿。':error.message;
+      extract.disabled=false;
+    }
+  };
 }
 
 const serviceReviewFields=[

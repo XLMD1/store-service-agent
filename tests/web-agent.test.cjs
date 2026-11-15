@@ -36,6 +36,43 @@ test('real home explains missing model and retains the same request id after los
   const h=await harness('home',call=>{if(call.path==='/api/agent/tasks'&&call.method==='POST'){seen.push(call.body);if(fail){fail=false;throw Error('lost');}}});
   try{assert.match(h.d.querySelector('#main').textContent,/DeepSeek尚未配置/);const form=h.d.querySelector('#agent-task-form');form.elements.text.value='查询样例库';form.requestSubmit();await tick();await tick();assert.equal(form.elements.text.value,'查询样例库');assert.match(h.d.querySelector('#notice').textContent,/尚未核实任务保存结果/);form.requestSubmit();await tick();await tick();assert.equal(seen.length,2);assert.equal(seen[0].request_id,seen[1].request_id);assert.ok(h.calls.every(call=>call.path.startsWith('/api/')));}finally{h.dom.window.close();}
 });
+test('workbench keeps each task input, submits to its own mode, and filters the unified task calendar',async()=>{
+  const service={id:'service-1',text:'样例售后',created_at:'2026-11-04T10:00:00Z',state:'needs_choice',done:false};
+  const completed={...service,id:'service-2',text:'样例完成',state:'completed',done:true};
+  const h=await harness('home',call=>{
+    if(call.path==='/api/auth/me')return new Response(JSON.stringify({username:'sample',permissions:['inventory.read','service.read']}));
+    if(call.path.startsWith('/api/service-agent/tasks?'))return new Response(JSON.stringify({items:call.path.includes('pending_only')?[service]:[service,completed]}));
+    if(call.path==='/api/service-agent/tasks'&&call.method==='POST')return new Response(JSON.stringify(service));
+  });
+  try{
+    let form=h.d.querySelector('#agent-task-form');
+    const provider=h.d.querySelector('#workbench-provider');
+    assert.ok(provider.closest('.workbench-task-heading'));
+    assert.equal(form.contains(provider),false);
+    assert.equal(provider.hidden,false);
+    assert.equal(h.d.querySelector('.service-shortcuts a[href="#service-agent"]'),null);
+    assert.ok(h.d.querySelector('.service-shortcuts a[href="#sources"]'));
+    form.elements.text.value='库存未发内容';
+    h.d.querySelector('[data-workbench-mode=service]').click();
+    assert.equal(provider.hidden,true);
+    assert.equal(form.elements.text.value,'');
+    form.elements.text.value='查 13800000000 历史';
+    h.d.querySelector('[data-workbench-mode=inventory]').click();
+    assert.equal(provider.hidden,false);
+    assert.equal(form.elements.text.value,'库存未发内容');
+    h.d.querySelector('[data-workbench-mode=service]').click();
+    assert.equal(form.elements.text.value,'查 13800000000 历史');
+    assert.match(h.d.querySelector('#workbench-pending').textContent,/待选择档案/);
+    assert.doesNotMatch(h.d.querySelector('#workbench-pending').textContent,/样例完成/);
+    h.d.querySelector('[data-workbench-history=service]').click();
+    assert.match(h.d.querySelector('#agent-day-tasks').textContent,/样例完成/);
+    assert.doesNotMatch(h.d.querySelector('#agent-day-tasks').textContent,/样例入库/);
+    form.requestSubmit();
+    await tick();
+    assert.equal(h.calls.find(call=>call.method==='POST'&&call.path==='/api/service-agent/tasks').body.text,'查 13800000000 历史');
+    assert.equal(h.calls.some(call=>call.method==='POST'&&call.path==='/api/agent/tasks'),false);
+  }finally{h.dom.window.close();}
+});
 test('task preview never confirms automatically; browser checkbox gates the bound existing operation',async()=>{
   const h=await harness('task?id=task-1');
   try{assert.equal(h.d.querySelector('h1').textContent,'库存任务');assert.match(h.d.querySelector('#main').textContent,/10台/);assert.equal(h.calls.filter(c=>c.path.includes('/confirm')).length,0);const form=h.d.querySelector('[data-agent-confirm]');form.requestSubmit();await tick();assert.equal(h.calls.filter(c=>c.path.includes('/confirm')).length,0);form.elements.confirmed.checked=true;form.requestSubmit();await tick();await tick();const call=h.calls.find(c=>c.path.includes('/confirm'));assert.equal(call.body.draft_id,'draft-1');assert.equal(call.body.draft_version,1);assert.equal(call.body.parameters.quantity,2);assert.match(h.d.querySelector('#main').textContent,/document-1/);assert.equal(h.d.querySelector('[data-agent-confirm]'),null);}finally{h.dom.window.close();}
