@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-13",
+  "date": "2026-11-15",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 99,
+  "retained_count": 113,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -525,6 +525,76 @@
       "sha256": "e574491d60c2edc51fc4c5aa70ceadd2802a10d3d29437af65cf032e49feaa9b",
       "width": 390,
       "height": 900
+    },
+    {
+      "path": "docs/design/qa/m2-02/service-draft-ocr-1440.jpg",
+      "bytes": 109168,
+      "sha256": "538cdbafffdad7183c2c3d1bae8b4ff90fb9a0ed4420e600c532f7b7f695e491"
+    },
+    {
+      "path": "docs/design/qa/m2-02/source-extraction-fallback-390.jpg",
+      "bytes": 43889,
+      "sha256": "190d57bb4d304e946fed5fd344ab9e1b55aa72b8ac6d9c9ec2d9f08f344e1817"
+    },
+    {
+      "path": "docs/design/qa/m2-02/source-photo-extracted-1440.jpg",
+      "bytes": 120758,
+      "sha256": "c927bcb5677f31f039406989363b8fd021c4db812d1d4e8926e8c375ef5e5f67"
+    },
+    {
+      "path": "docs/design/qa/m2-04/service-supplement-preview-390.jpg",
+      "bytes": 46418,
+      "sha256": "49ba277d2b69b2e80aefb610f2b2545254cea8ae7565188d23447de73b4905c8"
+    },
+    {
+      "path": "docs/design/qa/m2-04/service-supplement-conflict-1440.jpg",
+      "bytes": 98407,
+      "sha256": "80094bb423358399e25b8b2032007657b15feecd968b9776bb49bdf6fe49be3b"
+    },
+    {
+      "path": "docs/design/qa/m2-04/service-agent-home-390.jpg",
+      "bytes": 45168,
+      "sha256": "348a2ddbf41afbbe7c5f6c7fc7c195f7a36bd5a9ad26f6534ea822e41891ffeb"
+    },
+    {
+      "path": "docs/design/qa/m2-04/service-task-restored-390.jpg",
+      "bytes": 47805,
+      "sha256": "8049a553883641635423c906dc5a2438ac18880aece8e951d72cbfee1ce2cf64"
+    },
+    {
+      "path": "docs/design/qa/m2-04/service-void-and-revision-1440.jpg",
+      "bytes": 94305,
+      "sha256": "019edc161b6751e1ee5845eddc8acc2d5516e5bc0d0579a652f5d1e85f8b9aff"
+    },
+    {
+      "path": "docs/design/qa/m2-01/sources-delete-390.jpg",
+      "bytes": 36980,
+      "sha256": "3a470cd0d3cea6cbcf0fdeb3aa2b38ac451e85c70b2cc522902e1e9458217986"
+    },
+    {
+      "path": "docs/design/qa/workbench-task-modes/workbench-service-390.jpg",
+      "bytes": 47844,
+      "sha256": "0f7f7f1ff9904302cd2631d7d32edaaab991477bd153d900287f974b33755f5a"
+    },
+    {
+      "path": "docs/design/qa/workbench-task-modes/workbench-all-1440.jpg",
+      "bytes": 139609,
+      "sha256": "0cf4ab0662eaa3be0b40a848ecf5a802fe7e48041dd368c9f82c2210d4ae100b"
+    },
+    {
+      "path": "docs/design/qa/workbench-task-modes/workbench-history-1440.jpg",
+      "bytes": 105823,
+      "sha256": "d634fdc08c169ef7576d0db22b1531c9a82af278068350fea5336099862416da"
+    },
+    {
+      "path": "docs/design/qa/workbench-task-modes/workbench-simplified-service-390.jpg",
+      "bytes": 52775,
+      "sha256": "0fa95b754433f842d814148d16abbb8d32381388f38d69c74d3e0a0ec4c3bef5"
+    },
+    {
+      "path": "docs/design/qa/workbench-task-modes/workbench-simplified-inventory-1440.jpg",
+      "bytes": 141240,
+      "sha256": "5c7c1c890d00955f66c6238f6e96dbeb49aeee0cf1d86e03ed6f45c5476cfb1e"
     }
   ],
   "removed": [
@@ -1050,5 +1120,5 @@
     }
   ],
   "added_after_curation": 38,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added. Four M2-03 service archive and lookup screenshots added. Three M2-05 work fee ledger screenshots added. Two technician account management screenshots added."
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added. Four M2-03 service archive and lookup screenshots added. Three M2-05 work fee ledger screenshots added. Two technician account management screenshots added. Three M2-02 extraction and OCR screenshots added. Two M2-04 service supplement screenshots added. Three M2-04 assistant, recovery, and record revision screenshots added. One My Sources deletion screenshot added. Three unified workbench task screenshots added. Two simplified workbench screenshots added."
 }

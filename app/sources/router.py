@@ -5,14 +5,15 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import ValidationError
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.dialects.postgresql import insert
 
 from app.auth.router import check_write, current_user, database
-from app.auth.service import ensure_permission
+from app.auth.service import ensure_permission, lock_accounts, now
+from app.service_records.models import ServiceAgentTask, ServiceRecord, ServiceRecordDraft, ServiceRecordSupplement
 from app.sources.models import Source
 from app.sources.photos import FORMATS, MAX_PIXELS, image_type, persist_original, read_original
-from app.sources.schemas import PhotoSourceCreate, TextSourceCreate
+from app.sources.schemas import PhotoSourceCreate, SourceDelete, TextSourceCreate
 
 
 router = APIRouter(prefix='/api/sources')
@@ -33,17 +34,30 @@ def save_source(db, user, request_id, values):
                        .on_conflict_do_nothing(constraint='uq_service_source_request').returning(Source))
     if source is None:
         source = db.scalar(select(Source).where(Source.actor_id == user.id, Source.request_id == request_id))
+        if source.deleted_at is not None:
+            raise HTTPException(409, 'Source was deleted')
         if any(getattr(source, key) != value for key, value in values.items()):
             raise HTTPException(409, 'Source request already used with different content')
     return source
 
 
-def visible_source(db, user, source_id):
+def visible_source(db, user, source_id, *, for_update=False, include_deleted=False):
     ensure_permission(db, user, 'service.read')
-    source = db.scalar(select(Source).where(Source.id == str(source_id), Source.actor_id == user.id))
+    query = select(Source).where(Source.id == str(source_id), Source.actor_id == user.id)
+    if not include_deleted:
+        query = query.where(Source.deleted_at.is_(None))
+    source = db.scalar(query.with_for_update() if for_update else query)
     if source is None:
         raise HTTPException(404, 'Source not found')
     return source
+
+
+def source_in_use(source_id):
+    archived = (select(ServiceRecord.id).join(ServiceRecordDraft, ServiceRecord.draft_id == ServiceRecordDraft.id)
+                .where(ServiceRecordDraft.source_id == source_id).exists())
+    supplement = select(ServiceRecordSupplement.id).where(ServiceRecordSupplement.source_id == source_id).exists()
+    task = select(ServiceAgentTask.id).where(ServiceAgentTask.source_id == source_id).exists()
+    return or_(archived, supplement, task)
 
 
 async def photo_payload(request: Request):
@@ -110,17 +124,31 @@ def save_photo(request: Request, user=Depends(photo_submitter), payload=Depends(
 def list_mine(offset: int = Query(0, ge=0), user=Depends(current_user),
               db=Depends(database, scope='function')):
     ensure_permission(db, user, 'service.read')
-    rows = list(db.scalars(select(Source).where(Source.actor_id == user.id)
-                          .order_by(Source.submitted_at.desc(), Source.id.desc())
-                          .offset(offset).limit(PAGE_SIZE + 1)))
-    return {'items': [summary(source) for source in rows[:PAGE_SIZE]],
+    rows = list(db.execute(select(Source, source_in_use(Source.id)).where(
+        Source.actor_id == user.id, Source.deleted_at.is_(None))
+        .order_by(Source.submitted_at.desc(), Source.id.desc()).offset(offset).limit(PAGE_SIZE + 1)))
+    return {'items': [{**summary(source), 'can_delete': not in_use} for source, in_use in rows[:PAGE_SIZE]],
             'next_offset': offset + PAGE_SIZE if len(rows) > PAGE_SIZE else None}
+
+
+@router.delete('/{source_id}', status_code=204, dependencies=[Depends(check_write)])
+def remove(source_id: UUID, payload: SourceDelete, user=Depends(current_user),
+           db=Depends(database, scope='function')):
+    lock_accounts(db)
+    source = visible_source(db, user, source_id, for_update=True, include_deleted=True)
+    ensure_permission(db, user, 'service.draft')
+    if source.deleted_at is not None:
+        return
+    if db.scalar(select(source_in_use(source.id))):
+        raise HTTPException(409, 'Source is linked to an archive, supplement, or task')
+    source.deleted_at = now()
 
 
 @router.get('/{source_id}')
 def read(source_id: UUID, user=Depends(current_user), db=Depends(database, scope='function')):
     source = visible_source(db, user, source_id)
     return {**summary(source), 'text': source.text, 'note': source.note,
+            'extracted_count': len(source.extracted_draft_ids or []),
             'message_time': source.message_time.isoformat() if source.message_time else None}
 
 

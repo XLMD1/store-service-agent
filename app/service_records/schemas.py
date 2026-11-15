@@ -101,3 +101,42 @@ class ArchiveSearch(BaseModel):
 
     q: str = Field(min_length=1, max_length=500)
     offset: int = Field(default=0, ge=0, strict=True)
+
+
+class SupplementConfirm(ArchiveConfirm):
+    version: int = Field(ge=1, strict=True)
+    result: str = Field(min_length=1, max_length=4000)
+    source_id: UUID
+
+    @field_validator('result')
+    @classmethod
+    def checked_result(cls, value):
+        check_text(value)
+        if not value.strip():
+            raise ValueError('Supplement result is empty')
+        return value.strip()
+
+
+CorrectionField = Literal['problem', 'model', 'error_code', 'repair_date', 'repair_date_precision',
+                          'treatment', 'parts', 'result']
+
+
+class RevisionConfirm(ArchiveConfirm):
+    version: int = Field(ge=1, strict=True)
+    kind: Literal['correct', 'void']
+    reason: str = Field(min_length=1, max_length=500)
+    changes: dict[CorrectionField, str | None] = Field(default_factory=dict)
+
+    @field_validator('reason')
+    @classmethod
+    def checked_reason(cls, value):
+        check_text(value)
+        if not value.strip():
+            raise ValueError('A reason is required')
+        return value.strip()
+
+    @model_validator(mode='after')
+    def check_kind(self):
+        if (self.kind == 'correct') != bool(self.changes):
+            raise ValueError('A field change is required for a correction')
+        return self

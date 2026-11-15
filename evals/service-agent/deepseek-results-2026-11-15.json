@@ -1,0 +1,293 @@
+{
+  "local_rules": {
+    "case_count": 12,
+    "intent_matches": 9,
+    "exact_plans": 7,
+    "fields_to_review": 10,
+    "estimated_cases_with_question": 8,
+    "items": [
+      {
+        "id": "lookup-id",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "00000000-0000-4000-8000-000000000001",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "new-labeled",
+        "extracted": {
+          "intent": "new",
+          "lookup": "样例甲区",
+          "content": "热水器不点火"
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "supplement-labeled",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "样例乙区",
+          "content": "更换点火针后复测正常"
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "supplement-chat",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [
+          "lookup",
+          "content"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "new-chat",
+        "extracted": {
+          "intent": null,
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [
+          "intent",
+          "lookup",
+          "content"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "lookup-chat",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [
+          "lookup"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "partial-follow-up",
+        "extracted": {
+          "intent": null,
+          "lookup": "",
+          "content": "复测能点火"
+        },
+        "fields_to_review": [
+          "intent"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "ambiguous-repeat",
+        "extracted": {
+          "intent": "new",
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [
+          "intent",
+          "lookup",
+          "content"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "follow-up-no-target",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": "暂时没复发"
+        },
+        "fields_to_review": [],
+        "estimated_question": true
+      },
+      {
+        "id": "lookup-labeled",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "样例己区",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "out-of-scope",
+        "extracted": {
+          "intent": null,
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": true
+      },
+      {
+        "id": "missing-facts",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": true
+      }
+    ]
+  },
+  "deepseek": {
+    "status": "scored",
+    "model": "deepseek-flash",
+    "case_count": 12,
+    "intent_matches": 12,
+    "exact_plans": 5,
+    "fields_to_review": 9,
+    "estimated_cases_with_question": 5,
+    "items": [
+      {
+        "id": "lookup-id",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "00000000-0000-4000-8000-000000000001",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "new-labeled",
+        "extracted": {
+          "intent": "new",
+          "lookup": "",
+          "content": "问题：热水器不点火"
+        },
+        "fields_to_review": [
+          "lookup",
+          "content"
+        ],
+        "estimated_question": false
+      },
+      {
+        "id": "supplement-labeled",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "样例乙区",
+          "content": "更换点火针后复测正常"
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "supplement-chat",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "乙区",
+          "content": "换了点火针，今天复测正常"
+        },
+        "fields_to_review": [
+          "lookup"
+        ],
+        "estimated_question": false
+      },
+      {
+        "id": "new-chat",
+        "extracted": {
+          "intent": "new",
+          "lookup": "",
+          "content": "今天又漏水了"
+        },
+        "fields_to_review": [
+          "lookup"
+        ],
+        "estimated_question": false
+      },
+      {
+        "id": "lookup-chat",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "丁区",
+          "content": ""
+        },
+        "fields_to_review": [
+          "lookup"
+        ],
+        "estimated_question": false
+      },
+      {
+        "id": "partial-follow-up",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": "复测能点火"
+        },
+        "fields_to_review": [],
+        "estimated_question": true
+      },
+      {
+        "id": "ambiguous-repeat",
+        "extracted": {
+          "intent": null,
+          "lookup": "",
+          "content": ""
+        },
+        "fields_to_review": [
+          "lookup",
+          "content"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "follow-up-no-target",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": "暂时没复发"
+        },
+        "fields_to_review": [],
+        "estimated_question": true
+      },
+      {
+        "id": "lookup-labeled",
+        "extracted": {
+          "intent": "lookup",
+          "lookup": "样例己区",
+          "content": ""
+        },
+        "fields_to_review": [],
+        "estimated_question": false
+      },
+      {
+        "id": "out-of-scope",
+        "extracted": {
+          "intent": null,
+          "lookup": "",
+          "content": "预约一下师傅明天过去"
+        },
+        "fields_to_review": [
+          "content"
+        ],
+        "estimated_question": true
+      },
+      {
+        "id": "missing-facts",
+        "extracted": {
+          "intent": "supplement",
+          "lookup": "",
+          "content": "处理过了，帮我补记"
+        },
+        "fields_to_review": [
+          "content"
+        ],
+        "estimated_question": true
+      }
+    ]
+  }
+}

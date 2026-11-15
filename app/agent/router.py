@@ -1,6 +1,4 @@
 from uuid import UUID
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, Request, HTTPException, Query
 from sqlalchemy import select
@@ -13,6 +11,7 @@ from app.agent.service import access, cancel_task, create_task, run_task, select
 from app.auth.router import check_write, current_user, database
 from app.auth.service import ensure_permission
 from app.operations.models import Draft
+from app.task_calendar import month_range
 
 
 router = APIRouter(prefix='/api/agent')
@@ -74,12 +73,7 @@ def listing(month: str | None = Query(default=None, pattern=r'^\d{4}-\d{2}$'), p
         AgentTask.actor_id == user.id, AgentTask.state != 'deleted',
         ~task_items.exists() | remaining_items.exists())
     if month:
-        try:
-            year, number = map(int, month.split('-'))
-            start = datetime(year,number,1,tzinfo=ZoneInfo('Asia/Shanghai'))
-            end = datetime(year+int(number==12),1 if number==12 else number+1,1,tzinfo=start.tzinfo)
-        except ValueError:
-            raise HTTPException(422,'Invalid calendar month') from None
+        start, end = month_range(month)
         query = query.where(AgentTask.created_at>=start, AgentTask.created_at<end)
     if pending_only:
         query = query.where(AgentTask.state.not_in(['completed','cancelled']))

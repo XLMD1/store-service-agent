@@ -40,7 +40,18 @@ function bindAgentDeletes(root,onDeleted){
     }catch(error){if(button.isConnected){button.disabled=false;notify(error.message);}}
   });
 }
-function agentTaskRows(tasks){return tasks.map(task=>`<article class="row"><div><h3>${esc(task.text.length>70?task.text.slice(0,70)+'…':task.text)}</h3><p>${esc(agentStates[task.state]||'状态待核验')} · ${stamp(task.updated_at)}</p>${task.items?.length?`<p>已完成 ${task.items.filter(item=>item.state==='completed').length} / ${task.items.length} 项；各笔单独核对</p>`:''}</div><div class="actions"><a class="button" href="#task?id=${esc(task.id)}">查看任务</a>${agentDeleteButton(task)}</div></article>`).join('')||'<p class="muted">尚无库存任务。可输入需求，也可直接使用库存表单。</p>';}
+function agentTaskRows(tasks,{empty='尚无库存任务。',canDelete=true}={}){
+  return tasks.map(task=>{
+    const service=task.kind==='service';
+    const status={needs_choice:'待选择档案',draft_saved:'草稿待核对'}[task.state]||agentStates[task.state]||'状态待核验';
+    const kind=task.kind?(service?'售后 · ':'库存 · '):'';
+    const href=service?serviceTaskHref(task.id):'#task?id='+encodeURIComponent(task.id);
+    return `<article class="row"><div><h3>${esc(task.text.length>70?task.text.slice(0,70)+'…':task.text)}</h3>
+      <p>${kind}${esc(status)} · ${stamp(task.updated_at||task.created_at)}</p>
+      ${task.items?.length?`<p>已完成 ${task.items.filter(item=>item.state==='completed').length} / ${task.items.length} 项</p>`:''}</div>
+      <div class="actions"><a class="button" href="${href}">查看任务</a>${canDelete&&!service?agentDeleteButton(task):''}</div></article>`;
+  }).join('')||`<p class="muted">${esc(empty)}</p>`;
+}
 function agentDateKey(value){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
 function agentMonthChange(month,offset){const [year,number]=month.split('-').map(Number);return new Date(Date.UTC(year,number-1+offset,1)).toISOString().slice(0,7);}
 function agentCalendar(month,selected,tasks){
@@ -56,7 +67,7 @@ function bindAgentCalendar(month,selected,tasks){
     state.agentDay=date;
     document.querySelectorAll('[data-agent-date]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.agentDate===date)));
     const rows=tasks.filter(task=>agentDateKey(task.created_at)===date),[,number,day]=date.split('-').map(Number);
-    $('#agent-day-tasks').innerHTML=`<h3>${number}月${day}日 <span class="muted">已完成 ${rows.filter(task=>task.state==='completed').length}项</span></h3>${rows.length?agentTaskRows(rows):'<p class="state">这一天没有库存任务。可选择其他日期查看。</p>'}`;
+    $('#agent-day-tasks').innerHTML=`<h3>${number}月${day}日 <span class="muted">已完成 ${rows.filter(task=>task.state==='completed').length}项</span></h3>${agentTaskRows(rows,{empty:'这一天没有符合条件的任务。'})}`;
     bindAgentDeletes($('#agent-day-tasks'),agentHomePage);
   };
   const change=async(next,focus)=>{state.agentMonth=next;await agentHomePage();$(focus)?.focus();};
@@ -79,19 +90,113 @@ async function agentHomePage(){
   const version=++agentPageVersion,route=location.hash;
   const today=agentDateKey(new Date()),month=state.agentMonth||today.slice(0,7);
   const selected=state.agentDay?.startsWith(month)?state.agentDay:today.startsWith(month)?today:month+'-01';
-  const [provider,tasks]=await Promise.allSettled([api('/agent/status'),api('/agent/tasks?month='+month)]);
+  const stockAllowed=hasPermission('inventory.read'), serviceAllowed=hasPermission('service.read');
+  const modes=[...(stockAllowed?['inventory']:[]),...(serviceAllowed?['service']:[])];
+  const [provider,stockHistory,serviceHistory,stockPending,servicePending]=await Promise.allSettled([
+    stockAllowed?api('/agent/status'):null,
+    stockAllowed?api('/agent/tasks?month='+month):[],
+    serviceAllowed?api(serviceTaskPath+'?month='+month):{items:[]},
+    stockAllowed?api('/agent/tasks?pending_only=true'):[],
+    serviceAllowed?api(serviceTaskPath+'?pending_only=true'):{items:[]}
+  ]);
   if(version!==agentPageVersion||route!==location.hash)return;
-  const info=provider.status==='fulfilled'?provider.value:null,rows=tasks.status==='fulfilled'?tasks.value:[];
-  const status=!info?'任务服务暂不可用':info.test_double?'测试替身 · 未调用DeepSeek':info.configured?'DeepSeek已配置 · '+info.model:'DeepSeek尚未配置';
-  shell('工作台','描述库存需求，核对草稿后再确认',`<div class="service-home"><section class="panel material-ink service-task"><h2>今天要处理什么？</h2><form id="agent-task-form" class="fields"><label class="field"><span>库存任务</span><textarea name="text" maxlength="10000" rows="4" required placeholder="例如：查一号库所有型号的库存">${esc(state.agentText||'')}</textarea></label><div class="actions"><button class="primary" id="agent-start">开始整理</button></div><p class="muted">先查询、补问并生成草稿；正式登记仍需你逐笔点击确认。仅支持文字库存任务。</p></form></section><nav class="service-shortcuts" aria-label="库存常用功能"><a href="#inventory">${icon('box')}查库存</a>${canInbound()?`<a href="#inbound">${icon('plus')}登记入库</a>`:''}<a href="#reservations">${icon('box')}预留查询</a><a href="#statistics">${icon('file')}进货统计</a></nav><aside class="panel service-pending"><h2>任务进度</h2><p class="state ${info?.test_double||!info?.configured?'warning':''}">${esc(status)}</p><p class="muted section-note">${info?.test_double?'此环境使用明确标识的模型测试替身；库存结果仍来自当前测试数据库。':info?.configured?'模型只整理意图；数量和实际回执由库存服务提供。':'负责人可在DeepSeek设置中保存密钥；现有库存查询与人工表单继续可用。'}</p><div class="actions section-note"><a class="button" href="#pending">查看待核对</a>${hasPermission('work_fee.manage')||hasPermission('work_fee.report')?'<a class="button" href="#work-fees">工费台账</a>':''}${hasPermission('service.read')?'<a class="button" href="#sources">售后来源</a>':''}${state.user.permissions.includes('account.manage')?'<a class="button" href="#deepseek-settings">DeepSeek设置</a>':''}</div></aside><section class="panel service-recent"><h2>我的库存任务</h2>${tasks.status==='rejected'?'<p class="state warning">暂时无法读取任务列表，请重试；不代表没有历史任务。</p><button id="agent-reload">重试读取任务</button>':agentCalendar(month,selected,rows)}</section></div>`);
-  const form=$('#agent-task-form');form.elements.text.oninput=()=>{state.agentText=form.elements.text.value;};
-  if(tasks.status==='fulfilled')bindAgentCalendar(month,selected,rows);
-  if($('#agent-reload'))$('#agent-reload').onclick=()=>agentHomePage().catch(error=>notify(error.message));
-  form.onsubmit=async event=>{event.preventDefault();const text=form.elements.text.value.trim();if(!text)return;state.agentText=text;
-    if(!state.agentRequest||state.agentRequest.text!==text)state.agentRequest={request_id:crypto.randomUUID(),text};
-    try{const task=await FormState.freezeWhile(form,()=>api('/agent/tasks','POST',state.agentRequest));state.agentRequest=null;if(!form.isConnected)return;const hash='#task?id='+task.id;location.hash=hash;
-      await runAgentTask(task.id,{expected_version:task.version});
-    }catch(error){notify('尚未核实任务保存结果，请查看任务列表或按原请求重试。'+error.message);}
+  const info=provider.status==='fulfilled'?provider.value:null;
+  const status=!info?'模型状态不可用':info.test_double?'模型测试模式':info.configured?'DeepSeek已配置':'DeepSeek尚未配置';
+  const merge=(stock,service)=>[
+    ...(stock.value||[]).map(task=>({...task,kind:'inventory'})),
+    ...(service.value?.items||[]).map(task=>({...task,kind:'service'}))
+  ].sort((left,right)=>Date.parse(right.created_at)-Date.parse(left.created_at)||left.id.localeCompare(right.id));
+  const labels={all:'全部',inventory:'库存',service:'售后'};
+  const pending=merge(stockPending,servicePending).filter(task=>!['completed','cancelled'].includes(task.state));
+  const rows=merge(stockHistory,serviceHistory);
+  const pendingFailed=[stockPending,servicePending].some(result=>result.status==='rejected');
+  const historyFailed=[stockHistory,serviceHistory].some(result=>result.status==='rejected');
+  shell('工作台','整理库存或售后事项',`<div class="service-home">
+    <section class="panel material-ink service-task">
+      <div class="workbench-task-heading">
+        <h2>新建任务</h2>
+        ${stockAllowed?`<p class="muted" id="workbench-provider">${esc(status)}
+          ${hasPermission('account.manage')?' · <a href="#deepseek-settings" aria-label="DeepSeek 设置">设置</a>':''}</p>`:''}
+      </div>
+      <form id="agent-task-form" class="fields">
+        ${modes.length>1?`<div class="workbench-modes" role="group" aria-label="任务类型">${modes.map(key=>
+          `<button type="button" data-workbench-mode="${key}" aria-pressed="false">${labels[key]}</button>`).join('')}</div>`:''}
+        <label class="field"><span id="workbench-task-label"></span><textarea name="text" maxlength="10000" rows="4" required></textarea></label>
+        <div class="actions"><button class="primary" id="agent-start"></button></div>
+        <p class="muted">正式登记前需核对并确认。</p>
+      </form>
+    </section>
+    <aside class="panel service-pending" id="workbench-pending"><h2>待我处理</h2>
+      ${pendingFailed?'<p class="state warning">有一类待办暂时无法读取。</p><button type="button" data-workbench-retry>重试</button>':''}
+      ${pending.length||!pendingFailed?agentTaskRows(pending.slice(0,5),{empty:'暂无待办。',canDelete:false}):''}
+      ${pending.length>5?`<details class="section-note"><summary>其余 ${pending.length-5} 项</summary>
+        ${agentTaskRows(pending.slice(5),{canDelete:false})}</details>`:''}
+      ${stockAllowed?'<a class="button section-note" href="#pending">查看库存待核对草稿</a>':''}
+    </aside>
+    <nav class="service-shortcuts" aria-label="常用功能">
+      ${serviceAllowed?`<a href="#sources">${icon('file')}售后来源</a>`:''}
+      ${stockAllowed?`<a href="#inventory">${icon('box')}查库存</a>${canInbound()?`<a href="#inbound">${icon('plus')}登记入库</a>`:''}
+      <a href="#reservations">${icon('box')}预留查询</a><a href="#statistics">${icon('file')}进货统计</a>`:''}
+      ${hasPermission('work_fee.manage')||hasPermission('work_fee.report')?`<a href="#work-fees">${icon('clipboard')}工费台账</a>`:''}
+    </nav>
+    <section class="panel service-recent"><h2>我的任务</h2>
+      ${modes.length>1?`<div class="workbench-modes" role="group" aria-label="历史任务类型">${['all',...modes].map(key=>
+        `<button type="button" data-workbench-history="${key}" aria-pressed="false">${labels[key]}</button>`).join('')}</div>`:''}
+      ${historyFailed?'<p class="state warning">有一类历史暂时无法读取。</p><button type="button" data-workbench-retry>重试</button>':''}
+      <div id="workbench-calendar"></div>
+    </section></div>`);
+  function showHistory(kind){
+    state.workbenchHistory=kind;
+    const filtered=kind==='all'?rows:rows.filter(task=>task.kind===kind);
+    const day=state.agentDay?.startsWith(month)?state.agentDay:selected;
+    document.querySelectorAll('[data-workbench-history]').forEach(button=>
+      button.setAttribute('aria-pressed',String(button.dataset.workbenchHistory===kind)));
+    $('#workbench-calendar').innerHTML=agentCalendar(month,day,filtered);
+    bindAgentCalendar(month,day,filtered);
+  }
+  showHistory(modes.includes(state.workbenchHistory)?state.workbenchHistory:'all');
+  document.querySelectorAll('[data-workbench-history]').forEach(button=>button.onclick=()=>showHistory(button.dataset.workbenchHistory));
+  document.querySelectorAll('[data-workbench-retry]').forEach(button=>button.onclick=()=>agentHomePage().catch(error=>notify(error.message)));
+  const form=$('#agent-task-form'), input=form.elements.text;
+  let mode=modes.includes(state.workbenchTaskMode)?state.workbenchTaskMode:modes[0];
+  const inputKey=kind=>kind==='service'?'serviceWorkbenchText':'agentText';
+  const saveInput=()=>{state[inputKey(mode)]=input.value;};
+  const showMode=kind=>{
+    mode=state.workbenchTaskMode=kind;
+    const service=kind==='service';
+    input.value=state[inputKey(kind)]||'';
+    input.placeholder=service?'例如：查 13800000000 上次的售后记录':'例如：查一号库所有型号的库存';
+    $('#workbench-task-label').textContent=labels[kind]+'任务';
+    $('#agent-start').textContent='整理'+labels[kind]+'任务';
+    if($('#workbench-provider'))$('#workbench-provider').hidden=service;
+    form.querySelectorAll('[data-workbench-mode]').forEach(button=>
+      button.setAttribute('aria-pressed',String(button.dataset.workbenchMode===kind)));
+  };
+  if(!mode){form.hidden=true;return;}
+  showMode(mode);
+  input.oninput=saveInput;
+  form.querySelectorAll('[data-workbench-mode]').forEach(button=>button.onclick=()=>{
+    saveInput();
+    showMode(button.dataset.workbenchMode);
+  });
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const text=input.value.trim();
+    if(!text)return;
+    saveInput();
+    const kind=mode,service=kind==='service';
+    const key=service?'serviceWorkbenchRequest':'agentRequest';
+    if(state[key]?.text!==text)state[key]={request_id:crypto.randomUUID(),text};
+    try{
+      const task=await FormState.freezeWhile(form,()=>api(service?serviceTaskPath:'/agent/tasks','POST',state[key]));
+      state[key]=null;
+      if(state[inputKey(kind)]?.trim()===text)state[inputKey(kind)]='';
+      if(!form.isConnected)return;
+      location.hash=service?serviceTaskHref(task.id):'#task?id='+encodeURIComponent(task.id);
+      if(!service)await runAgentTask(task.id,{expected_version:task.version});
+    }catch(error){
+      if(form.isConnected)notify('尚未核实任务保存结果，请查看任务列表或按原请求重试。'+error.message);
+    }
   };
 }
 async function agentSettingsPage(){

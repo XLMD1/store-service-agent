@@ -37,7 +37,7 @@ def test_text_source_is_exact_and_persists_after_restart(application, settings):
             assert result.json()['text'] == payload['text']
             assert result.json()['source_label'] is None and result.json()['page_label'] is None
             assert result.json()['message_time'] is None
-            assert client.get('/api/sources').json()['items'] == [summary]
+            assert client.get('/api/sources').json()['items'] == [{**summary, 'can_delete': True}]
     finally:
         restarted.state.engine.dispose()
 

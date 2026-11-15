@@ -1,0 +1,14 @@
+[
+  {"id":"lookup-id","text":"查档案 00000000-0000-4000-8000-000000000001","expected":{"intent":"lookup","lookup":"00000000-0000-4000-8000-000000000001","content":""}},
+  {"id":"new-labeled","text":"客户又报修，地址：样例甲区，问题：热水器不点火","expected":{"intent":"new","lookup":"样例甲区","content":"热水器不点火"}},
+  {"id":"supplement-labeled","text":"补充原档案，地址：样例乙区，内容：更换点火针后复测正常","expected":{"intent":"supplement","lookup":"样例乙区","content":"更换点火针后复测正常"}},
+  {"id":"supplement-chat","text":"给样例乙区那次上门补到原档，换了点火针，今天复测正常","expected":{"intent":"supplement","lookup":"样例乙区","content":"换了点火针，今天复测正常"}},
+  {"id":"new-chat","text":"还是样例丙区那家，昨天刚处理完，今天又漏水了，请开一条新的","expected":{"intent":"new","lookup":"样例丙区","content":"今天又漏水了"}},
+  {"id":"lookup-chat","text":"看看样例丁区上次是怎么处理的","expected":{"intent":"lookup","lookup":"样例丁区","content":""}},
+  {"id":"partial-follow-up","text":"“复测能点火”已经回访过了，把这结果加到前天那单","expected":{"intent":"supplement","lookup":"","content":"复测能点火"}},
+  {"id":"ambiguous-repeat","text":"样例戊区的热水器又停了，要续之前那单还是开新报修？","expected":{"intent":null,"lookup":"样例戊区","content":"热水器又停了"}},
+  {"id":"follow-up-no-target","text":"客户说“暂时没复发”，这是阶段性回访，先追加结果","expected":{"intent":"supplement","lookup":"","content":"暂时没复发"}},
+  {"id":"lookup-labeled","text":"地址：样例己区，查历史","expected":{"intent":"lookup","lookup":"样例己区","content":""}},
+  {"id":"out-of-scope","text":"预约一下师傅明天过去","expected":{"intent":null,"lookup":"","content":""}},
+  {"id":"missing-facts","text":"处理过了，帮我补记","expected":{"intent":"supplement","lookup":"","content":""}}
+]
