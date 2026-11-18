@@ -13,6 +13,7 @@ from app.auth.service import digest, ensure_permission, lock_accounts
 from app.service_records.models import (ServiceContact, ServiceRecord, ServiceRecordDraft, ServiceRecordRevision,
                                         ServiceRecordSupplement)
 from app.service_records.schemas import ArchiveSearch, DraftFields, RevisionConfirm, SupplementConfirm
+from app.sources.access import source_visible_to
 from app.sources.models import Source
 from app.sources.router import visible_source
 
@@ -94,7 +95,7 @@ def history(contact_id: UUID, offset: int = Query(0, ge=0), user=Depends(current
 def contact_history(db, user, contact_id, offset=0, *, active_only=False, record_id=None):
     latest = (select(ServiceRecordSupplement.result).where(ServiceRecordSupplement.record_id == ServiceRecord.id)
               .order_by(ServiceRecordSupplement.version.desc()).limit(1).scalar_subquery())
-    query = (select(ServiceRecord, Source.id, Source.actor_id, latest)
+    query = (select(ServiceRecord, Source.id, source_visible_to(user.id), latest)
              .join(ServiceRecordDraft, ServiceRecord.draft_id == ServiceRecordDraft.id)
              .join(Source, ServiceRecordDraft.source_id == Source.id)
              .where(ServiceRecord.contact_id == contact_id))
@@ -108,8 +109,8 @@ def contact_history(db, user, contact_id, offset=0, *, active_only=False, record
     return {'items': [{'id': record.id, 'fields': record.fields, 'archived_at': record.archived_at.isoformat(),
                        'status': 'voided' if record.voided else 'active', 'version': record.version,
                        'latest_result': latest_result,
-                       'source_id': source_id if actor_id == user.id else None}
-                      for record, source_id, actor_id, latest_result in rows[:PAGE_SIZE]],
+                       'source_id': source_id if can_read_source else None}
+                      for record, source_id, can_read_source, latest_result in rows[:PAGE_SIZE]],
             'next_offset': offset + PAGE_SIZE if len(rows) > PAGE_SIZE else None}
 
 
@@ -133,15 +134,15 @@ def list_supplements(record_id: UUID, offset: int = Query(0, ge=0), user=Depends
     ensure_permission(db, user, 'service.read')
     record = find_record(db, record_id)
     entries = list(db.execute(
-        select(ServiceRecordSupplement, User.username, Source.actor_id)
+        select(ServiceRecordSupplement, User.username, source_visible_to(user.id))
         .join(User, User.id == ServiceRecordSupplement.actor_id)
         .join(Source, Source.id == ServiceRecordSupplement.source_id)
         .where(ServiceRecordSupplement.record_id == record.id, ServiceRecordSupplement.version <= record.version)
         .order_by(ServiceRecordSupplement.version.desc()).offset(offset).limit(PAGE_SIZE + 1)
     ))
     return {'version': record.version, 'next_offset': offset + PAGE_SIZE if len(entries) > PAGE_SIZE else None,
-            'items': [supplement_summary(entry, actor, source_actor == user.id)
-                      for entry, actor, source_actor in entries[:PAGE_SIZE]]}
+            'items': [supplement_summary(entry, actor, can_read_source)
+                      for entry, actor, can_read_source in entries[:PAGE_SIZE]]}
 
 
 @router.post('/{record_id}/supplements', dependencies=[Depends(check_write)])
@@ -155,7 +156,7 @@ def add_supplement(record_id: UUID, payload: SupplementConfirm, user=Depends(cur
 
 
 def save_supplement(db, user, record, payload):
-    source = visible_source(db, user, payload.source_id)
+    source = visible_source(db, user, payload.source_id, owner_only=True)
     if db.get(ServiceRecordDraft, record.draft_id).source_id == source.id:
         raise HTTPException(422, 'Choose a follow-up source')
     operation_id = str(payload.operation_id)

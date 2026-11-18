@@ -40,28 +40,38 @@ function sourceForm(policy){
   </section>`;
 }
 
-function sourceList(result,offset,canWrite){
+function sourceList(result,offset,canWrite,shared=false){
+  const page='#sources?'+(shared?'scope=shared&amp;':'')+'offset=';
   const rows=result.items.map(row=>`<article class="row">
     <div><h3>${esc(row.source_label||sourceKinds[row.source_kind]||(row.material_type==='photo'?'售后照片':'售后原文'))}</h3>
     <p>保存于 ${stamp(row.submitted_at)}${row.page_label?' · '+esc(row.page_label):''}</p>
-    ${row.can_delete===false?'<p class="muted">已关联档案或任务，保留原件。</p>':''}</div>
+    ${!shared&&row.can_delete===false?'<p class="muted">已关联档案或任务，保留原件。</p>':''}</div>
     <div class="actions"><a class="button" href="#source?id=${encodeURIComponent(row.id)}">查看原件</a>
       ${canWrite&&row.can_delete?`<button type="button" data-remove-source="${esc(row.id)}">删除</button>`:''}</div>
   </article>`).join('');
-  return `${rows||'<p class="state">这一页没有来源。</p>'}
-      <div class="actions">${offset>0?`<a class="button" href="#sources?offset=${Math.max(0,offset-50)}">上一页</a>`:''}
-      ${result.next_offset!==null?`<a class="button" href="#sources?offset=${esc(result.next_offset)}">下一页</a>`:''}</div>`;
+  return `${rows||`<p class="state">${shared?'这一页没有授权给你的来源。':'这一页没有来源。'}</p>`}
+      <div class="actions">${offset>0?`<a class="button" href="${page+Math.max(0,offset-50)}">上一页</a>`:''}
+      ${result.next_offset!==null?`<a class="button" href="${page+esc(result.next_offset)}">下一页</a>`:''}</div>`;
 }
 
 async function sourcesPage(params){
   const route=location.hash;
   if(!hasPermission('service.read'))throw new Error('当前账号无权查看售后来源。');
   const offset=Math.max(0,Number.parseInt(params.get('offset'),10)||0);
-  const listPath='/sources?offset='+offset;
-  const [policy,result]=await Promise.all([hasPermission('service.draft')?api('/sources/policy'):null,api(listPath)]);
+  const shared=params.get('scope')==='shared';
+  const listPath='/sources?offset='+offset+(shared?'&scope=shared':'');
+  const [policy,result]=await Promise.all([!shared&&hasPermission('service.draft')?api('/sources/policy'):null,api(listPath)]);
   if(route!==location.hash)return;
-  shell('售后来源','保存和查阅自己提交的文字和照片',`<div class="grid opening-grid">${policy?sourceForm(policy):''}
-    <section class="panel"><h2>我的来源</h2><div id="source-list">${sourceList(result,offset,!!policy)}</div></section></div>`,'',true);
+  const supportsReview=result.supports_review_access;
+  if(shared&&!supportsReview){
+    location.hash='sources';
+    return;
+  }
+  shell('售后来源',supportsReview?'保存、查阅和移交售后材料':'保存和查阅自己提交的文字和照片',`<div class="grid ${policy?'opening-grid':''}">${policy?sourceForm(policy):''}
+    <section class="panel">${supportsReview?`<nav class="actions" aria-label="来源范围">
+      <a class="button ${shared?'':'primary'}" href="#sources" ${shared?'':'aria-current="page"'}>我的来源</a>
+      <a class="button ${shared?'primary':''}" href="#sources?scope=shared" ${shared?'aria-current="page"':''}>授权给我</a>
+    </nav>`:'<h2>我的来源</h2>'}<div id="source-list">${sourceList(result,offset,!!policy,shared)}</div></section></div>`,'',true);
   if(!policy)return;
   const list=$('#source-list');
   list.onclick=async event=>{
@@ -142,6 +152,71 @@ function serviceReviewLink(sourceId,draftId){
   return '#service-draft?source='+encodeURIComponent(sourceId)+(draftId?'&draft='+encodeURIComponent(draftId):'');
 }
 
+function sourceReviewAccess(){
+  return `<section class="panel"><details id="source-review-access"><summary>授权核对</summary>
+    <div class="fields section-note">
+      <div id="source-reviewers" aria-live="polite"></div>
+      <form id="source-review-form" class="fields">
+        ${field('接收人登录账号','username','','required maxlength="64" pattern="[A-Za-z0-9_.\\-]+" autocapitalize="none"')}
+        <label class="check"><input name="confirmed" type="checkbox" required>允许此账号查看整份原件，并按职责核对全部关联草稿</label>
+        <div class="actions"><button type="submit" class="primary">确认授权</button></div>
+      </form>
+      <p class="muted" id="source-review-status" role="status"></p>
+    </div></details></section>`;
+}
+
+function bindSourceReviewAccess(path){
+  const details=$('#source-review-access'), list=$('#source-reviewers');
+  const form=$('#source-review-form'), status=$('#source-review-status');
+  const accessPath=path+'/review-access';
+  let previousUsername, requestId;
+  async function refresh(){
+    try{
+      const {items}=await api(accessPath);
+      list.innerHTML=items.map(({id,username})=>`<div class="row"><strong>${esc(username)}</strong>
+        <button type="button" data-revoke-access="${esc(id)}" aria-label="撤销 ${esc(username)} 的授权">撤销授权</button></div>`).join('')
+        ||'<p class="muted">暂无已授权账号。</p>';
+    }catch{
+      list.textContent='暂时无法读取授权列表。';
+    }
+  }
+  details.ontoggle=()=>{if(details.open)refresh();};
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const data=new FormData(form);
+    const username=String(data.get('username')).trim();
+    if(previousUsername!==username||!requestId){previousUsername=username;requestId=crypto.randomUUID();}
+    try{
+      await FormState.freezeWhile(details,async()=>{
+        await api(accessPath,'POST',{username,confirmed:data.has('confirmed'),request_id:requestId});
+        requestId=null;
+        form.reset();
+        status.textContent='授权已保存。接收人可在「授权给我」查看。';
+        await refresh();
+      });
+    }catch(error){
+      if(error.status===409){
+        requestId=null;
+        status.textContent='此账号已获授权或之前的授权已撤销，请核对列表后再操作。';
+        await refresh();
+      }else status.textContent=error.status===422?'请核对登录账号，并确认账号已启用且有售后核对权限。':error.message;
+    }
+  };
+  list.onclick=async event=>{
+    const button=event.target.closest('[data-revoke-access]');
+    if(!button||button.disabled||!confirm('撤销后，此账号将无法打开这份原件及其草稿。继续撤销？'))return;
+    try{
+      await FormState.freezeWhile(details,async()=>{
+        await api(accessPath+'/'+encodeURIComponent(button.dataset.revokeAccess),'DELETE',{confirmed:true});
+        status.textContent='授权已撤销。';
+        await refresh();
+      });
+    }catch(error){
+      status.textContent=error.message;
+    }
+  };
+}
+
 async function sourcePage(params){
   const route=location.hash;
   if(!hasPermission('service.read'))throw new Error('当前账号无权查看售后来源。');
@@ -153,6 +228,7 @@ async function sourcePage(params){
   if(route!==location.hash)return;
   const photo=row.material_type==='photo';
   const canWrite=hasPermission('service.draft');
+  const canManageAccess=canWrite&&row.owned_by_viewer;
   const entries=drafts?.items.map(draft=>`<article class="row"><div><h3>${esc(draft.fields.problem?.trim().slice(0,80)||'问题未填写')}</h3>
     <p>${stamp(draft.created_at)} · ${draft.archive?'已归档':'第 '+esc(draft.version)+' 版'}</p></div>
     <a class="button" data-draft-link href="${serviceReviewLink(row.id,draft.id)}">${draft.archive?'查看归档结果':'打开草稿'}</a></article>`).join('');
@@ -178,8 +254,9 @@ async function sourcePage(params){
       <dt>消息时间（北京时间）</dt><dd>${row.message_time?stamp(row.message_time):'未提供'}</dd>
       <dt>保存时间（北京时间）</dt><dd>${stamp(row.submitted_at)}</dd>
       ${row.note?`<dt>备注</dt><dd>${esc(row.note)}</dd>`:''}
-    </dl></section></div></div>`,'',true);
+    </dl></section>${canManageAccess?sourceReviewAccess():''}</div></div>`,'',true);
   bindSourcePhoto(row);
+  if(canManageAccess)bindSourceReviewAccess(path);
   const retry=$('#source-drafts-retry');
   if(retry)retry.onclick=render;
   const extract=$('#extract-service-drafts');

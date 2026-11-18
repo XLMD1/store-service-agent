@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -36,3 +36,17 @@ class Source(Base):
     extracted_draft_ids: Mapped[list[str] | None] = mapped_column(JSONB)
     submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SourceReviewGrant(Base):
+    __tablename__ = 'service_source_review_grants'
+    __table_args__ = (
+        Index('uq_active_source_reviewer', 'reviewer_id', 'source_id', unique=True,
+              postgresql_where=text('revoked_at IS NULL')),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    source_id: Mapped[str] = mapped_column(ForeignKey('service_sources.id'))
+    reviewer_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    granted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

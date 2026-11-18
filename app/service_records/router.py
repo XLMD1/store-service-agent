@@ -12,6 +12,7 @@ from app.service_records.extraction import extract_fields
 from app.service_records.models import ServiceContact, ServiceRecord, ServiceRecordDraft
 from app.service_records.ocr import recognize_photo
 from app.service_records.schemas import ArchiveConfirm, ArchivePreview, DraftCreate, DraftUpdate
+from app.sources.access import active_review_grant
 from app.sources.photos import read_original
 from app.sources.router import visible_source
 
@@ -26,6 +27,7 @@ def draft_source(source_id: UUID, user=Depends(current_user), db=Depends(databas
 
 def writable_source(source_id: UUID, user=Depends(current_user),
                     db=Depends(database, scope='function')):
+    lock_accounts(db)
     source = visible_source(db, user, source_id, for_update=True)
     ensure_permission(db, user, 'service.draft')
     return source
@@ -155,8 +157,10 @@ def preview_archive(draft_id: UUID, payload: ArchivePreview, source=Depends(arch
     contact_id = str(payload.contact_id) if payload.contact_id else None
     contact = find_contact(db, contact_id) if contact_id else ServiceContact(**identity)
     previous = draft.archive_preview
-    binding = {'version': draft.version, 'actor_id': user.id, 'contact_id': contact_id}
-    if previous and all(previous[key] == value for key, value in binding.items()):
+    review_grant_id = db.scalar(active_review_grant(source.id, user.id)) if source.actor_id != user.id else None
+    binding = {'version': draft.version, 'actor_id': user.id, 'contact_id': contact_id,
+               'review_grant_id': review_grant_id}
+    if previous and all(previous.get(key) == value for key, value in binding.items()):
         operation_id = previous['operation_id']
     else:
         operation_id = new_id()
@@ -174,8 +178,10 @@ def confirm_archive(draft_id: UUID, payload: ArchiveConfirm, source=Depends(arch
     if existing and existing.operation_id == operation_id and existing.archived_by == user.id:
         return archive_receipt(existing)
     preview = draft.archive_preview
+    review_grant_id = db.scalar(active_review_grant(source.id, user.id)) if source.actor_id != user.id else None
     if (existing or not preview or preview['version'] != draft.version
-            or preview['operation_id'] != operation_id or preview['actor_id'] != user.id):
+            or preview['operation_id'] != operation_id or preview['actor_id'] != user.id
+            or preview.get('review_grant_id') != review_grant_id):
         raise HTTPException(409, 'Archive preview changed, review it again')
     identity = verified_contact_fields(draft.fields)
     if preview['contact_id']:

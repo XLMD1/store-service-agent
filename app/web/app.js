@@ -55,7 +55,7 @@ function sidebarNavigation(navigation,current,title){
   const link=([page,label,symbol,permission,shortLabel])=>`<a href="#${page}" title="${label}" aria-label="${label}" ${active===page?'aria-current="page"':''}>${icon(symbol)}<span class="nav-label">${label}</span><span class="nav-short" aria-hidden="true">${shortLabel}</span></a>`;
   const groups=[{id:'daily',label:'日常工作',short:'日常',pages:['home','pending','sources','service-search','work-fees','repair-assistant','inventory','inbound',outbound,'reservations']},
     {id:'reports',label:'统计与核对',short:'统计',pages:['statistics','ledger','reconciliation','correction']},
-    {id:'setup',label:'资料与设置',short:'资料',pages:['catalog','customers','opening','deepseek-settings','settings']}];
+    {id:'setup',label:'资料与设置',short:'资料',pages:['knowledge','catalog','customers','opening','deepseek-settings','settings']}];
   return groups.map(group=>{
     const rows=group.pages.map(page=>navigation.find(row=>row[0]===page)).filter(Boolean);
     if(!rows.length)return '';
@@ -68,14 +68,15 @@ function sidebarNavigation(navigation,current,title){
 function shell(title,subtitle,content,action='',secondary=false){
   const permissions=state.user.permissions,current=location.hash.slice(1).split('?')[0]||'home';
   const navigation=[...(!isMockMode()&&permissions.some(item=>['work_fee.manage','work_fee.report'].includes(item))?[['work-fees','工费台账','clipboard',hasPermission('work_fee.manage')?'work_fee.manage':'work_fee.report','工费']]:[]),...(!isMockMode()?[['home','工作台','home','inventory.read','工作'],['deepseek-settings','DeepSeek设置','settings','account.manage','模型'],['sources','售后来源','file','service.read','来源'],['service-search','售后档案','file','service.read','售后']]:[]),...(isMockMode()?[['home','工作台','home','inventory.read','工作'],['service-search','售后档案','file','service.read','售后'],['repair-assistant','维修辅助','wrench','repair.query','维修'],['settings','资料与设置','settings','inventory.read','设置']]:[]),['inventory','库存查询','box','inventory.read','库存'],['reservations','预留查询','box','inventory.read','预留'],['ledger','库存流水','file','inventory.read','流水'],['pending','待核对草稿','clipboard',permissions.find(x=>['inventory.inbound','inventory.outbound','reservation.confirm','reservation.cancel','reservation.pickup','inventory.opening',...(isMockMode()?['service.draft']:['inventory.read'])].includes(x)),'草稿'],['statistics','进货统计','file','inventory.read','统计'],['correction','原单更正','settings','inventory.correct','更正'],['reconciliation','库存对账','file','inventory.correct','对账'],['inbound','登记入库','plus','inventory.inbound','入库'],...(!isMockMode()&&outboundEntry()?[ [outboundEntry().slice(1),'出库','box',hasPermission('inventory.outbound')?'inventory.outbound':'reservation.pickup','出库'] ]:[]),['customers','客户资料','file','reservation.confirm','客户'],['catalog','库房与型号','settings','inventory.opening','资料'],['opening','期初建账','settings','inventory.opening','建账']].filter(row=>permissions.includes(row[3]));
-  const workspaceLabel=isMockMode()||['sources','source','service-draft','service-search','service-detail','service-agent','service-task','work-fees','work-fee','technicians'].includes(current)?'门店工作区':'库存工作区';
+  if(!isMockMode()&&permissions.includes('knowledge.read'))navigation.push(['knowledge','维修资料','file','knowledge.read','资料']);
+  const workspaceLabel=isMockMode()||['knowledge','sources','source','service-draft','service-search','service-detail','service-agent','service-task','work-fees','work-fee','technicians'].includes(current)?'门店工作区':'库存工作区';
   const draftSource=current==='service-draft'&&!isMockMode()
     ?new URLSearchParams(location.hash.split('?')[1]).get('source'):null;
   const returnTargets={
     source:['sources','我的来源'],sources:['home','工作台'],
     'service-draft':isMockMode()?['pending','待核对']:draftSource?['source?id='+encodeURIComponent(draftSource),'来源原件']:['sources','我的来源'],
     'service-detail':['service-search','售后检索'],'service-agent':['home','工作台'],'service-task':['service-agent','售后助手'],'work-fee':['work-fees','工费台账'],'work-fees':['home','工作台'],technicians:['work-fees','工费台账'],
-    'repair-assistant':['home','工作台'],settings:['home','工作台'],
+    'repair-assistant':['home','工作台'],settings:['home','工作台'],knowledge:['home','工作台'],
     task:['home','工作台'],'deepseek-settings':['home','工作台'],
   };
   const [returnPath,returnLabel]=Object.hasOwn(returnTargets,current)?returnTargets[current]:['inventory','库存'];
@@ -127,7 +128,7 @@ async function catalogPage(){
   shell('库房与型号','库房只需填写一个名称；同一库房可存放多个型号',`<div class="state">先登记库房和型号，再分别核对各型号的库存起点。客户统一在此登记：<a class="button" href="#customers">客户资料</a></div><div class="grid catalog-grid">${build('warehouses','库房',state.warehouses)}${build('models','型号',state.models)}</div>`,'',true);
   document.querySelectorAll('[data-create],[data-edit]').forEach(form=>form.onsubmit=async event=>{event.preventDefault();const data=Object.fromEntries(new FormData(form));data.confirmed=true;if('aliases'in data)data.aliases=data.aliases.split(/[,，]/).map(x=>x.trim()).filter(Boolean);if(form.dataset.edit){data.enabled=form.elements.enabled.checked;data.expected_version=Number(form.dataset.version);}try{await FormState.freezeWhile(form,()=>api('/catalog/'+(form.dataset.create||form.dataset.edit)+(form.dataset.id?'/'+form.dataset.id:''),form.dataset.edit?'PATCH':'POST',data));await render();notify(isMockMode()?'模拟资料已保存，修订仅在当前页面内存保留。':'资料已保存，修订记录由后端保留。');}catch(error){notify(error.message);}});
 }
-async function render(){
+async function render(event){
   const version=++renderVersion;$('#notice').hidden=true;
   try{
     if(!state.user){try{state.user=await api('/auth/me');}catch{loginPage();return;}}
@@ -135,6 +136,7 @@ async function render(){
     const [page,query='']=location.hash.slice(1).split('?');
     if(!isMockMode()&&page==='service-agent')await serviceAgentPage(new URLSearchParams(query));
     else if(!isMockMode()&&page==='service-task')await serviceTaskPage(new URLSearchParams(query));
+    else if(!isMockMode()&&page==='knowledge')await knowledgePage(new URLSearchParams(query),event?.type==='hashchange');
     else if(!isMockMode()&&page==='sources')await sourcesPage(new URLSearchParams(query));else if(!isMockMode()&&page==='source')await sourcePage(new URLSearchParams(query));else if(!isMockMode()&&page==='service-draft')await sourceDraftReviewPage(new URLSearchParams(query));else if(!isMockMode()&&page==='service-search')await archiveSearchPage();else if(!isMockMode()&&page==='service-detail')await archiveHistoryPage(new URLSearchParams(query));else if(!isMockMode()&&page==='work-fees')await workFeesPage();else if(!isMockMode()&&page==='technicians')await technicianAccountsPage();else if(!isMockMode()&&page==='work-fee')await workFeePage(new URLSearchParams(query));else if(!isMockMode()&&page==='deepseek-settings')await agentSettingsPage();else if(!isMockMode()&&page==='task')await agentTaskPage(new URLSearchParams(query));else if(!isMockMode()&&(!page||page==='home'))await agentHomePage();else if(isMockMode()&&(!page||page==='home'))await homePage();else if(isMockMode()&&page==='service-draft')await serviceDraftPage(new URLSearchParams(query));else if(isMockMode()&&page==='service-search')await serviceSearchPage(new URLSearchParams(query));else if(isMockMode()&&page==='service-detail')await serviceDetailPage(new URLSearchParams(query));else if(isMockMode()&&page==='repair-assistant')await repairPage(new URLSearchParams(query));else if(isMockMode()&&page==='settings')await settingsPage();else if(page==='reserved-pickup')await reservationsPage(new URLSearchParams(query));else if(page==='inbound-statistics')await statisticsPage();else if(page==='statistics')await statisticsPage();else if(page==='correction')await correctionPage(new URLSearchParams(query));else if(page==='reconciliation')await reconciliationPage();else if(page==='opening')await openingPage(new URLSearchParams(query));else if(page==='catalog')await catalogPage();else if(page==='inbound')await inboundPage(new URLSearchParams(query));else if(page==='pending')await pendingPage();else if(page==='movement')await movementPage(new URLSearchParams(query));else if(page==='reservations')await reservationsPage(new URLSearchParams(query));else if(page==='customers')await customerPage();else if(page==='ledger')await ledgerPage(new URLSearchParams(query));else await inventoryPage();
   }catch(error){if(state.user){shell('页面暂时不可用',isMockMode()?'请核对权限或演示场景':'请核对权限或服务连接',`<section class="panel"><p>${esc(error.message)}</p><div class="actions"><button id="retry-page">重试当前页面</button><a class="button" href="#home">回工作台</a></div></section>`,'',true);$('#retry-page').onclick=render;}notify(error.message);}
   if(typeof FrontendPickers!=='undefined')FrontendPickers.refresh();

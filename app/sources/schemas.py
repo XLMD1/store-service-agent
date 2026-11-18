@@ -50,6 +50,11 @@ class SourceDelete(BaseModel):
         return value
 
 
+class SourceReviewCreate(SourceDelete):
+    request_id: UUID
+    username: str = Field(min_length=1, max_length=64, pattern=r'^[a-zA-Z0-9_.-]+$')
+
+
 def check_text(value):
     value.encode('utf-8')
     if '\x00' in value:

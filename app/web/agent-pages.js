@@ -135,6 +135,7 @@ async function agentHomePage(){
     </aside>
     <nav class="service-shortcuts" aria-label="常用功能">
       ${serviceAllowed?`<a href="#sources">${icon('file')}售后来源</a>`:''}
+      ${hasPermission('knowledge.read')?`<a href="#knowledge">${icon('file')}维修资料</a>`:''}
       ${stockAllowed?`<a href="#inventory">${icon('box')}查库存</a>${canInbound()?`<a href="#inbound">${icon('plus')}登记入库</a>`:''}
       <a href="#reservations">${icon('box')}预留查询</a><a href="#statistics">${icon('file')}进货统计</a>`:''}
       ${hasPermission('work_fee.manage')||hasPermission('work_fee.report')?`<a href="#work-fees">${icon('clipboard')}工费台账</a>`:''}
