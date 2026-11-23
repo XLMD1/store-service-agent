@@ -13,7 +13,7 @@ const shared = [
   'correctionParameters', 'correctionReceipt', 'correctionPage', 'reconciliationPage',
   'coverageNames', 'statisticsPage', 'catalogPage', 'customersPage',
   'isMockMode', 'homePage', 'serviceDraftPage', 'serviceSearchPage',
-  'workFeesPage','workFeePage','technicianAccountsPage','knowledgePage','photoBase64',
+  'workFeesPage','workFeePage','technicianAccountsPage','knowledgePage','openManualPreview','repairAssistantPage','photoBase64',
   'serviceAgentPage','serviceTaskPage','serviceTaskPath','serviceTaskHref','serviceContactTitle','serviceContactLine','serviceHistoryLink','serviceRecordFacts','serviceReviewLink',
   'serviceDetailPage', 'repairPage', 'settingsPage', 'customerPage',
   'sourcesPage','sourcePage','sourceDraftReviewPage','archiveSearchPage','archiveHistoryPage','renderArchiveControls','agentHomePage','agentTaskPage','agentTaskRows','bindAgentDeletes','agentSettingsPage','ServiceMockStore', 'servicePendingItems', 'resetServiceMock', 'loadCatalog', 'render',

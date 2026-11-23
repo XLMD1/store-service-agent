@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-18",
+  "date": "2026-11-19",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 117,
+  "retained_count": 121,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
@@ -469,6 +469,34 @@
       "sha256": "945f58e82832ad6a74144b166ce11552ee7ad57d04d3d77b33c548c37d66af15",
       "width": 1425,
       "height": 930
+    },
+    {
+      "path": "docs/design/qa/m3-02/lookup-desktop.jpg",
+      "bytes": 67635,
+      "sha256": "da90760d0f5a10a72fc37b921da4fcb8f689c12910b994a87b26a3bdbdd79448",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-02/batch-review-desktop.jpg",
+      "bytes": 65876,
+      "sha256": "6bcc0027f9c057d0a2011d671fe169b30c48a89fc364448706918b40f89a195a",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-03/repair-answer-desktop.jpg",
+      "bytes": 88429,
+      "sha256": "99f2c5d5bd4efe356bfd88b4a51e500373368cc6b09cdef5f60721ca0507e6b7",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-03/manual-preview-390.jpg",
+      "bytes": 28505,
+      "sha256": "8cb24a6d927cd9ab927326426dbfb9603a4243bb82baa0e1218f29b77b86d6f3",
+      "width": 375,
+      "height": 811
     },
     {
       "path": "docs/design/qa/m2-03/archive-history-card-390.jpg",

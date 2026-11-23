@@ -71,3 +71,69 @@ class Transition(ConfirmedInput):
     def valid_note(cls, value):
         check_text(value)
         return value
+
+
+class IndexFields(Input):
+    title: str = Field(min_length=1, max_length=200)
+    keywords: str = Field(min_length=1, max_length=2000)
+    revision: int = Field(ge=0, strict=True)
+
+    @field_validator('title', 'keywords')
+    @classmethod
+    def valid_index_text(cls, value):
+        check_text(value)
+        return value
+
+
+class PageIndexInput(IndexFields, ConfirmedInput):
+    pass
+
+
+OCR_REQUEST_PAGES = 5
+INDEX_REVIEW_PAGES = 30
+
+
+class RecognizePages(Input):
+    first_page: Page
+    last_page: Page
+    retry: bool = Field(default=False, strict=True)
+
+    @model_validator(mode='after')
+    def bounded_ocr(self):
+        if not 1 <= self.last_page - self.first_page + 1 <= OCR_REQUEST_PAGES:
+            raise ValueError('Select a valid OCR range')
+        if self.retry and self.first_page != self.last_page:
+            raise ValueError('Retry one page at a time')
+        return self
+
+
+class ReviewIndexPage(IndexFields):
+    page: Page
+    source_excerpt: str = Field(default='', max_length=8000)
+
+    @field_validator('source_excerpt')
+    @classmethod
+    def valid_excerpt(cls, value):
+        check_text(value)
+        return value
+
+
+class ConfirmIndexes(ConfirmedInput):
+    entries: list[ReviewIndexPage] = Field(min_length=1, max_length=INDEX_REVIEW_PAGES)
+
+    @model_validator(mode='after')
+    def unique_pages(self):
+        if len({entry.page for entry in self.entries}) != len(self.entries):
+            raise ValueError('Select each page once')
+        return self
+
+
+class KnowledgeSearch(Input):
+    model: ModelName
+    query: str = Field(min_length=1, max_length=200)
+
+    @field_validator('model', 'query')
+    @classmethod
+    def valid_search_text(cls, value):
+        check_text(value)
+        return value

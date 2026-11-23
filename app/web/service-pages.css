@@ -22,6 +22,16 @@
 .manual-page-frame{height:min(420px,110vw);position:relative;margin:12px 0}
 .manual-page-frame .service-photo{width:100%;height:100%;margin:0}
 .manual-page-frame .state{position:absolute;inset:auto 0 0}
+.manual-reader{width:min(960px,calc(100% - 24px));overscroll-behavior:contain}
+.manual-reader[open]{display:flex;flex-direction:column}
+.manual-reader .section-head{position:static;align-items:center;flex-shrink:0;padding:0;margin:0 0 12px}
+.manual-reader .section-head h2{overflow-wrap:anywhere}
+.manual-reader .section-head button{flex-shrink:0}
+.manual-reader-tools{display:flex;flex-wrap:wrap;align-items:center;flex-shrink:0;gap:8px;margin-bottom:8px}
+.manual-reader-viewport{min-height:0;overflow:auto;overscroll-behavior:contain}
+.manual-reader-viewport img{display:block;max-width:100%;height:auto;margin:auto}
+.manual-reader-viewport[data-actual-size] img{max-width:none}
+[data-repair-result] a[data-manual-preview]{display:inline-block;max-width:100%;min-height:44px;padding:8px 0}
 #knowledge-page-number a[aria-disabled=true]{opacity:.55;cursor:default;pointer-events:none}
 
 .archive-query{grid-template-columns:minmax(0,1fr) auto;align-items:end}

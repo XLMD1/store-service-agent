@@ -63,3 +63,39 @@ class KnowledgeEvent(Base):
     version: Mapped[int] = mapped_column(Integer)
     note: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class KnowledgePageIndex(Base):
+    __tablename__ = 'knowledge_page_index'
+
+    version_id: Mapped[str] = mapped_column(ForeignKey('knowledge_versions.id'), primary_key=True)
+    page: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(200))
+    keywords: Mapped[str] = mapped_column(Text)
+    source_excerpt: Mapped[str] = mapped_column(Text, server_default='')
+    search_text: Mapped[str] = mapped_column(Text)
+    revision: Mapped[int] = mapped_column(Integer)
+    updated_by: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, onupdate=now)
+
+
+class KnowledgeIndexDraft(Base):
+    __tablename__ = 'knowledge_index_drafts'
+    __table_args__ = (CheckConstraint("status IN ('ready','needs_review','failed')", name='ck_knowledge_index_draft_status'),)
+
+    version_id: Mapped[str] = mapped_column(ForeignKey('knowledge_versions.id'), primary_key=True)
+    page: Mapped[int] = mapped_column(Integer, primary_key=True)
+    status: Mapped[str] = mapped_column(String(20))
+    title: Mapped[str] = mapped_column(String(200))
+    keywords: Mapped[str] = mapped_column(Text)
+    source_excerpt: Mapped[str] = mapped_column(Text)
+
+
+class RepairAnswer(Base):
+    __tablename__ = 'repair_answers'
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    actor_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    result: Mapped[dict] = mapped_column(JSONB)
+    feedback: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
