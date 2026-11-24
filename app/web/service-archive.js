@@ -15,41 +15,71 @@ function serviceRecordFacts(fields,names=Object.keys(serviceRecordLabels),result
     <dd>${esc(fields[name]||'未知')}${fields.uncertain_fields?.includes(name)?'（待核对）':''}</dd></div>`).join('')}</dl>`;
 }
 
+function archiveTable(label,columns,rows){
+  return `<div class="archive-table-wrap"><table class="archive-table" role="table" aria-label="${label}"><thead role="rowgroup"><tr role="row">
+    ${columns.map(column=>`<th scope="col" role="columnheader">${column}</th>`).join('')}</tr></thead>
+    <tbody role="rowgroup">${rows}</tbody></table></div>`;
+}
+
+const archiveCellLabel=label=>`<small class="archive-cell-label" aria-hidden="true">${label}</small>`;
+
 async function archiveSearchPage(){
   if(!hasPermission('service.read'))throw new Error('当前账号无权查询售后档案。');
-  shell('售后档案','按手机号或地址查询已归档记录',`<section class="panel">
-    <form id="service-history-search" class="fields">
-      ${field('手机号或地址','q',state.serviceArchiveQuery||'','required maxlength="500"')}
+  const saved=state.serviceArchiveQuery;
+  shell('售后档案','查询客户地址及维修历史',`<section class="panel">
+    <form id="service-history-search" class="fields archive-query">
+      ${field('手机号或地址','q',saved?.query||'','required maxlength="500" placeholder="输入完整手机号或地址关键词"')}
       <button class="primary" type="submit">查询档案</button>
     </form>
-    <div class="section-note" id="service-history-results" aria-live="polite"></div>
-  </section><div><a class="button" href="#sources">售后来源</a> <a class="button" href="#service-agent">售后助手</a></div>`);
+    <div class="query-links"><a href="#sources">售后来源</a><a href="#service-agent">售后助手</a></div>
+  </section><section class="panel" aria-labelledby="service-history-results-title">
+    <div class="archive-results-heading"><h2 id="service-history-results-title" tabindex="-1">查询结果</h2>
+      <p id="service-history-status" class="muted" role="status"></p></div>
+    <div id="service-history-results"><p class="state">输入手机号或地址后，可选择对应的服务地址查看历史。</p></div>
+  </section>`);
   const form=$('#service-history-search'), results=$('#service-history-results');
-  async function search(query,offset=0){
-    results.textContent='正在查询…';
+  const status=$('#service-history-status');
+  async function search(query,offset=0,pageChange=false){
+    status.textContent='正在查询…';
+    results.replaceChildren();
     try{
       const rows=await FormState.freezeWhile(form,()=>api('/service-records/search','POST',{q:query,offset}));
       if(!form.isConnected)return;
-      state.serviceArchiveQuery=query;
-      results.innerHTML=rows.items.length?`<h2>选择客户与服务地址</h2>
-        ${rows.items.map(row=>`<article class="row"><div><h3>${esc(serviceContactTitle(row))}</h3>
-          <p>${esc(serviceContactLine(row))}</p></div><a class="button" href="${serviceHistoryLink(row.id)}">查看历史</a></article>`).join('')}
-        <div class="actions">${offset?'<button type="button" data-history-previous>上一页</button>':''}
-          ${rows.next_offset!=null?'<button type="button" data-history-next>下一页</button>':''}</div>`
-        :'<p class="state">当前已归档范围内未找到。</p>';
+      state.serviceArchiveQuery={query,offset};
+      status.textContent=rows.items.length?`本页 ${rows.items.length} 个服务地址`:'';
+      if(rows.items.length){
+        results.innerHTML=archiveTable('客户与服务地址',['客户','服务地址','手机号','操作'],rows.items.map(row=>`<tr role="row">
+          <th scope="row" role="rowheader" class="archive-wide">${esc(serviceContactTitle(row))}</th>
+          <td role="cell" class="archive-wide" id="archive-address-${esc(row.id)}">${archiveCellLabel('服务地址')}${esc(row.address||'地址未知')}</td>
+          <td role="cell">${archiveCellLabel('手机号')}${esc(row.phone||'手机号未知')}</td>
+          <td role="cell" class="archive-row-action"><a class="button" href="${serviceHistoryLink(row.id)}"
+            aria-describedby="archive-address-${esc(row.id)}">查看历史</a></td>
+        </tr>`).join(''));
+      }else results.innerHTML='<p class="state" role="status">当前已归档范围内未找到。可以换一个地址关键词再查。</p>';
+      if(offset||rows.next_offset!=null)results.insertAdjacentHTML('beforeend',`<div class="archive-pagination">
+        ${offset?'<button type="button" data-history-previous>上一页</button>':''}
+        ${rows.next_offset!=null?'<button type="button" data-history-next>下一页</button>':''}</div>`);
       const previous=results.querySelector('[data-history-previous]'), next=results.querySelector('[data-history-next]');
-      if(previous)previous.onclick=()=>search(query,Math.max(0,offset-50));
-      if(next)next.onclick=()=>search(query,rows.next_offset);
+      if(previous)previous.onclick=()=>search(query,Math.max(0,offset-50),true);
+      if(next)next.onclick=()=>search(query,rows.next_offset,true);
+      if(pageChange)$('#service-history-results-title').focus();
     }catch(error){
-      if(form.isConnected)results.textContent=error.message;
+      if(form.isConnected)status.textContent=error.message;
     }
   }
   form.onsubmit=event=>{
     event.preventDefault();
     const query=form.elements.q.value.trim();
     if(query)search(query);
-    else results.textContent='请输入手机号或地址。';
+    else status.textContent='请输入手机号或地址。';
   };
+  if(saved)await search(saved.query,saved.offset);
+}
+
+function setArchiveRecordExpanded(button,expanded){
+  button.setAttribute('aria-expanded',String(expanded));
+  button.textContent=expanded?'收起详情':'查看详情';
+  document.getElementById(button.getAttribute('aria-controls')).hidden=!expanded;
 }
 
 async function archiveHistoryPage(params){
@@ -60,17 +90,24 @@ async function archiveHistoryPage(params){
   const data=await api('/service-records/contacts/'+encodeURIComponent(id)+'?offset='+offset);
   if(route!==location.hash)return;
   const link=serviceHistoryLink(data.contact.id)+'&amp;offset=';
-  const entries=data.items.map(row=>`<section class="panel" id="archive-${esc(row.id)}">
-    <h2>${esc(row.fields.problem)}</h2>
-    ${row.status==='voided'?'<p class="state warning">已作废 · 保留历史供查阅</p>':''}
-    <p class="muted">维修日期 ${esc(row.fields.repair_date||'未知')}${partialDateLabel[row.fields.repair_date_precision]||''}${row.fields.uncertain_fields?.includes('repair_date')?'（待核对）':''} · 归档于 ${stamp(row.archived_at)}</p>
+  const entries=data.items.map(row=>`<tr role="row">
+    <td role="cell">${esc(row.fields.repair_date||'维修日期未知')}${partialDateLabel[row.fields.repair_date_precision]||''}${row.fields.uncertain_fields?.includes('repair_date')?'（待核对）':''}</td>
+    <th scope="row" role="rowheader" class="archive-wide" id="archive-problem-${esc(row.id)}">${esc(row.fields.problem)}</th>
+    <td role="cell">${archiveCellLabel('设备型号')}${esc(row.fields.model||'未知')}</td>
+    <td role="cell" class="archive-record-status"><span class="badge${row.status==='voided'?' warning':''}">${row.status==='voided'?'已作废':'已归档'}</span></td>
+    <td role="cell" class="archive-row-action"><button type="button" data-archive-toggle aria-expanded="false"
+      aria-controls="archive-${esc(row.id)}" aria-describedby="archive-problem-${esc(row.id)}">查看详情</button></td>
+  </tr><tr role="row" class="archive-record-detail" id="archive-${esc(row.id)}" hidden>
+    <td role="cell" colspan="5"><section class="archive-detail-content" aria-labelledby="archive-title-${esc(row.id)}">
+    <h3 id="archive-title-${esc(row.id)}">${esc(row.fields.problem)}</h3>
+    <p class="muted">归档于 ${stamp(row.archived_at)}${row.status==='voided'?' · 已作废，保留历史供查阅':''}</p>
     ${serviceRecordFacts(row.fields,['treatment','parts','result','model','error_code',
       ...['customer_name','phone','address'].filter(name=>row.fields[name]
         &&row.fields[name]!==data.contact[name==='customer_name'?'name':name])],'档案结果')}
     <div data-latest-result ${row.latest_result?'':'hidden'}><h3>最新补充结果</h3>
       <p class="service-source">${esc(row.latest_result)}</p></div>
     ${row.source_id?`<a class="button" href="#source?id=${encodeURIComponent(row.source_id)}">查看原件</a>`
-      :'<p class="muted">原件由来源提交者查阅。</p>'}
+      :'<p class="muted">当前账号无权查看原件。</p>'}
     <details class="section-note" data-service-supplement="${esc(row.id)}">
       <summary>${hasPermission('service.confirm')&&row.status!=='voided'?'补充处理结果':'查看补充结果'}</summary>
       <div data-supplement-content></div>
@@ -79,11 +116,19 @@ async function archiveHistoryPage(params){
       <summary>档案更正与作废记录</summary>
       <div data-revision-content></div>
     </details>
-  </section>`).join('');
+  </section></td></tr>`).join('');
   shell('售后历史',esc(serviceContactTitle(data.contact)),`<section class="panel"><h2>客户与服务地址</h2>
-    <p>${esc(serviceContactLine(data.contact))}</p></section>${entries}
-    <div class="actions">${offset?`<a class="button" href="${link+Math.max(0,offset-50)}">上一页</a>`:''}
-      ${data.next_offset!=null?`<a class="button" href="${link+esc(data.next_offset)}">下一页</a>`:''}</div>`,'',true);
+    <p class="archive-contact-line">${esc(serviceContactLine(data.contact))}</p></section>
+    <section class="panel"><h2>维修记录</h2>
+      ${entries?archiveTable('维修记录',['维修日期','问题描述','设备型号','状态','操作'],entries)
+        :'<p class="state">这一页没有维修记录。</p>'}
+      ${offset||data.next_offset!=null?`<div class="archive-pagination">
+        ${offset?`<a class="button" href="${link+Math.max(0,offset-50)}">上一页</a>`:''}
+        ${data.next_offset!=null?`<a class="button" href="${link+esc(data.next_offset)}">下一页</a>`:''}</div>`:''}
+    </section>`,'',true);
+  document.querySelectorAll('[data-archive-toggle]').forEach(button=>{
+    button.onclick=()=>setArchiveRecordExpanded(button,button.getAttribute('aria-expanded')==='false');
+  });
   document.querySelectorAll('[data-service-supplement]').forEach((detail,index)=>{
     detail.ontoggle=()=>{
       if(detail.open&&!detail.querySelector('[data-supplement-list]'))bindServiceSupplement(detail,data.items[index]);
@@ -173,7 +218,12 @@ function bindServiceRevisions(detail,row){
         if(!panel.isConnected)return;
         await render();
         const updated=document.querySelector('[data-record-revisions="'+row.id+'"]');
-        if(updated)updated.open=true;
+        if(updated){
+          const button=document.querySelector('[aria-controls="archive-'+row.id+'"]');
+          setArchiveRecordExpanded(button,true);
+          updated.open=true;
+          updated.querySelector('summary').focus();
+        }
         notify(isVoid?'档案已作废，历史保留。':'更正已保存。');
       }catch(error){
         if(!panel.isConnected)return;

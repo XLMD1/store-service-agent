@@ -1,0 +1,282 @@
+{
+  "scope": "虚构纸面设备与合成说明书，仅供维修问答功能评测",
+  "model": "deepseek-flash",
+  "results": [
+    {
+      "id": "same-code-a",
+      "expected": "answered",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": false,
+          "elapsed_ms": 963,
+          "total_tokens": 529,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "answered",
+          "passed": true,
+          "elapsed_ms": 1012,
+          "total_tokens": 848,
+          "calls": 1,
+          "points": [
+            {
+              "kind": "meaning",
+              "source": 1,
+              "quote": "E3 表示样例识别卡未登记。",
+              "condition": ""
+            },
+            {
+              "kind": "check",
+              "source": 1,
+              "quote": "只有界面也显示卡未登记时，才可考虑由管理员在样例台账登记卡片。",
+              "condition": ""
+            },
+            {
+              "kind": "action",
+              "source": 1,
+              "quote": "只有界面也显示卡未登记时，才可考虑由管理员在样例台账登记卡片。",
+              "condition": ""
+            }
+          ]
+        },
+        "rag": {
+          "status": "insufficient",
+          "passed": false,
+          "elapsed_ms": 601,
+          "total_tokens": 572,
+          "calls": 1,
+          "points": []
+        }
+      }
+    },
+    {
+      "id": "same-code-b",
+      "expected": "answered",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": false,
+          "elapsed_ms": 459,
+          "total_tokens": 527,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "answered",
+          "passed": false,
+          "elapsed_ms": 861,
+          "total_tokens": 864,
+          "calls": 1,
+          "points": [
+            {
+              "kind": "meaning",
+              "source": 1,
+              "quote": "E3 表示样例识别卡未登记。",
+              "condition": ""
+            },
+            {
+              "kind": "meaning",
+              "source": 2,
+              "quote": "E3 表示样例显示标签待核对。",
+              "condition": ""
+            },
+            {
+              "kind": "check",
+              "source": 2,
+              "quote": "只有界面显示标签编号一致时，才可将检查结果交给样例审核员。",
+              "condition": ""
+            },
+            {
+              "kind": "action",
+              "source": 2,
+              "quote": "只有界面显示标签编号一致时，才可将检查结果交给样例审核员。",
+              "condition": ""
+            }
+          ]
+        },
+        "rag": {
+          "status": "answered",
+          "passed": true,
+          "elapsed_ms": 828,
+          "total_tokens": 611,
+          "calls": 1,
+          "points": [
+            {
+              "kind": "meaning",
+              "source": 1,
+              "quote": "E3 表示样例显示标签待核对。",
+              "condition": ""
+            },
+            {
+              "kind": "check",
+              "source": 1,
+              "quote": "只有界面显示标签编号一致时，才可将检查结果交给样例审核员。",
+              "condition": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "symptom",
+      "expected": "answered",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": false,
+          "elapsed_ms": 633,
+          "total_tokens": 532,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "answered",
+          "passed": true,
+          "elapsed_ms": 691,
+          "total_tokens": 851,
+          "calls": 1,
+          "points": [
+            {
+              "kind": "meaning",
+              "source": 3,
+              "quote": "样例网络中断表示当前演示页面没有同步。",
+              "condition": ""
+            },
+            {
+              "kind": "check",
+              "source": 3,
+              "quote": "只有登记页显示未同步时，才可向样例管理员报告同步状态。",
+              "condition": ""
+            },
+            {
+              "kind": "action",
+              "source": 3,
+              "quote": "只有登记页显示未同步时，才可向样例管理员报告同步状态。",
+              "condition": ""
+            }
+          ]
+        },
+        "rag": {
+          "status": "answered",
+          "passed": true,
+          "elapsed_ms": 736,
+          "total_tokens": 613,
+          "calls": 1,
+          "points": [
+            {
+              "kind": "meaning",
+              "source": 1,
+              "quote": "样例网络中断表示当前演示页面没有同步。",
+              "condition": ""
+            },
+            {
+              "kind": "check",
+              "source": 1,
+              "quote": "只有登记页显示未同步时，才可向样例管理员报告同步状态。",
+              "condition": ""
+            },
+            {
+              "kind": "action",
+              "source": 1,
+              "quote": "只有登记页显示未同步时，才可向样例管理员报告同步状态。",
+              "condition": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "unknown-model",
+      "expected": "no_evidence",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": true,
+          "elapsed_ms": 660,
+          "total_tokens": 522,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "conflict",
+          "passed": false,
+          "elapsed_ms": 944,
+          "total_tokens": 778,
+          "calls": 1,
+          "points": []
+        },
+        "rag": {
+          "status": "no_evidence",
+          "passed": true,
+          "elapsed_ms": 8,
+          "total_tokens": 0,
+          "calls": 0,
+          "points": []
+        }
+      }
+    },
+    {
+      "id": "unknown-nameplate",
+      "expected": "need_model",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": true,
+          "elapsed_ms": 548,
+          "total_tokens": 518,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "insufficient",
+          "passed": true,
+          "elapsed_ms": 415,
+          "total_tokens": 776,
+          "calls": 1,
+          "points": []
+        },
+        "rag": {
+          "status": "need_model",
+          "passed": true,
+          "elapsed_ms": 7,
+          "total_tokens": 0,
+          "calls": 0,
+          "points": []
+        }
+      }
+    },
+    {
+      "id": "urgent",
+      "expected": "urgent",
+      "runs": {
+        "direct": {
+          "status": "insufficient",
+          "passed": true,
+          "elapsed_ms": 582,
+          "total_tokens": 530,
+          "calls": 1,
+          "points": []
+        },
+        "all_materials": {
+          "status": "insufficient",
+          "passed": true,
+          "elapsed_ms": 1063,
+          "total_tokens": 788,
+          "calls": 1,
+          "points": []
+        },
+        "rag": {
+          "status": "urgent",
+          "passed": true,
+          "elapsed_ms": 6,
+          "total_tokens": 0,
+          "calls": 0,
+          "points": []
+        }
+      }
+    }
+  ],
+  "note": "按预期状态、版次原文及故障含义自动评分。各组使用同一模型；RAG 的缺型号、未知型号和紧急场景有本地分流。"
+}

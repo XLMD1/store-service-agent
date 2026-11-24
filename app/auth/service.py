@@ -13,15 +13,17 @@ from app.auth.schemas import AccountCreate
 
 
 ROLE_PERMISSIONS = {
-    'clerk': {'service.read', 'service.draft', 'service.confirm', 'repair.query', 'inventory.read',
+    'clerk': {'service.read', 'service.draft', 'service.confirm', 'repair.query', 'repair.answer', 'knowledge.read', 'knowledge.search',
+              'inventory.read',
               'reservation.confirm', 'reservation.cancel'},
-    'technician': {'service.read', 'service.draft', 'repair.query', 'knowledge.review', 'inventory.read',
+    'technician': {'service.read', 'service.draft', 'repair.query', 'repair.answer', 'knowledge.read', 'knowledge.search',
+                   'knowledge.review', 'inventory.read',
                    'work_fee.report'},
     'stock_operator': {'inventory.read', 'inventory.inbound', 'inventory.outbound', 'reservation.pickup'},
-    'owner': {'service.read', 'service.draft', 'service.confirm', 'repair.query', 'inventory.read',
+    'owner': {'service.read', 'service.draft', 'service.confirm', 'repair.query', 'repair.answer', 'inventory.read',
               'inventory.inbound', 'inventory.outbound', 'reservation.confirm', 'reservation.cancel',
               'reservation.pickup', 'inventory.opening', 'inventory.correct', 'catalog.manage',
-              'account.manage', 'knowledge.publish', 'work_fee.manage'},
+              'account.manage', 'knowledge.read', 'knowledge.search', 'knowledge.review', 'knowledge.publish', 'work_fee.manage'},
 }
 
 

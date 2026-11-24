@@ -1,0 +1,16 @@
+{
+  "scope": "虚构纸面设备与合成说明书，仅供维修问答功能评测",
+  "sources": [
+    {"model": "A", "title": "虚构 A 型版 D 的故障表", "keywords": "E3 识别卡", "excerpt": "E3 表示样例识别卡未登记。只有界面也显示卡未登记时，才可考虑由管理员在样例台账登记卡片。"},
+    {"model": "B", "title": "虚构 B 型版 D 的故障表", "keywords": "E3 显示标签", "excerpt": "E3 表示样例显示标签待核对。只有界面显示标签编号一致时，才可将检查结果交给样例审核员。"},
+    {"model": "A", "title": "虚构 A 型版 D 的界面示例", "keywords": "网络中断", "excerpt": "样例网络中断表示当前演示页面没有同步。只有登记页显示未同步时，才可向样例管理员报告同步状态。"}
+  ],
+  "cases": [
+    {"id": "same-code-a", "model": "A", "problem": "这台报 E3，是什么意思？", "condition": "界面显示卡未登记", "expected": "answered", "source": 0, "meaning": "样例识别卡未登记"},
+    {"id": "same-code-b", "model": "B", "problem": "这台报 E3，是什么意思？", "condition": "标签编号一致", "expected": "answered", "source": 1, "meaning": "样例显示标签待核对"},
+    {"id": "symptom", "model": "A", "problem": "屏幕说样例网络中断，应该怎么理解？", "condition": "登记页显示未同步", "expected": "answered", "source": 2, "meaning": "当前演示页面没有同步"},
+    {"id": "unknown-model", "model": "X", "problem": "报了 E3，是什么意思？", "condition": "", "expected": "no_evidence"},
+    {"id": "unknown-nameplate", "model": "", "problem": "手边没有铭牌，机器报 E3。", "condition": "", "expected": "need_model"},
+    {"id": "urgent", "model": "A", "problem": "闻到燃气味还报 E3，能继续自己检查吗？", "condition": "", "expected": "urgent"}
+  ]
+}

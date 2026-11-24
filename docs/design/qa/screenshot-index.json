@@ -1,12 +1,33 @@
 {
-  "date": "2026-11-15",
+  "date": "2026-11-24",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 113,
+  "retained_count": 124,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
   "retained": [
+    {
+      "path": "docs/design/qa/m3-03/repair-followup-390.jpg",
+      "bytes": 44283,
+      "sha256": "0e02e05b7eacd0355771bd592356025cc35f35ebaebe2a6bb866015373c1f1bc",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m4-01/workspace-tone-1440.jpg",
+      "bytes": 126483,
+      "sha256": "5ed8620b9bafd87f52c5e5943db862f379f1c55612a0a19811e9021ac4c2c4be",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m4-01/workspace-tone-390.jpg",
+      "bytes": 54536,
+      "sha256": "2b1468405aa824d51ba478fd9d671a31fb7848ff9dcbb17f923c94fd6a566240",
+      "width": 390,
+      "height": 900
+    },
     {
       "path": "docs/design/qa/frontend-mock/adjustment-390.jpg",
       "bytes": 31383,
@@ -462,6 +483,62 @@
       "sha256": "cb733e143ad612935cfdab7b22c1ea5f1f265230416d47e519d01c1185169ecc",
       "width": 1440,
       "height": 900
+    },
+    {
+      "path": "docs/design/qa/m3-01/manual-review-1440.jpg",
+      "bytes": 77785,
+      "sha256": "945f58e82832ad6a74144b166ce11552ee7ad57d04d3d77b33c548c37d66af15",
+      "width": 1425,
+      "height": 930
+    },
+    {
+      "path": "docs/design/qa/m3-02/lookup-desktop.jpg",
+      "bytes": 67635,
+      "sha256": "da90760d0f5a10a72fc37b921da4fcb8f689c12910b994a87b26a3bdbdd79448",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-02/batch-review-desktop.jpg",
+      "bytes": 65876,
+      "sha256": "6bcc0027f9c057d0a2011d671fe169b30c48a89fc364448706918b40f89a195a",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-03/repair-answer-desktop.jpg",
+      "bytes": 88429,
+      "sha256": "99f2c5d5bd4efe356bfd88b4a51e500373368cc6b09cdef5f60721ca0507e6b7",
+      "width": 1265,
+      "height": 712
+    },
+    {
+      "path": "docs/design/qa/m3-03/manual-preview-390.jpg",
+      "bytes": 28505,
+      "sha256": "8cb24a6d927cd9ab927326426dbfb9603a4243bb82baa0e1218f29b77b86d6f3",
+      "width": 375,
+      "height": 811
+    },
+    {
+      "path": "docs/design/qa/m2-03/archive-history-card-390.jpg",
+      "bytes": 38464,
+      "sha256": "cbfb85c01699203ec020acac5aaa2aae969d98f2d3409be05c4fe06cff3901b0",
+      "width": 375,
+      "height": 811
+    },
+    {
+      "path": "docs/design/qa/m2-03/archive-history-table-1440.jpg",
+      "bytes": 86959,
+      "sha256": "2e7aab9065c493a441f2adb654499cd78e2a99120a02512dbc438be6440911cd",
+      "width": 1440,
+      "height": 920
+    },
+    {
+      "path": "docs/design/qa/m2-03/archive-search-table-1440.jpg",
+      "bytes": 97570,
+      "sha256": "882a66aa1a178ce31eb74ac51ef84c95928d8ec9574dbb80df4579d48a69b426",
+      "width": 1425,
+      "height": 910
     },
     {
       "path": "docs/design/qa/m2-03/archive-receipt-390.jpg",

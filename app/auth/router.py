@@ -10,8 +10,9 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.models import AccountAudit, AuthSession, User, UserRole
 from app.auth.schemas import AccountCreate, AccountUpdate, Login
-from app.auth.service import (DUMMY_PASSWORD_HASH, create_account, csrf_for_session, digest, identity,
+from app.auth.service import (DUMMY_PASSWORD_HASH, ROLE_PERMISSIONS, create_account, csrf_for_session, digest, identity,
                               lock_accounts, login_budget, now, verify_password)
+from app.sources.access import REVIEW_PERMISSIONS, revoke_account_grants
 
 
 router = APIRouter(prefix='/api')
@@ -135,7 +136,8 @@ def update_account(user_id: UUID, payload: AccountUpdate, actor=Depends(account_
         raise HTTPException(422, 'roles cannot be null')
     if 'enabled' in payload.model_fields_set and payload.enabled is None:
         raise HTTPException(422, 'enabled cannot be null')
-    roles = sorted(set(payload.roles)) if payload.roles is not None else identity(db, user)['roles']
+    previous = identity(db, user)
+    roles = sorted(set(payload.roles)) if payload.roles is not None else previous['roles']
     enabled = user.enabled if payload.enabled is None else payload.enabled
     owners = list(db.scalars(select(User.id).join(UserRole).where(
         User.enabled.is_(True), UserRole.role == 'owner')))
@@ -146,6 +148,11 @@ def update_account(user_id: UUID, payload: AccountUpdate, actor=Depends(account_
     db.add_all(UserRole(user_id=user.id, role=role) for role in roles)
     db.add(AccountAudit(actor_id=actor.id, target_id=user.id, action='update',
                         changes={'roles': roles, 'enabled': enabled}))
+    permissions = {permission for role in roles for permission in ROLE_PERMISSIONS[role]}
+    loses_source_access = not enabled or not REVIEW_PERMISSIONS <= permissions
+    loses_confirm = 'service.confirm' in previous['permissions'] and 'service.confirm' not in permissions
+    if loses_source_access or loses_confirm:
+        revoke_account_grants(db, user.id, include_submitted=loses_source_access)
     # Re-enabling an account must never resurrect its old authenticated sessions.
     if not enabled:
         for row in db.scalars(select(AuthSession).where(AuthSession.user_id == user.id, AuthSession.revoked_at.is_(None))):

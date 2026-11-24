@@ -16,7 +16,7 @@ async function harness(){
 const routes=[['home','工作台'],['pending','待核对'],['service-draft','售后草稿核对'],['service-search','售后档案'],['service-detail?customer=demo-c1','售后档案详情'],['repair-assistant','维修辅助'],['settings','资料与设置'],['inventory','库存'],['opening','期初建账'],['inbound','入库登记'],['movement?kind=inventory_outbound','普通出库'],['movement?kind=reservation_create','办理留货'],['reservations','预留查询'],['ledger','库存流水'],['statistics','进货统计'],['correction','原单数量更正'],['correction?kind=inventory_adjustment','盘点调整'],['reconciliation','库存对账'],['catalog','库房与型号'],['customers','客户资料'],['reserved-pickup','预留查询'],['inbound-statistics','进货统计']];
 test('all listed routes mount actual mock pages, shared selectors and no network calls',async()=>{
   const {dom,w,d,network}=await harness();
-  try{for(const [route,title]of routes){w.history.replaceState(null,'','#'+route);await w.testApp.render();assert.equal(d.querySelector('h1')?.textContent,title,route);assert.equal(d.querySelector('#notice').hidden,true,route+': '+d.querySelector('#notice').textContent);assert.ok([...d.querySelectorAll('#app select')].every(select=>select.hidden),route);}
+  try{for(const [route,title]of routes){w.history.replaceState(null,'','#'+route);await w.testApp.render();assert.equal(d.querySelector('h1')?.textContent,title,route);assert.equal(d.querySelector('#notice').hidden,true,route+': '+d.querySelector('#notice').textContent);assert.ok([...d.querySelectorAll('#app select:not([data-native-select])')].every(select=>select.hidden),route);}
     assert.equal(network(),0);
   }finally{dom.window.close();}
 });
