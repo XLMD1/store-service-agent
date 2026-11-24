@@ -28,6 +28,7 @@ test('repair shows checked citations and clears old feedback on model or prompt 
     const esc=value=>String(value??'');
     const field=(title,name,value,attrs='')=>'<input name="'+name+'" value="'+value+'" '+attrs+'>';
     const shell=(title,subtitle,html)=>$('main').innerHTML=html;
+    const icon=name=>'<svg aria-hidden="true"><use href="#'+name+'"></use></svg>';
     const api=window.fixture;
     const hasPermission=()=>true;
     const FormState={freezeWhile:(node,action)=>action()};

@@ -286,3 +286,28 @@ test('service source retains original and request id until a saved response and 
     assert.ok(h.d.querySelector('#source-drafts-retry'));
   }finally{h.dom.window.close();}
 });
+test('workbench chips preserve input and busy submissions share one pending request',async()=>{
+  let release;
+  const h=await harness('home',call=>{
+    if(call.path==='/api/agent/tasks'&&call.method==='POST')return new Promise(resolve=>{release=resolve;});
+    if(call.path.includes('pending_only'))return new Response('[]');
+  });
+  try{
+    const form=h.d.querySelector('#agent-task-form');
+    form.elements.text.value='样例库';
+    form.querySelector('.prompt-chips button').click();
+    assert.equal(form.elements.text.value,'样例库\n查询全量库存');
+    h.d.querySelector('#workbench-show-history').click();
+    assert.ok(h.d.activeElement.matches('.service-recent'));
+    form.requestSubmit();
+    form.requestSubmit();
+    await tick();
+    assert.equal(form.getAttribute('aria-busy'),'true');
+    assert.ok(form.querySelector('#agent-start').disabled);
+    assert.equal(h.calls.filter(call=>call.method==='POST').length,1);
+    release(new Response('{}',{status:503}));
+    await tick();
+    assert.equal(form.hasAttribute('aria-busy'),false);
+    assert.equal(form.querySelector('#agent-start').disabled,false);
+  }finally{h.dom.window.close();}
+});

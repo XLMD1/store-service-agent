@@ -52,7 +52,9 @@ function keepSidebarCurrentVisible(){
 function sidebarNavigation(navigation,current,title){
   const outbound=outboundEntry().slice(1);
   const active=current==='movement'?(['出库','普通出库','预留提货'].includes(title)?outbound:'reservations'):['source','service-draft'].includes(current)&&!isMockMode()?'sources':['service-detail','service-agent','service-task'].includes(current)&&!isMockMode()?'service-search':current==='work-fee'?'work-fees':current;
-  const link=([page,label,symbol,permission,shortLabel])=>`<a href="#${page}" title="${label}" aria-label="${label}" ${active===page?'aria-current="page"':''}>${icon(symbol)}<span class="nav-label">${label}</span><span class="nav-short" aria-hidden="true">${shortLabel}</span></a>`;
+  const navIcons={home:'dashboard',pending:'tasks',sources:'archive','service-search':'book','work-fees':'wallet',
+    inventory:'stock',reservations:'clock',statistics:'chart',knowledge:'book',ledger:'tasks',customers:'people'};
+  const link=([page,label,symbol,permission,shortLabel])=>`<a href="#${page}" title="${label}" aria-label="${label}" ${active===page?'aria-current="page"':''}>${icon(navIcons[page]||symbol)}<span class="nav-label">${label}</span><span class="nav-short" aria-hidden="true">${shortLabel}</span></a>`;
   const groups=[{id:'daily',label:'日常工作',short:'日常',pages:['home','pending','sources','service-search','work-fees','repair-assistant','inventory','inbound',outbound,'reservations']},
     {id:'reports',label:'统计与核对',short:'统计',pages:['statistics','ledger','reconciliation','correction']},
     {id:'setup',label:'资料与设置',short:'资料',pages:['knowledge','catalog','customers','opening','deepseek-settings','settings']}];
@@ -60,24 +62,28 @@ function sidebarNavigation(navigation,current,title){
     const rows=group.pages.map(page=>navigation.find(row=>row[0]===page)).filter(Boolean);
     if(!rows.length)return '';
     const caption=`<span class="nav-group-label">${group.label}</span><span class="nav-group-short" aria-hidden="true">${group.short}</span>`;
-    if(group.id==='daily')return `<section class="sidebar-group" data-sidebar-group="daily"><h2 class="sidebar-group-title">${caption}</h2>${rows.map(link).join('')}</section>`;
-    const open=rows.some(row=>row[0]===active)||(state.sidebarOpen?.[group.id]??group.id==='reports');
+    const open=rows.some(row=>row[0]===active)||(state.sidebarOpen?.[group.id]??group.id!=='setup');
     return `<details class="sidebar-group" data-sidebar-group="${group.id}" ${open?'open':''}><summary>${caption}<span class="sidebar-caret" aria-hidden="true">›</span></summary>${rows.map(link).join('')}</details>`;
   }).join('');
 }
 const pageTones={default:'青灰',blue:'雾蓝',green:'浅松绿',sand:'暖砂',lilac:'淡藤紫'};
 
+const pageToneKey='store-service-page-tone';
+function savedPageTone(){
+  try{
+    const tone=window.localStorage.getItem(pageToneKey);
+    if(Object.hasOwn(pageTones,tone))return tone;
+  }catch{}
+  return 'default';
+}
 function bindPageTone(){
   const picker=$('#workspace-tone');
   if(!picker)return;
-  const key='store-service-page-tone';
-  let saved;
-  try{saved=window.localStorage.getItem(key);}catch{}
-  picker.value=Object.hasOwn(pageTones,saved)?saved:'default';
+  picker.value=savedPageTone();
   document.documentElement.dataset.pageTone=picker.value;
   picker.onchange=()=>{
     document.documentElement.dataset.pageTone=picker.value;
-    try{window.localStorage.setItem(key,picker.value);}catch{}
+    try{window.localStorage.setItem(pageToneKey,picker.value);}catch{}
   };
 }
 
@@ -85,7 +91,7 @@ function shell(title,subtitle,content,action='',secondary=false){
   const permissions=state.user.permissions,current=location.hash.slice(1).split('?')[0]||'home';
   const navigation=[...(!isMockMode()&&permissions.some(item=>['work_fee.manage','work_fee.report'].includes(item))?[['work-fees','工费台账','clipboard',hasPermission('work_fee.manage')?'work_fee.manage':'work_fee.report','工费']]:[]),...(!isMockMode()?[['home','工作台','home','inventory.read','工作'],['deepseek-settings','DeepSeek设置','settings','account.manage','模型'],['sources','售后来源','file','service.read','来源'],['service-search','售后档案','file','service.read','售后'],['repair-assistant','维修辅助','wrench','repair.answer','维修']]:[]),...(isMockMode()?[['home','工作台','home','inventory.read','工作'],['service-search','售后档案','file','service.read','售后'],['repair-assistant','维修辅助','wrench','repair.query','维修'],['settings','资料与设置','settings','inventory.read','设置']]:[]),['inventory','库存查询','box','inventory.read','库存'],['reservations','预留查询','box','inventory.read','预留'],['ledger','库存流水','file','inventory.read','流水'],['pending','待核对草稿','clipboard',permissions.find(x=>['inventory.inbound','inventory.outbound','reservation.confirm','reservation.cancel','reservation.pickup','inventory.opening',...(isMockMode()?['service.draft']:['inventory.read'])].includes(x)),'草稿'],['statistics','进货统计','file','inventory.read','统计'],['correction','原单更正','settings','inventory.correct','更正'],['reconciliation','库存对账','file','inventory.correct','对账'],['inbound','登记入库','plus','inventory.inbound','入库'],...(!isMockMode()&&outboundEntry()?[ [outboundEntry().slice(1),'出库','box',hasPermission('inventory.outbound')?'inventory.outbound':'reservation.pickup','出库'] ]:[]),['customers','客户资料','file','reservation.confirm','客户'],['catalog','库房与型号','settings','inventory.opening','资料'],['opening','期初建账','settings','inventory.opening','建账']].filter(row=>permissions.includes(row[3]));
   if(!isMockMode()&&permissions.includes('knowledge.read'))navigation.push(['knowledge','维修资料','file','knowledge.read','资料']);
-  const workspaceLabel=isMockMode()||['knowledge','sources','source','service-draft','service-search','service-detail','service-agent','service-task','work-fees','work-fee','technicians'].includes(current)?'门店工作区':'库存工作区';
+  const workspaceLabel=isMockMode()||['home','repair-assistant','knowledge','sources','source','service-draft','service-search','service-detail','service-agent','service-task','work-fees','work-fee','technicians'].includes(current)?'门店工作区':'库存工作区';
   const draftSource=current==='service-draft'&&!isMockMode()
     ?new URLSearchParams(location.hash.split('?')[1]).get('source'):null;
   const returnTargets={
@@ -98,7 +104,10 @@ function shell(title,subtitle,content,action='',secondary=false){
   const [returnPath,returnLabel]=Object.hasOwn(returnTargets,current)?returnTargets[current]:['inventory','库存'];
   const returnLink=`<a class="page-back" href="#${returnPath}">${icon('back')}返回${returnLabel}</a>`;
   const mobileNav=secondary?'':`<nav class="mobile-primary" aria-label="手机主导航">${[['home','工作台','home'],['pending','待核对','clipboard'],['service-search','售后','file'],['inventory','库存','box']].map(([route,label,symbol])=>`<a href="#${route}" ${current===route?'aria-current="page"':''}>${icon(symbol)}<span>${label}</span></a>`).join('')}</nav>`;
-  $('#app').innerHTML=`<div class="workspace" id="workspace"><aside class="desktop-sidebar material-ink sidebar-organized" aria-label="电脑端导航"><a class="workspace-brand" href="#inventory">门店助手<small>售后与库存协作</small></a><p class="sidebar-label">${workspaceLabel}</p><nav aria-label="业务导航">${sidebarNavigation(navigation,current,title)}</nav><div class="sidebar-foot"><strong>${esc(state.user.username)}</strong><span>本机审核环境</span></div></aside><div class="shell"><div class="workspace-toolbar"><span class="workspace-location">${workspaceLabel} / ${esc(title)}</span><label class="workspace-tone"><span>背景</span><select id="workspace-tone" data-native-select>${Object.entries(pageTones).map(([value,label])=>`<option value="${value}">${label}</option>`).join('')}</select></label><div class="view-switch" role="group" aria-label="页面模式"><button id="view-desktop" type="button">电脑端</button><button id="view-mobile" type="button">手机端</button></div></div><header class="top material-ink"><div class="bar"><div>${secondary?returnLink:''}<h1>${title}</h1></div>${action}</div><p>${subtitle}</p><div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div></header><main id="main" class="content">${content}</main>${mobileNav}<footer class="page-footer">${isMockMode()?'前端演示 · 全部虚构数据 · 不写入真实台账':'本机开发验证 · 请使用明确标注的样例，不录入真实客户资料'}</footer></div></div>`;
+  const formal=!isMockMode();
+  const identity=`<div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div>`;
+  const preferences=`<label class="workspace-tone"><span>背景</span><select id="workspace-tone" data-native-select>${Object.entries(pageTones).map(([value,label])=>`<option value="${value}">${label}</option>`).join('')}</select></label><div class="view-switch" role="group" aria-label="页面模式"><button id="view-desktop" type="button">电脑端</button><button id="view-mobile" type="button">手机端</button></div>`;
+  $('#app').innerHTML=`<div class="workspace${formal?' store-shell':''}" id="workspace"><aside class="desktop-sidebar material-ink sidebar-organized" aria-label="电脑端导航"><a class="workspace-brand" href="#inventory">门店助手<small>售后与库存协作</small></a><p class="sidebar-label">${workspaceLabel}</p><nav aria-label="业务导航">${sidebarNavigation(navigation,current,title)}</nav><div class="sidebar-foot">${formal?`<span class="account-initial" aria-hidden="true">${esc(Array.from(state.user.username)[0])}</span>`:''}<strong>${esc(state.user.username)}</strong><span>本机审核环境</span></div></aside><div class="shell"><div class="workspace-toolbar"><span class="workspace-location">${workspaceLabel} / ${esc(title)}</span>${formal?`<details class="workbench-preferences"><summary><span class="account-initial" aria-hidden="true">${esc(Array.from(state.user.username)[0])}</span>账户与显示</summary><div>${preferences}${identity}</div></details>`:preferences}</div><header class="top material-ink"><div class="bar"><div>${secondary?returnLink:''}<h1>${title}</h1></div>${action}</div><p>${subtitle}</p>${formal?'':identity}</header><main id="main" class="content">${content}</main>${mobileNav}<footer class="page-footer">${isMockMode()?'前端演示 · 全部虚构数据 · 不写入真实台账':'本机开发验证 · 请使用明确标注的样例，不录入真实客户资料'}</footer></div></div>`;
   bindPageTone();
   document.querySelectorAll('details[data-sidebar-group]').forEach(group=>{group.ontoggle=()=>{state.sidebarOpen||={};state.sidebarOpen[group.dataset.sidebarGroup]=group.open;};});
   const setView=mode=>{state.viewMode=mode;$('#workspace').dataset.view=mode;$('#view-desktop').setAttribute('aria-pressed',String(mode==='desktop'));$('#view-mobile').setAttribute('aria-pressed',String(mode==='mobile'));keepSidebarCurrentVisible();};
@@ -109,6 +118,7 @@ function shell(title,subtitle,content,action='',secondary=false){
   $('#logout').onclick=async()=>{try{await api('/auth/logout','POST');state.user=null;delete state.serviceArchiveQuery;clearSignedInTaskInputs();location.hash='login';}catch(error){notify(error.message);}};
 }
 function loginPage(){
+  document.documentElement.dataset.pageTone=savedPageTone();
   $('#app').innerHTML=`<main class="login" id="main"><header class="top material-ink"><p>门店内部协作</p><h1>门店助手</h1><p>登录后，核对每一笔库存起点。</p></header><section class="panel"><h2>登录</h2><form id="login-form" class="fields">${field('账号','username','','required autocomplete="username" maxlength="64"')}${field('密码','password','','required autocomplete="current-password" maxlength="256"','password')}<button class="primary" type="submit">登录门店助手</button><p class="muted">${isMockMode()?'仅演示：账号demo-owner，口令demo。请勿输入真实密码。':'每人使用独立账号。首次负责人由本机初始化，当前没有默认密码。'}</p></form></section></main>`;
   $('#login-form').onsubmit=async event=>{event.preventDefault();const form=event.target;const button=form.querySelector('button');button.disabled=true;try{state.user=await api('/auth/login','POST',Object.fromEntries(new FormData(form)));form.reset();location.hash='home';}catch(error){notify(error.message);}finally{button.disabled=false;}};
 }

@@ -43,7 +43,7 @@ async function repairAssistantPage(){
 function bindRepairFollowup(container,input,previousAnswer){
   const feedback=container.querySelector('[data-repair-feedback]')?.closest('details');
   (feedback||container).insertAdjacentHTML(feedback?'beforebegin':'beforeend',`<div data-repair-turns></div>
-    <details data-followup><summary>补充现场情况或追问</summary><form class="fields">
+    <details class="repair-action repair-followup" data-followup><summary>${icon('compose')}补充现场情况或追问</summary><form class="fields">
       <label class="field"><span>补充内容</span><select name="kind" data-native-select>
         <option value="condition">现场观察</option><option value="question">想问的问题</option></select></label>
       <label class="field"><span>描述设备情况或问题</span><textarea name="message" maxlength="500" required rows="2" placeholder="例如：开机就显示 E3"></textarea></label>
@@ -96,11 +96,11 @@ function showRepairResult(container,answer){
     ${answer.points.map(point=>`<article class="service-row"><h3>${repairPointLabels[point.kind]}</h3>
       ${point.condition?`<p>适用条件 · ${esc(point.condition)}</p>`:''}<p>${esc(point.quote)}</p>
       ${repairCitation(answer.sources[point.source-1])}</article>`).join('')}
-    <details><summary>查看说明书怎么处理</summary>
+    <details class="repair-action repair-manual"><summary>${icon('book')}查看说明书怎么处理</summary>
       ${(answer.passages||[]).map(p=>`<p>${esc(p.text)}</p>`).join('')}
       ${answer.sources.map(source=>`<p>${repairCitation(source)}</p><img loading="lazy" class="service-photo" src="${esc(source.original_url)}" alt="印刷第 ${esc(source.page)} 页说明书原文">`).join('')}
     </details>
-    <details><summary>评测反馈</summary><form class="fields" data-repair-feedback>
+    <details class="repair-action repair-feedback"><summary>评测反馈</summary><form class="fields" data-repair-feedback>
       <label class="field"><span>评价</span><select name="rating" required>
         <option value="">请选择</option><option value="useful">有用</option>
         <option value="not_applicable">不适用</option><option value="wrong_source">出处错误</option>

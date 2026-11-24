@@ -1,7 +1,31 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.45 · 整理日期：2026-11-24 · 视觉基准：C / 沉稳专业型。
+版本：V1.47 · 整理日期：2026-11-24 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
+
+## 正式页面背景与布局 · 2026-11-24
+
+正式页面统一使用灰蓝导航、白色内容面板和品牌蓝操作。页首以低饱和渐变和局部点阵区分内容区。原有五种背景偏好继续生效，可在「账户与显示」切换。
+
+页面编号：home、inventory、reservations、ledger、pending、statistics、correction、reconciliation、inbound、movement、opening、catalog、customers、sources、source、service-draft、service-search、service-detail、service-agent、service-task、work-fees、work-fee、technicians、knowledge、repair-assistant、task、deepseek-settings、login。
+
+8002 正式前端使用虚构接口响应，在 1440、390、320px 检查库存查询、售后档案、维修辅助和工费台账，四页均可切换到雾蓝且无页面级横向溢出。其余路由复用同一主题，尚未逐页真机验收。
+
+[库存 · 1440px](qa/store-theme/inventory-1440.jpg) · [维修辅助 · 1440px](qa/store-theme/repair-assistant-1440.jpg) · [工费台账 · 390px](qa/store-theme/work-fees-390.jpg)
+
+正式业务区的组合选择器共用一圈焦点边框，折叠标题使用右侧箭头标示开合。repair-assistant 已用虚构数据在 1440、390、320px 核对输入焦点、选项选择、空格键展开和收起。 [选择器焦点](qa/store-theme/repair-picker-focus.jpg) · [手机折叠面板](qa/store-theme/repair-disclosure-390.jpg)
+
+维修结果区按用途分层：说明书入口紧接引用，现场追问使用独立按钮，反馈置于末尾。已用虚构数据核对展开与收起。[桌面](qa/store-theme/repair-actions-1440.jpg) · [手机](qa/store-theme/repair-actions-390.jpg)
+
+正式桌面侧栏增加微缩门店插画。repair-assistant 归入门店工作区，已核对侧栏与顶部路径。 [桌面实测图](qa/store-theme/repair-storefront-1440.jpg) · [插画素材](../../app/web/assets/storefront.png)
+
+正式桌面工作区铺满浏览器可用宽度。home 在 1758、1920px 核对侧栏左边界与主体右边界，并在 390px 检查横向溢出。 [宽屏截图](qa/workbench-task-modes/home-full-width-1758.jpg)
+
+## 正式工作台 · 2026-11-24
+
+页面编号 `home`。[正式入口](http://127.0.0.1:8002/#home) 沿用原业务流程，首页采用灰蓝侧栏、品牌蓝主操作和白色任务面板。账户与显示菜单收纳原设置，常用卡片按权限展示。月历位于「我的任务」。
+
+[桌面截图](qa/workbench-task-modes/workbench-blue-1440.jpg) · [手机截图](qa/workbench-task-modes/workbench-blue-390.jpg) · [核对范围](qa/workbench-task-modes/README.md)。已使用虚构响应完成浏览器布局核对，待门店试用。
 
 ## 使用约定与必读顺序
 
