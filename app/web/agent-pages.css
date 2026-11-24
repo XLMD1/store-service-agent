@@ -38,3 +38,30 @@
   .agent-thinking-dots i:nth-child(3){animation-delay:.3s}
 }
 @keyframes agent-thinking-pulse{0%,65%,100%{opacity:.4}30%{opacity:1}}
+.store-shell .service-home { gap: 22px; }
+.store-shell .service-task { border-top: 3px solid var(--primary); }
+.workbench-task-heading { margin-bottom: 18px; }
+.workbench-task-heading h2 { display: flex; align-items: center; gap: 10px; font-size: 22px; }
+.workbench-task-heading h2 .icon { color: var(--primary); }
+.store-shell .service-task textarea { padding: 14px; border-radius: 8px; background: #f9fbff; border-color: #a5b7d4; }
+.store-shell .service-task textarea:focus-visible { box-shadow: 0 0 0 5px #315db512; }
+.prompt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.prompt-chips button { font-size: 13px; padding: 5px 11px; border-radius: 22px; color: var(--primary); }
+.pending-clear { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 16px; background: #f6f8fc; border-radius: 9px; }
+.pending-clear p { color: var(--muted); font-size: 14px; }
+.pending-clear button { margin-top: 6px; }
+.store-shell .service-shortcuts { display: block; min-width: 0; }
+.shortcut-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(124px,100%),1fr)); gap: 8px; margin-top: 10px; }
+.shortcut-grid a { align-items: flex-start; flex-direction: column; gap: 10px; border-radius: 10px; color: var(--text); }
+.shortcut-grid .icon { background: var(--primary-soft); color: var(--primary); padding: 6px; width: 36px; height: 36px; border-radius: 9px; }
+.shortcut-grid a:hover, .shortcut-grid a:focus-visible { border-color: var(--primary); box-shadow: 0 4px 12px #24364e15; }
+#agent-task-form[aria-busy=true] #agent-start::before { content: ''; width: 14px; height: 14px; border: 2px solid #ffffff66; border-top-color: white; border-radius: 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  #agent-task-form[aria-busy=true] #agent-start::before { animation: workbench-spin .8s linear infinite; }
+  .shortcut-grid a { transition: transform .15s, box-shadow .15s; }
+  .shortcut-grid a:hover { transform: translateY(-2px); }
+}
+@keyframes workbench-spin { to { transform: rotate(1turn); } }
+.store-shell[data-view=mobile] .shortcut-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.store-shell[data-view=mobile] .service-home > * { grid-row: auto; grid-column: auto; }
+.store-shell[data-view=mobile] #agent-start { width: 100%; }
