@@ -28,6 +28,10 @@
   --space-6: 24px;
   --font-ui: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
 }
+:root[data-page-tone=blue]{--page:#eef4fa}
+:root[data-page-tone=green]{--page:#eef5ef}
+:root[data-page-tone=sand]{--page:#f7f2e8}
+:root[data-page-tone=lilac]{--page:#f2eff7}
 /* 只需引入本文件与 ui.css，即可复用整套材质。 */
 .material-ink {
   background-color: var(--ink);

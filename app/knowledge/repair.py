@@ -28,6 +28,8 @@ INVALID_SELECTION = '模型给出的引用未通过校验。请先核对下方�
 RISK_MESSAGE = '请先撤离到安全地点，再联系当地燃气应急服务或专业人员处理。'
 MAX_SOURCES = 5
 TABLE_CAUSE_ROW = re.compile(r'现象【([^】]+)】\s*[｜|]\s*可能原因【([^】]+)】(?:\s*[｜|]\s*处理方法【[^】]*】)?')
+NON_FAULT_ROW = re.compile(r'现象【[^】]+】\s*[｜|]\s*原因及处理方法【[^】]+】[。.]?')
+NON_FAULT_HEADING = re.compile(r'(?:有?以下情况(?:发生时)?)?并?非故障(?:现象|状况)?[。：:]?')
 ACTION_WORDING = re.compile(r'请(?:先|立即|停止|关闭|联系|更换)|(?:然后|随后|再)(?:关闭|开启|联系|拆卸|更换|复位)')
 
 
@@ -35,8 +37,10 @@ class RepairQuestion(Input):
     model: str = Field(default='', max_length=100)
     problem: str = Field(min_length=1, max_length=500)
     condition: str = Field(default='', max_length=500)
+    question: str = Field(default='', max_length=500)
+    previous_answer_id: UUID | None = None
 
-    @field_validator('model', 'problem', 'condition')
+    @field_validator('model', 'problem', 'condition', 'question')
     @classmethod
     def clean(cls, value):
         check_text(value)
@@ -78,7 +82,9 @@ def select_prompt():
             'points 的 source 填对应资料编号，segment 填该资料 segments 中最相关的原句序号（从 1 起），不改写原文。'
             'meaning 为故障含义，check 只选待核对的条件；含处置指令的句子不能当作 meaning 或 check。'
             'action 只限已提供必要现场条件的建议，并以 condition_segment 指向同一资料给出条件的原句。'
+            'question 是师傅追问，不能作为现场检查结果。只有 condition 可提供实际观察。'
             '资料明确写明故障码含义时，即使未填写现场检查结果，也可以只返回 meaning。未知现场条件时省略 action。'
+            '资料标明并非故障时，应按原文限定选句，不能把该现象当作确定故障。'
             '没有适用依据时用 insufficient，有不同解释或来源冲突用 conflict，均返回空 points。'
             '不要给出拆机、燃气调整、绕过保护、涉及带电部件的操作步骤，那些内容交给有资质的专业人员核对原页。'
             '引用中有疑似燃气泄漏、人身风险或紧急状况时用 insufficient。schema='
@@ -106,6 +112,10 @@ def evidence_segments(excerpt, terms=()):
         if best:
             start = max(0, scores.index(best) - 1)
             break
+    if start and all(NON_FAULT_ROW.fullmatch(line) for line in segments[start:start + 2]):
+        heading = next((line for line in reversed(segments[:start]) if not NON_FAULT_ROW.fullmatch(line)), '')
+        if NON_FAULT_HEADING.fullmatch(heading):
+            return [heading, *segments[start:start + 5]]
     return segments[start:start + 6]
 
 
@@ -167,6 +177,22 @@ def table_cause_points(symptom, references):
     return list(points.values())
 
 
+def manual_passages(problem, code, references):
+    passages = []
+    for source, row in enumerate(references, 1):
+        lines = [line.strip() for line in row['source_excerpt'].splitlines() if line.strip()]
+        for index, line in enumerate(lines):
+            table = TABLE_CAUSE_ROW.fullmatch(line)
+            if table and problem in {normalized(value).strip(' 。') for value in table[1].split('、')}:
+                passages.append({'source': source, 'text': line})
+            elif code and re.match(rf'^{re.escape(code)}\s*:', normalized(line)):
+                text = line
+                if index + 1 < len(lines) and lines[index + 1].startswith(('当壁挂炉', '当设备')):
+                    text += '\n' + lines[index + 1]
+                passages.append({'source': source, 'text': text})
+    return passages
+
+
 def find_evidence(db, model, problem, code):
     query = page_indexes(model).order_by(KnowledgeVersion.id, KnowledgePageIndex.page)
     term = code or normalized(problem).strip(' ？?。.!！')
@@ -200,12 +226,14 @@ def ask(payload: RepairQuestion, request: Request):
         check_write(request, db)
         user = current_user(request, db)
         ensure_permission(db, user, 'repair.query')
-        if URGENT.search(payload.problem + '\n' + payload.condition):
+        conversation = '\n'.join((payload.problem, payload.condition, payload.question))
+        if URGENT.search(conversation):
             return {**result, 'status': 'urgent', 'message': RISK_MESSAGE}
         if not payload.model:
             return {**result, 'status': 'need_model', 'message': '请先确认铭牌上的完整型号。'}
         query = normalized(payload.problem).replace(normalized(payload.model), '')
-        codes = list(dict.fromkeys(''.join(match) for match in FAULT_CODE.findall(query)))
+        followup = normalized(payload.condition + '\n' + payload.question).replace(normalized(payload.model), '')
+        codes = list(dict.fromkeys(''.join(match) for match in FAULT_CODE.findall(query + '\n' + followup)))
         if len(codes) > 1:
             return {**result, 'status': 'need_code', 'message': '检测到多个故障码，请确认当前显示的故障码。'}
         rows = find_evidence(db, payload.model, payload.problem, codes[0] if codes else None)
@@ -216,7 +244,7 @@ def ask(payload: RepairQuestion, request: Request):
         if len(rows) > MAX_SOURCES or len({version.id for _, version in rows}) > 1:
             return {**result, 'status': 'conflict', 'message': '匹配到多份资料或多个候选，请先核对适用版次和具体故障。'}
         direct = []
-        if not payload.condition:
+        if not payload.condition and not payload.question:
             term = query.strip(' ?。？!！')
             if codes and FAULT_CODE.fullmatch(term):
                 meaning = explicit_code_meaning(codes[0], references)
@@ -234,7 +262,14 @@ def ask(payload: RepairQuestion, request: Request):
                 return {**result, 'status': 'source_only', 'message': NO_EXCERPT}
             provider = DeepSeekPlanner(state.settings.deepseek_settings_file)
             prompt = select_prompt()
-            request_key = digest(json.dumps([payload.model_dump(), versions, provider.model, prompt], sort_keys=True))
+            previous_quotes = []
+            if payload.previous_answer_id:
+                previous = db.get(RepairAnswer, str(payload.previous_answer_id))
+                if previous and previous.actor_id == user.id and previous.result.get('model') == payload.model:
+                    previous_quotes = [point['quote'] for point in previous.result['points']
+                                       if any(point['quote'] in row['source_excerpt'] for row in references)]
+            inputs = payload.model_dump(exclude={'previous_answer_id'})
+            request_key = digest(json.dumps([inputs, previous_quotes, versions, provider.model, prompt], sort_keys=True))
             saved = saved_model_answer(db, user.id, request_key)
             if saved:
                 return saved
@@ -243,7 +278,8 @@ def ask(payload: RepairQuestion, request: Request):
     if direct:
         status, points = 'answered', direct
     else:
-        context = {'model': payload.model, 'problem': payload.problem, 'condition': payload.condition, 'sources': sources}
+        context = {'model': payload.model, 'problem': payload.problem, 'condition': payload.condition,
+                   'question': payload.question, 'previous_quotes': previous_quotes, 'sources': sources}
         try:
             responder = getattr(state, 'repair_responder', None)
             if responder:
@@ -275,7 +311,9 @@ def ask(payload: RepairQuestion, request: Request):
             if status == 'conflict':
                 message = '资料可能冲突，请核对匹配的原页。'
             return {**result, 'status': status, 'message': message}
-        result.update(status='answered', points=points)
+        result.update(status='answered', points=points, origin='manual' if direct else 'deepseek')
+        if direct:
+            result['passages'] = manual_passages(term, codes[0] if codes else None, references)
         stored = {**result, 'request_key': request_key} if request_key else result
         answer = RepairAnswer(actor_id=user.id, result=stored)
         db.add(answer)

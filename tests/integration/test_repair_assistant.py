@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from app.agent.provider import ProviderUnavailable
 from tests.integration.test_auth import create_user, csrf, login
 from tests.integration.test_knowledge_versions import create_version, import_data, sign_in, transition, transition_data
 
@@ -79,8 +80,26 @@ def test_assistant_checks_model_evidence_risk_and_feedback(application):
         application.state.repair_responder = unused_model
         direct = query('SAMPLE-1','E3')
         assert direct['status'] == 'answered'
+        assert direct['origin'] == 'manual'
+        assert direct['passages'] == [{'source':1,'text':'E3：样例传感器故障'}]
+        for extra, expected in [('闻到燃气味','urgent'), ('现在报 E30','need_code')]:
+            reply = technician.post('/api/repair/ask',headers=csrf(technician),
+                                    json={'model':'SAMPLE-1','problem':'E3','question':extra})
+            assert reply.json()['status'] == expected
         assert direct['points'] == [{'kind':'meaning','source':1,'quote':'E3：样例传感器故障','condition':''}]
         assert direct['sources'][0]['original_url'] == path + '/pages/1'
+        observed = []
+
+        def followup_reply(context):
+            observed.append(context)
+            return {'status':'answered','points':[{'kind':'action','source':1,'segment':2,'condition_segment':1}]}
+
+        application.state.repair_responder = followup_reply
+        followup = {'model':'SAMPLE-1','problem':'E3','question':'接下来呢？','previous_answer_id':direct['answer_id']}
+        reply = technician.post('/api/repair/ask',headers=csrf(technician),json=followup).json()
+        assert reply['status'] == 'source_only'
+        assert observed[0]['previous_quotes'] == ['E3：样例传感器故障'] and not observed[0]['condition']
+        application.state.repair_responder = unused_model
 
         draft = technician.post(path+'/index-drafts/recognize', headers=csrf(technician),
                                 json={'first_page':2,'last_page':2})
@@ -104,5 +123,25 @@ def test_assistant_checks_model_evidence_risk_and_feedback(application):
         updated = query('SAMPLE-1', '壁挂炉报E3怎么办')
         assert updated['answer_id'] != result['answer_id']
         assert updated['points'][0]['quote'] == 'E3：样例传感器故障'
+
+        def unavailable(_):
+            raise ProviderUnavailable('sandbox model unavailable')
+
+        application.state.repair_responder = unavailable
+        degraded = query('SAMPLE-1', 'E3', '样例屏幕仍显示 E3')
+        assert degraded['status'] == 'source_only'
+        assert '模型暂时未能完成答复' in degraded['message']
+        assert degraded['sources'][0]['original_url'] == path + '/pages/1'
+
+        competing = create_version(owner, import_data(document_code='SAMPLE-OVERLAP'))
+        assert query('SAMPLE-1', 'E3')['sources'][0]['original_url'] == path + '/pages/1'
+        assert transition(owner, competing, transition_data('review', 1)).status_code == 200
+        assert transition(owner, competing, transition_data('publish', 2)).status_code == 200
+        assert owner.put(competing+'/pages/1/index', headers=csrf(owner), json=index).status_code == 200
+        conflict = query('SAMPLE-1','E3')
+        assert conflict['status'] == 'conflict'
+        assert {source['original_url'] for source in conflict['sources']} == {path+'/pages/1',competing+'/pages/1'}
+        assert 'points' not in conflict
+        assert transition(owner,competing,transition_data('retire',3)).status_code == 200
         assert transition(owner,path,transition_data('retire',3)).status_code==200
         assert query('SAMPLE-1','E3')['status']=='no_evidence'

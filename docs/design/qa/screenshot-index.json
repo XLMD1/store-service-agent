@@ -1,12 +1,33 @@
 {
-  "date": "2026-11-19",
+  "date": "2026-11-24",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 121,
+  "retained_count": 124,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
   "retained": [
+    {
+      "path": "docs/design/qa/m3-03/repair-followup-390.jpg",
+      "bytes": 44283,
+      "sha256": "0e02e05b7eacd0355771bd592356025cc35f35ebaebe2a6bb866015373c1f1bc",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m4-01/workspace-tone-1440.jpg",
+      "bytes": 126483,
+      "sha256": "5ed8620b9bafd87f52c5e5943db862f379f1c55612a0a19811e9021ac4c2c4be",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m4-01/workspace-tone-390.jpg",
+      "bytes": 54536,
+      "sha256": "2b1468405aa824d51ba478fd9d671a31fb7848ff9dcbb17f923c94fd6a566240",
+      "width": 390,
+      "height": 900
+    },
     {
       "path": "docs/design/qa/frontend-mock/adjustment-390.jpg",
       "bytes": 31383,

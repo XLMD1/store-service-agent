@@ -23,7 +23,7 @@ ROLE_PERMISSIONS = {
     'owner': {'service.read', 'service.draft', 'service.confirm', 'repair.query', 'repair.answer', 'inventory.read',
               'inventory.inbound', 'inventory.outbound', 'reservation.confirm', 'reservation.cancel',
               'reservation.pickup', 'inventory.opening', 'inventory.correct', 'catalog.manage',
-              'account.manage', 'knowledge.read', 'knowledge.search', 'knowledge.publish', 'work_fee.manage'},
+              'account.manage', 'knowledge.read', 'knowledge.search', 'knowledge.review', 'knowledge.publish', 'work_fee.manage'},
 }
 
 

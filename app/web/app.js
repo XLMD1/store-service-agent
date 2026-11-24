@@ -65,6 +65,22 @@ function sidebarNavigation(navigation,current,title){
     return `<details class="sidebar-group" data-sidebar-group="${group.id}" ${open?'open':''}><summary>${caption}<span class="sidebar-caret" aria-hidden="true">›</span></summary>${rows.map(link).join('')}</details>`;
   }).join('');
 }
+const pageTones={default:'青灰',blue:'雾蓝',green:'浅松绿',sand:'暖砂',lilac:'淡藤紫'};
+
+function bindPageTone(){
+  const picker=$('#workspace-tone');
+  if(!picker)return;
+  const key='store-service-page-tone';
+  let saved;
+  try{saved=window.localStorage.getItem(key);}catch{}
+  picker.value=Object.hasOwn(pageTones,saved)?saved:'default';
+  document.documentElement.dataset.pageTone=picker.value;
+  picker.onchange=()=>{
+    document.documentElement.dataset.pageTone=picker.value;
+    try{window.localStorage.setItem(key,picker.value);}catch{}
+  };
+}
+
 function shell(title,subtitle,content,action='',secondary=false){
   const permissions=state.user.permissions,current=location.hash.slice(1).split('?')[0]||'home';
   const navigation=[...(!isMockMode()&&permissions.some(item=>['work_fee.manage','work_fee.report'].includes(item))?[['work-fees','工费台账','clipboard',hasPermission('work_fee.manage')?'work_fee.manage':'work_fee.report','工费']]:[]),...(!isMockMode()?[['home','工作台','home','inventory.read','工作'],['deepseek-settings','DeepSeek设置','settings','account.manage','模型'],['sources','售后来源','file','service.read','来源'],['service-search','售后档案','file','service.read','售后'],['repair-assistant','维修辅助','wrench','repair.answer','维修']]:[]),...(isMockMode()?[['home','工作台','home','inventory.read','工作'],['service-search','售后档案','file','service.read','售后'],['repair-assistant','维修辅助','wrench','repair.query','维修'],['settings','资料与设置','settings','inventory.read','设置']]:[]),['inventory','库存查询','box','inventory.read','库存'],['reservations','预留查询','box','inventory.read','预留'],['ledger','库存流水','file','inventory.read','流水'],['pending','待核对草稿','clipboard',permissions.find(x=>['inventory.inbound','inventory.outbound','reservation.confirm','reservation.cancel','reservation.pickup','inventory.opening',...(isMockMode()?['service.draft']:['inventory.read'])].includes(x)),'草稿'],['statistics','进货统计','file','inventory.read','统计'],['correction','原单更正','settings','inventory.correct','更正'],['reconciliation','库存对账','file','inventory.correct','对账'],['inbound','登记入库','plus','inventory.inbound','入库'],...(!isMockMode()&&outboundEntry()?[ [outboundEntry().slice(1),'出库','box',hasPermission('inventory.outbound')?'inventory.outbound':'reservation.pickup','出库'] ]:[]),['customers','客户资料','file','reservation.confirm','客户'],['catalog','库房与型号','settings','inventory.opening','资料'],['opening','期初建账','settings','inventory.opening','建账']].filter(row=>permissions.includes(row[3]));
@@ -82,7 +98,8 @@ function shell(title,subtitle,content,action='',secondary=false){
   const [returnPath,returnLabel]=Object.hasOwn(returnTargets,current)?returnTargets[current]:['inventory','库存'];
   const returnLink=`<a class="page-back" href="#${returnPath}">${icon('back')}返回${returnLabel}</a>`;
   const mobileNav=secondary?'':`<nav class="mobile-primary" aria-label="手机主导航">${[['home','工作台','home'],['pending','待核对','clipboard'],['service-search','售后','file'],['inventory','库存','box']].map(([route,label,symbol])=>`<a href="#${route}" ${current===route?'aria-current="page"':''}>${icon(symbol)}<span>${label}</span></a>`).join('')}</nav>`;
-  $('#app').innerHTML=`<div class="workspace" id="workspace"><aside class="desktop-sidebar material-ink sidebar-organized" aria-label="电脑端导航"><a class="workspace-brand" href="#inventory">门店助手<small>售后与库存协作</small></a><p class="sidebar-label">${workspaceLabel}</p><nav aria-label="业务导航">${sidebarNavigation(navigation,current,title)}</nav><div class="sidebar-foot"><strong>${esc(state.user.username)}</strong><span>本机审核环境</span></div></aside><div class="shell"><div class="workspace-toolbar"><span class="workspace-location">${workspaceLabel} / ${esc(title)}</span><div class="view-switch" role="group" aria-label="页面模式"><button id="view-desktop" type="button">电脑端</button><button id="view-mobile" type="button">手机端</button></div></div><header class="top material-ink"><div class="bar"><div>${secondary?returnLink:''}<h1>${title}</h1></div>${action}</div><p>${subtitle}</p><div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div></header><main id="main" class="content">${content}</main>${mobileNav}<footer class="page-footer">${isMockMode()?'前端演示 · 全部虚构数据 · 不写入真实台账':'本机开发验证 · 请使用明确标注的样例，不录入真实客户资料'}</footer></div></div>`;
+  $('#app').innerHTML=`<div class="workspace" id="workspace"><aside class="desktop-sidebar material-ink sidebar-organized" aria-label="电脑端导航"><a class="workspace-brand" href="#inventory">门店助手<small>售后与库存协作</small></a><p class="sidebar-label">${workspaceLabel}</p><nav aria-label="业务导航">${sidebarNavigation(navigation,current,title)}</nav><div class="sidebar-foot"><strong>${esc(state.user.username)}</strong><span>本机审核环境</span></div></aside><div class="shell"><div class="workspace-toolbar"><span class="workspace-location">${workspaceLabel} / ${esc(title)}</span><label class="workspace-tone"><span>背景</span><select id="workspace-tone" data-native-select>${Object.entries(pageTones).map(([value,label])=>`<option value="${value}">${label}</option>`).join('')}</select></label><div class="view-switch" role="group" aria-label="页面模式"><button id="view-desktop" type="button">电脑端</button><button id="view-mobile" type="button">手机端</button></div></div><header class="top material-ink"><div class="bar"><div>${secondary?returnLink:''}<h1>${title}</h1></div>${action}</div><p>${subtitle}</p><div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div></header><main id="main" class="content">${content}</main>${mobileNav}<footer class="page-footer">${isMockMode()?'前端演示 · 全部虚构数据 · 不写入真实台账':'本机开发验证 · 请使用明确标注的样例，不录入真实客户资料'}</footer></div></div>`;
+  bindPageTone();
   document.querySelectorAll('details[data-sidebar-group]').forEach(group=>{group.ontoggle=()=>{state.sidebarOpen||={};state.sidebarOpen[group.dataset.sidebarGroup]=group.open;};});
   const setView=mode=>{state.viewMode=mode;$('#workspace').dataset.view=mode;$('#view-desktop').setAttribute('aria-pressed',String(mode==='desktop'));$('#view-mobile').setAttribute('aria-pressed',String(mode==='mobile'));keepSidebarCurrentVisible();};
   setView(state.viewMode||(window.matchMedia('(min-width: 1000px)').matches?'desktop':'mobile'));

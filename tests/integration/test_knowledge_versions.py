@@ -87,7 +87,7 @@ def test_review_and_publish_permissions_preserve_retired_originals(application):
         assert owner.get(path).json()['state'] == 'pending_review'
 
         review = transition_data('review', 1)
-        assert transition(owner, path, review).status_code == 403
+        assert transition(clerk, path, review).status_code == 403
         assert transition(owner, path, transition_data('publish', 1)).status_code == 409
         assert transition(worker, path, {**review, 'confirmed': False}).status_code == 422
         reviewed = transition(worker, path, review)
@@ -100,7 +100,7 @@ def test_review_and_publish_permissions_preserve_retired_originals(application):
         assert clerk.get(path + '/pages/1').status_code == 200
 
         next_path = create_version(owner, import_data(edition='C'))
-        assert transition(worker, next_path, transition_data('review', 1)).status_code == 200
+        assert transition(owner, next_path, transition_data('review', 1)).status_code == 200
         assert transition(owner, next_path, transition_data('publish', 2)).status_code == 409
         assert transition(owner, path, transition_data('retire', 3)).json()['state'] == 'retired'
         assert clerk.get(PATH).json()['items'] == []

@@ -47,7 +47,7 @@ def test_batch_ocr_retains_drafts_and_confirms_selected_pages(application):
         assert clerk.get(listing).status_code == 403
         assert generate(technician, last_page=3).status_code == 404
         assert not runs
-        generated = generate(technician)
+        generated = generate(owner)
         assert generated.status_code == 200, generated.text
         first, failed = generated.json()['items']
         assert (first['page'], first['status'], first['title']) == (1, 'ready', '故障、异常的判断及处理方法')
@@ -78,7 +78,7 @@ def test_batch_ocr_retains_drafts_and_confirms_selected_pages(application):
         assert rejected.status_code == 409
         assert search(clerk, 'SAMPLE-1', 'E3')['status'] == 'no_index'
 
-        saved = confirm(technician, [selected])
+        saved = confirm(owner, [selected])
         assert saved.status_code == 200, saved.text
         assert confirm(technician, [selected]).json() == saved.json()
         assert search(clerk, 'SAMPLE-1', '供暖系统渗漏')['status'] == 'no_match'

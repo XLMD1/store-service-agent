@@ -3,6 +3,39 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 
+test('背景选择即时生效并跨页面和刷新保留，未识别的值恢复默认',()=>{
+  const {JSDOM}=require('jsdom');
+  const scripts=['movements','app'].map(name=>fs.readFileSync(require.resolve('../app/web/'+name+'.js'),'utf8')).join('\n');
+  const render=value=>{
+    const w=new JSDOM('<div id="app"></div>',{url:'http://localhost/#inventory',runScripts:'outside-only'}).window;
+    w.module={exports:{}};
+    w.scrollTo=()=>{};
+    w.matchMedia=()=>({matches:false});
+    if(value)w.localStorage.setItem('store-service-page-tone',value);
+    w.eval(scripts+`\nstate.user={username:'样例',permissions:['inventory.read']};shell('库存','','<input id="draft">');window.renderAnotherPage=()=>shell('流水','','');`);
+    return w;
+  };
+  const initial=render('unknown');
+  try{
+    const picker=initial.document.querySelector('#workspace-tone');
+    assert.ok(picker);
+    assert.equal(picker.options.length,5);
+    assert.equal(picker.value,'default');
+    const draft=initial.document.querySelector('#draft');
+    draft.value='尚未提交';
+    picker.value='blue';
+    picker.dispatchEvent(new initial.Event('change'));
+    assert.equal(initial.document.documentElement.dataset.pageTone,'blue');
+    assert.equal(initial.document.querySelector('#draft').value,'尚未提交');
+    initial.renderAnotherPage();
+    assert.equal(initial.document.querySelector('#workspace-tone').value,'blue');
+    const refreshed=render(initial.localStorage.getItem('store-service-page-tone'));
+    try{
+      assert.equal(refreshed.document.documentElement.dataset.pageTone,'blue');
+    }finally{refreshed.close();}
+  }finally{initial.close();}
+});
+
 test('电脑和手机切换只更新布局，不重建表单或发起请求，后续页面保留手动模式',()=>{
   let renders=0,markup='';
   const workspace={dataset:{}},desktop={setAttribute(){}},mobile={setAttribute(){}};
