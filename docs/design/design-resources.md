@@ -9,7 +9,7 @@
 
 ## 正式页面背景与布局 · 2026-11-24
 
-正式页面统一使用灰蓝导航、白色内容面板和品牌蓝操作。页首以低饱和渐变和局部点阵区分内容区。原有五种背景偏好继续生效，可在「账户与显示」切换。
+正式页面统一使用灰蓝导航、白色内容面板和品牌蓝操作。页首以低饱和渐变和局部点阵区分内容区。原有五种背景偏好继续生效，可在「账户与显示」切换。共用退出按钮已在 work-fees 的 1417px 和 390px 视口核对悬停、按下和键盘焦点，悬停文字对比度 7.72:1。[核对截图](qa/store-theme/logout-hover.jpg)
 
 页面编号：home、inventory、reservations、ledger、pending、statistics、correction、reconciliation、inbound、movement、opening、catalog、customers、sources、source、service-draft、service-search、service-detail、service-agent、service-task、work-fees、work-fee、technicians、knowledge、repair-assistant、task、deepseek-settings、login。
 

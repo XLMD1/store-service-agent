@@ -48,6 +48,9 @@ body {
 .workbench-preferences .identity { margin: 0; padding-top: 10px; border-top: 1px solid var(--line); }
 .workbench-preferences .identity small { color: var(--muted); }
 .workbench-preferences .identity button { color: var(--text); background: white; border-color: var(--line); }
+.workbench-preferences .identity button:not(:disabled):is(:hover, :focus-visible, :active) {
+  color: var(--primary-hover); background: var(--primary-soft); border-color: var(--primary);
+}
 
 .store-shell .top.material-ink {
   position: relative; isolation: isolate;

@@ -2,11 +2,18 @@
   "date": "2026-11-25",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 129,
+  "retained_count": 130,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
   "retained": [
+    {
+      "path": "docs/design/qa/store-theme/logout-hover.jpg",
+      "bytes": 110405,
+      "sha256": "88d335cbc6b0520ce55b6f89a21dd2aa6371a43c03b7fc0ffbff5259c69933fc",
+      "width": 1417,
+      "height": 881
+    },
     {
       "path": "docs/design/qa/repair-cases/case-review-390.jpg",
       "bytes": 42846,

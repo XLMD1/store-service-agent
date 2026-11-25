@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
+from base64 import b64encode
 from datetime import datetime, timezone
 from threading import Barrier
+from uuid import uuid4
 
 import httpx2
 import pytest
@@ -10,7 +12,7 @@ from sqlalchemy import text
 from app.agent.provider import ProviderUnavailable
 from app.main import create_app
 from scripts.eval_repair_assistant import seed_manuals
-from tests.integration.test_auth import create_user, csrf, login
+from tests.integration.test_auth import OWNER, create_user, csrf, login
 from tests.integration.test_inventory_agent import Planner, create_task, plan_inbound, run
 from tests.integration.test_inventory_opening import balance, confirm, draft, opening
 from tests.integration.test_inventory_operations import inbound
@@ -42,6 +44,69 @@ def test_outbound_requires_opening_and_current_stock_permission(application, ope
         assert numbers(technician, params) == (10, 3, 7)
         assert technician.post('/api/drafts', headers=csrf(technician), json=movement).status_code == 403
     assert numbers(owner, params) == (10, 3, 7)
+
+
+def post(client, path, body):
+    token = client.get('/api/auth/csrf').json()['csrf_token']
+    return client.post(path, json=body, headers={'Origin': str(client.base_url).rstrip('/'), 'X-CSRF-Token': token})
+
+
+def test_shared_stock_after_owner_client_closes(stock, workbench_process):
+    setup, params = stock
+    create_user(setup, 'trial-tech', ['technician'])
+    target = {key: params[key] for key in ('warehouse_id', 'model_id')}
+    movement = {'kind': 'inventory_inbound', 'parameters': {
+        **target, 'quantity': 2, 'occurred': {'precision': 'date', 'date': '2026-10-02'}}}
+    origin, server = workbench_process
+
+    with server(), httpx2.Client(base_url=origin, trust_env=False) as tech:
+        post(tech, '/api/auth/login', {'username': 'trial-tech', 'password': 'Sample-Stock-Password-123'}).raise_for_status()
+        before = balance(tech, target)
+        assert before['on_hand'] == 10
+        with httpx2.Client(base_url=origin, trust_env=False) as owner:
+            post(owner, '/api/auth/login', OWNER).raise_for_status()
+            response = post(owner, '/api/drafts', movement)
+            response.raise_for_status()
+            item = response.json()
+            receipt = post(owner, '/api/operations/' + item['operation_id'] + '/confirm', {
+                'draft_id': item['id'], 'draft_version': item['version'], 'parameters': item['parameters']})
+            receipt.raise_for_status()
+            assert receipt.json()['balance']['on_hand'] == 12
+            assert numbers(tech, target) == (12, 3, 9)
+        assert tech.get('/api/auth/me').json()['username'] == 'trial-tech'
+        assert post(tech, '/api/drafts', movement).status_code == 403
+        after = balance(tech, target)
+        assert (after['on_hand'], after['reserved'], after['available']) == (12, 3, 9)
+        assert datetime.fromisoformat(after['queried_at']) > datetime.fromisoformat(before['queried_at'])
+
+
+def test_source_handoff_survives_client_close_and_fresh_login(application, workbench_process):
+    with TestClient(application) as setup:
+        login(setup)
+        create_user(setup, 'trial-clerk', ['clerk'])
+    origin, server = workbench_process
+    image = picture()
+    fields = {'problem': '虚构样例不制热', 'address': '虚构样例地址'}
+    with server(), httpx2.Client(base_url=origin, trust_env=False) as clerk:
+        post(clerk, '/api/auth/login', {'username': 'trial-clerk', 'password': 'Sample-Stock-Password-123'}).raise_for_status()
+        with httpx2.Client(base_url=origin, trust_env=False) as owner:
+            post(owner, '/api/auth/login', OWNER).raise_for_status()
+            saved = post(owner, '/api/sources/photos', {'request_id': str(uuid4()),
+                         'image_base64': b64encode(image).decode('ascii')})
+            saved.raise_for_status()
+            source = '/api/sources/' + saved.json()['id']
+            assert clerk.get(source + '/original').status_code == 404
+            post(owner, source + '/review-access', {'username': 'trial-clerk', 'confirmed': True,
+                 'request_id': str(uuid4())}).raise_for_status()
+        assert clerk.get(source + '/original').content == image
+        created = post(clerk, source + '/drafts', {'request_id': str(uuid4()), 'fields': fields})
+        assert created.status_code == 201, created.text
+        draft_url = source + '/drafts/' + created.json()['id']
+        with httpx2.Client(base_url=origin, trust_env=False) as reopened:
+            post(reopened, '/api/auth/login', OWNER).raise_for_status()
+            assert reopened.get(source + '/original').content == image
+            draft = reopened.get(draft_url).json()
+            assert draft['version'] == 1 and draft['fields']['problem'] == fields['problem']
 
 
 def test_partial_task_reopens_with_current_permissions(application, settings, stock):
