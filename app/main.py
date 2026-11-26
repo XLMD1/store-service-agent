@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from app.updates import router as version_router
 
 from app.auth.router import router
 from app.config import Settings
@@ -45,6 +46,7 @@ def create_app(settings: Settings | None = None):
             for item in error.errors()]})
 
     app.include_router(router)
+    app.include_router(version_router)
     app.include_router(catalog_router)
     app.include_router(inventory_router)
     app.include_router(operations_router)
