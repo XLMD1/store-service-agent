@@ -3,6 +3,39 @@ const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const icon = name => `<svg class="icon" aria-hidden="true"><use href="/web/assets/icons.svg#${name}"></use></svg>`;
 const state = {user:null, warehouses:[], models:[], customers:[], draft:null};
+async function bindVersionMenu(){
+  const panel=$('#version-info');
+  if(!panel)return;
+  const owner=state.user.roles?.includes('owner');
+  const result=panel.querySelector('p');
+  const button=panel.querySelector('button');
+  button.hidden=!owner;
+  async function check(force){
+    button.disabled=true;
+    try{
+      const data=await api('/version/updates'+(force?'?force=true':''));
+      if(!panel.isConnected)return;
+      result.textContent=data.status==='current'?'已是最新版本':data.status==='available'?
+        `新版 v${data.latest.version} · ${data.latest.date} · ${data.latest.notes} `:
+        '暂时无法检查'+(data.last_success?`，上次成功检查于 ${stamp(data.last_success)}`:'');
+      const summary=panel.closest('details').querySelector('summary');
+      summary.querySelector('.update-badge')?.remove();
+      if(data.status==='available'){
+        const link=document.createElement('a');
+        link.href=data.latest.url;link.textContent='下载安装包';result.append(link);
+        const badge=document.createElement('span');
+        badge.className='update-badge';badge.textContent='有新版';summary.append(badge);
+      }
+    }catch{result.textContent='暂时无法检查';}
+    finally{button.disabled=false;}
+  }
+  button.onclick=()=>check(true);
+  try{
+    const data=await api('/version');
+    panel.querySelector('small').textContent='当前版本 v'+data.version;
+    if(owner && panel.isConnected)await check(false);
+  }catch{result.textContent='暂时无法读取版本';}
+}
 function clearSignedInTaskInputs(){
   for(const key of ['agentText','agentRequest','serviceWorkbenchText','serviceWorkbenchRequest','workbenchTaskMode','workbenchHistory']){
     delete state[key];
@@ -105,7 +138,7 @@ function shell(title,subtitle,content,action='',secondary=false){
   const returnLink=`<a class="page-back" href="#${returnPath}">${icon('back')}返回${returnLabel}</a>`;
   const mobileNav=secondary?'':`<nav class="mobile-primary" aria-label="手机主导航">${[['home','工作台','home'],['pending','待核对','clipboard'],['service-search','售后','file'],['inventory','库存','box']].map(([route,label,symbol])=>`<a href="#${route}" ${current===route?'aria-current="page"':''}>${icon(symbol)}<span>${label}</span></a>`).join('')}</nav>`;
   const formal=!isMockMode();
-  const identity=`<div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div>`;
+  const identity=`<div class="identity"><small>${esc(state.user.username)} · 当前已登录</small><button id="logout" type="button">退出登录</button></div>${formal?'<section id="version-info"><strong>版本与更新</strong><br><small></small><p aria-live="polite"></p><button type="button" hidden>检查更新</button></section>':''}`;
   const preferences=`<label class="workspace-tone"><span>背景</span><select id="workspace-tone" data-native-select>${Object.entries(pageTones).map(([value,label])=>`<option value="${value}">${label}</option>`).join('')}</select></label><div class="view-switch" role="group" aria-label="页面模式"><button id="view-desktop" type="button">电脑端</button><button id="view-mobile" type="button">手机端</button></div>`;
   $('#app').innerHTML=`<div class="workspace${formal?' store-shell':''}" id="workspace"><aside class="desktop-sidebar material-ink sidebar-organized" aria-label="电脑端导航"><a class="workspace-brand" href="#inventory">门店助手<small>售后与库存协作</small></a><p class="sidebar-label">${workspaceLabel}</p><nav aria-label="业务导航">${sidebarNavigation(navigation,current,title)}</nav><div class="sidebar-foot">${formal?`<span class="account-initial" aria-hidden="true">${esc(Array.from(state.user.username)[0])}</span>`:''}<strong>${esc(state.user.username)}</strong><span>本机审核环境</span></div></aside><div class="shell"><div class="workspace-toolbar"><span class="workspace-location">${workspaceLabel} / ${esc(title)}</span>${formal?`<details class="workbench-preferences"><summary><span class="account-initial" aria-hidden="true">${esc(Array.from(state.user.username)[0])}</span>账户与显示</summary><div>${preferences}${identity}</div></details>`:preferences}</div><header class="top material-ink"><div class="bar"><div>${secondary?returnLink:''}<h1>${title}</h1></div>${action}</div><p>${subtitle}</p>${formal?'':identity}</header><main id="main" class="content">${content}</main>${mobileNav}<footer class="page-footer">${isMockMode()?'前端演示 · 全部虚构数据 · 不写入真实台账':'本机开发验证 · 请使用明确标注的样例，不录入真实客户资料'}</footer></div></div>`;
   bindPageTone();
@@ -115,6 +148,7 @@ function shell(title,subtitle,content,action='',secondary=false){
   $('#view-desktop').onclick=()=>setView('desktop');$('#view-mobile').onclick=()=>setView('mobile');
 
   window.scrollTo(0,0);
+  bindVersionMenu();
   $('#logout').onclick=async()=>{try{await api('/auth/logout','POST');state.user=null;delete state.serviceArchiveQuery;clearSignedInTaskInputs();location.hash='login';}catch(error){notify(error.message);}};
 }
 function loginPage(){
