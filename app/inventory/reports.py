@@ -5,7 +5,7 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import and_, case, func, select, true
+from sqlalchemy import Date, and_, case, cast, func, or_, select, true
 
 from app.auth.router import current_user, database
 from app.auth.service import ensure_permission, now
@@ -39,11 +39,17 @@ def objects(warehouse, model):
             'model': {'id': model.id, 'name': model.name}}
 
 
-def document_rows(db, warehouse_id, model_id, kinds):
+def document_rows(db, warehouse_id, model_id, kinds, *, period=None):
     # One statement gives original amounts, corrections and coverage the same snapshot.
+    include = InventoryDocument.kind.in_(kinds + ['correction'])
+    if period is not None:
+        # Corrections have their own occurrence timestamps, including after the report period.
+        day = func.coalesce(InventoryDocument.occurred_date,
+                            cast(func.timezone('Asia/Shanghai', InventoryDocument.occurred_at), Date))
+        include = or_(and_(InventoryDocument.kind.in_(kinds), day.between(*period)),
+                      InventoryDocument.kind == 'correction')
     query = object_query(warehouse_id, model_id).add_columns(InventoryDocument).outerjoin(
-        InventoryDocument, and_(InventoryDocument.account_id == InventoryAccount.id,
-                               InventoryDocument.kind.in_(kinds + ['correction'])))
+        InventoryDocument, and_(InventoryDocument.account_id == InventoryAccount.id, include))
     return db.execute(query.order_by(Warehouse.name, Warehouse.id, ProductModel.name,
         ProductModel.id, InventoryDocument.registered_at, InventoryDocument.id)).all()
 
@@ -88,7 +94,7 @@ def statistics(start: date, end: date, warehouse_id: UUID | None = None, model_i
     validate_targets(db, warehouse_id, model_id)
     stamp = now()
     today = stamp.astimezone(ZoneInfo('Asia/Shanghai')).date()
-    rows = document_rows(db, warehouse_id, model_id, ['inbound'])
+    rows = document_rows(db, warehouse_id, model_id, ['inbound'], period=(start, end))
     coverage = {}
     for warehouse, model, account, row in rows:
         status = 'uninitialized'
@@ -99,15 +105,12 @@ def statistics(start: date, end: date, warehouse_id: UUID | None = None, model_i
         coverage[(warehouse.id, model.id)] = {**objects(warehouse, model),
             'status': 'opened' if account else 'uninitialized',
             't0': account.t0.isoformat() if account else None, 'coverage_status': status}
-    selected = []
+    selected = document_results(rows, ['inbound'])
     groups = {}
-    for row in document_results(rows, ['inbound']):
+    for row in selected:
         occurred = row['occurred']
         day = date.fromisoformat(occurred['date']) if occurred['date'] else datetime.fromisoformat(
             occurred['at']).astimezone(ZoneInfo('Asia/Shanghai')).date()
-        if not start <= day <= end:
-            continue
-        selected.append(row)
         key = day.isoformat() if group_by == 'date' else row[group_by]['id']
         label = key if group_by == 'date' else row[group_by]['name']
         if key not in groups:

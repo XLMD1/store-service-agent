@@ -3,11 +3,12 @@ import re
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import Field, field_validator, model_validator
 from sqlalchemy import select
 
 from app.agent.provider import DeepSeekPlanner, ProviderUnavailable
+from app.auth.models import User
 from app.auth.router import check_write, current_user, database
 from app.auth.service import digest, ensure_permission, lock_accounts
 from app.knowledge.lookup import CODE, normalized, page_indexes, page_reference, term_conditions
@@ -27,6 +28,7 @@ MODEL_UNAVAILABLE = '模型暂时未能完成答复。你仍可以打开并核�
 INVALID_SELECTION = '模型给出的引用未通过校验。请先核对下方原页。'
 RISK_MESSAGE = '请先撤离到安全地点，再联系当地燃气应急服务或专业人员处理。'
 MAX_SOURCES = 5
+FEEDBACK_PAGE_SIZE = 20
 TABLE_CAUSE_ROW = re.compile(r'现象【([^】]+)】\s*[｜|]\s*可能原因【([^】]+)】(?:\s*[｜|]\s*处理方法【[^】]*】)?')
 NON_FAULT_ROW = re.compile(r'现象【[^】]+】\s*[｜|]\s*原因及处理方法【[^】]+】[。.]?')
 NON_FAULT_HEADING = re.compile(r'(?:有?以下情况(?:发生时)?)?并?非故障(?:现象|状况)?[。：:]?')
@@ -313,7 +315,16 @@ def ask(payload: RepairQuestion, request: Request):
             return {**result, 'status': status, 'message': message}
         result.update(status='answered', points=points, origin='manual' if direct else 'deepseek')
         if direct:
-            result['passages'] = manual_passages(term, codes[0] if codes else None, references)
+            passages = manual_passages(term, codes[0] if codes else None, references)
+            result['passages'] = passages
+            if codes:
+                guidance = []
+                for passage in passages:
+                    definition, _, instruction = passage['text'].partition('\n')
+                    if (definition == direct[0]['quote'] and ACTION_WORDING.search(instruction)
+                            and not URGENT.search(instruction)):
+                        guidance.append({'source': passage['source'], 'quote': instruction})
+                result['manufacturer_guidance'] = guidance
         stored = {**result, 'request_key': request_key} if request_key else result
         answer = RepairAnswer(actor_id=user.id, result=stored)
         db.add(answer)
@@ -330,3 +341,22 @@ def save_feedback(answer_id: UUID, payload: RepairFeedback, user=Depends(current
         raise HTTPException(404, 'Repair answer not found')
     answer.feedback = payload.model_dump()
     return {'saved': True}
+
+
+@router.get('/feedback')
+def list_feedback(offset: int = Query(0, ge=0), user=Depends(current_user), db=Depends(database, scope='function')):
+    ensure_permission(db, user, 'knowledge.publish')
+    rows = db.execute(
+        select(RepairAnswer, User.username)
+        .join(User, User.id == RepairAnswer.actor_id)
+        .where(RepairAnswer.feedback['rating'].as_string().is_not(None))
+        .order_by(RepairAnswer.created_at.desc(), RepairAnswer.id)
+        .offset(offset).limit(FEEDBACK_PAGE_SIZE + 1)
+    ).all()
+    return {'items': [
+        {'answer_id': answer.id, 'actor': actor, 'answered_at': answer.created_at.isoformat(),
+         'feedback': answer.feedback, 'model': answer.result['model'], 'points': answer.result['points'],
+         'manufacturer_guidance': answer.result.get('manufacturer_guidance', []),
+         'sources': answer.result['sources']}
+        for answer, actor in rows[:FEEDBACK_PAGE_SIZE]
+    ], 'next_offset': offset + FEEDBACK_PAGE_SIZE if len(rows) > FEEDBACK_PAGE_SIZE else None}

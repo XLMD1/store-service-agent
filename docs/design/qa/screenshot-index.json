@@ -1,12 +1,54 @@
 {
-  "date": "2026-11-24",
+  "date": "2026-11-25",
   "scope": "docs/design/qa/*.jpg recursively",
   "before": 165,
-  "retained_count": 124,
+  "retained_count": 130,
   "removed_count": 104,
   "removed_bytes": 4697717,
   "policy": "保留当前主要页面和关键状态，保留必要真实业务回执；不替换或重新标注原截图来源。",
   "retained": [
+    {
+      "path": "docs/design/qa/store-theme/logout-hover.jpg",
+      "bytes": 110405,
+      "sha256": "88d335cbc6b0520ce55b6f89a21dd2aa6371a43c03b7fc0ffbff5259c69933fc",
+      "width": 1417,
+      "height": 881
+    },
+    {
+      "path": "docs/design/qa/repair-cases/case-review-390.jpg",
+      "bytes": 42846,
+      "sha256": "7209bba9f3969940e655c124cc7771aeda0b45d4f1df74af4fa6568456d86860",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/header-back/inbound-focus-390.jpg",
+      "bytes": 45853,
+      "sha256": "2526e3241c5ec91deb763f9b82c9148a2057be4abcfc370052ff6001ac9f3002",
+      "width": 390,
+      "height": 881
+    },
+    {
+      "path": "docs/design/qa/header-back/repair-hover-1417.jpg",
+      "bytes": 89344,
+      "sha256": "f3c4988a36d832ba930511e76fa7c9f56f7ff42d0abae010adf81d4b864aab5f",
+      "width": 1417,
+      "height": 881
+    },
+    {
+      "path": "docs/design/qa/m3-03/repair-feedback-review-390.jpg",
+      "bytes": 62900,
+      "sha256": "e7ec4278823413c28e5c7beb5a8ca2e0f558a2497f14c9a0a5b21a28a7e28317",
+      "width": 390,
+      "height": 900
+    },
+    {
+      "path": "docs/design/qa/m3-03/repair-first-query-390.jpg",
+      "bytes": 54709,
+      "sha256": "585dc651745020ae2df2d4c8e8bb9e7a9c8fa9881149f82c08caed5c97bb89ae",
+      "width": 390,
+      "height": 900
+    },
     {
       "path": "docs/design/qa/m3-03/repair-followup-390.jpg",
       "bytes": 44283,
@@ -1196,6 +1238,6 @@
       "sha256": "14686d4523be69f1d510886e575f8f84ce92dda8163e9ff64d4e2c46b09d7db5"
     }
   ],
-  "added_after_curation": 38,
-  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added. Four M2-03 service archive and lookup screenshots added. Three M2-05 work fee ledger screenshots added. Two technician account management screenshots added. Three M2-02 extraction and OCR screenshots added. Two M2-04 service supplement screenshots added. Three M2-04 assistant, recovery, and record revision screenshots added. One My Sources deletion screenshot added. Three unified workbench task screenshots added. Two simplified workbench screenshots added."
+  "added_after_curation": 39,
+  "addition_note": "2026-11-04: seven M1-06 review and four navigation screenshots added after the historical 165-to-61 cleanup. 2026-11-11: three M2-01 source upload and reading screenshots added. Two header back-link screenshots added. One reservation note screenshot added. Three inventory task conversation and deletion screenshots added. One single outbound task screenshot added. One conversation waiting screenshot added. One outbound clarification screenshot added. Two unified outbound screenshots added. One pickup title screenshot added. Three M2-02 service draft review screenshots added. Four M2-03 service archive and lookup screenshots added. Three M2-05 work fee ledger screenshots added. Two technician account management screenshots added. Three M2-02 extraction and OCR screenshots added. Two M2-04 service supplement screenshots added. Three M2-04 assistant, recovery, and record revision screenshots added. One My Sources deletion screenshot added. Three unified workbench task screenshots added. Two simplified workbench screenshots added. One mobile repair case review screenshot added."
 }

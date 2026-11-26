@@ -78,6 +78,9 @@ def test_shared_work_is_separate_per_worker_and_settlement_is_correctable(applic
             approved = decide(owner, submitted.json(), 'approve', amount_cents=amount)
             assert approved.status_code == 200, approved.text
             fees[worker_id] = approved.json()
+        assert decide(first, fees[a], 'paid', occurred_on='2026-11-12', note='样例自记结算').status_code == 403
+        assert [row['id'] for row in first.get(BASE).json()['items']] == [fees[a]['id']]
+        assert {row['id'] for row in owner.get(BASE).json()['items']} == {fees[a]['id'], fees[b]['id']}
         before = fees[a]
         operation = str(uuid4())
         settled = decide(owner, before, 'deducted', operation_id=operation,
@@ -89,10 +92,12 @@ def test_shared_work_is_separate_per_worker_and_settlement_is_correctable(applic
         assert owner.get(BASE).json()['totals'] == {'payable': 5000, 'deducted': 10000, 'paid': 0}
         reopened = decide(owner, settled.json(), 'reopen', reason='确认师傅已全额交回')
         assert reopened.status_code == 200, reopened.text
+        assert owner.get(BASE).json()['totals'] == {'payable': 15000, 'deducted': 0, 'paid': 0}
         paid = decide(owner, reopened.json(), 'paid', occurred_on='2026-11-12', note='线下已付')
         assert paid.status_code == 200, paid.text
         history = first.get(BASE + '/' + before['id']).json()
         assert [event['decision']['action'] for event in history['events']][-3:] == ['deducted', 'reopen', 'paid']
+        assert history['events'][-2]['decision']['reason'] == '确认师傅已全额交回'
         assert owner.get(BASE).json()['totals'] == {'payable': 5000, 'deducted': 0, 'paid': 10000}
         assert first.get(BASE).json()['items'][0]['work']['id'] == second.get(BASE).json()['items'][0]['work']['id']
 
@@ -124,18 +129,42 @@ def test_backfill_uses_verified_boundary_and_preserves_unknown_collection(applic
     with TestClient(application) as owner, TestClient(application) as worker:
         login(owner)
         worker_id = technician(owner, worker, 'demo-worker')
-        payload = {'request_id': str(uuid4()), 'work': WORK, 'worker_id': worker_id,
-                   'report': REPORT, 'cutoff_on': '2026-11-12', 'confirmed': True,
-                   'amount_cents': 6000, 'reason': '老板核对旧单',
-                   'settlement': {'action': 'deducted', 'occurred_on': '2026-11-11', 'note': '按原登记核对'}}
-        assert post(owner, '/backfill', **payload).status_code == 422
+        payload = {'work': WORK, 'worker_id': worker_id, 'cutoff_on': '2026-11-11',
+                   'confirmed': True, 'reason': '老板核对旧单'}
+
+        def backfill_input(day, amount, settlement=None):
+            return {**payload, 'request_id': str(uuid4()), 'amount_cents': amount, 'settlement': settlement,
+                    'report': {**REPORT, 'worked_on': day, 'items': [
+                        {'name': '上门', 'quantity': 1, 'amount_cents': amount},
+                    ]}}
+
+        previous_day = backfill_input('2026-11-10', 6000)
+        assert post(owner, '/backfill', **previous_day).status_code == 422
         assert owner.get(BASE).json()['items'] == []
-        payload['cutoff_on'] = '2026-11-11'
-        saved = post(owner, '/backfill', **payload)
-        assert saved.status_code == 201, saved.text
-        assert post(owner, '/backfill', **payload).json() == saved.json()
-        fee = saved.json()
+        deducted = backfill_input('2026-11-11', 12000, {
+            'action': 'deducted', 'occurred_on': '2026-11-11', 'note': '按原登记核对',
+        })
+        paid = backfill_input('2026-11-12', 8000, {
+            'action': 'paid', 'occurred_on': '2026-11-12', 'note': '已核实线下付款',
+        })
+        payable = backfill_input('2026-11-13', 5000)
+        for entry in (deducted, paid, payable):
+            saved = post(owner, '/backfill', **entry)
+            assert saved.status_code == 201, saved.text
+            assert post(owner, '/backfill', **entry).json() == saved.json()
+
+        ledger = owner.get(BASE).json()
+        fees_by_state = {row['state']: row for row in ledger['items']}
+        assert len(ledger['items']) == 3
+        assert ledger['totals'] == {'payable': 5000, 'deducted': 12000, 'paid': 8000}
+        fee = owner.get(f"{BASE}/{fees_by_state['deducted']['id']}").json()
         assert fee['work']['backfill_from'] == '2026-11-11'
-        assert fee['state'] == 'deducted' and fee['settlement']['amount_cents'] == 6000
+        assert fee['settlement']['amount_cents'] == 12000
+        assert fee['settlement']['note'] == '按原登记核对'
         assert fee['settlement']['collected_cents'] is None and fee['settlement']['returned_cents'] is None
-        assert owner.get(BASE, params={'from_on': '2026-11-12'}).json()['items'] == []
+        assert decide(owner, fee, 'paid', occurred_on='2026-11-13', note='重复结付').status_code == 409
+        assert owner.get(BASE).json()['totals'] == ledger['totals']
+        for status, amount in ledger['totals'].items():
+            filtered = owner.get(BASE, params={'state': status, 'from_on': '2026-11-11'}).json()
+            assert [row['id'] for row in filtered['items']] == [fees_by_state[status]['id']]
+            assert filtered['totals'][status] == amount

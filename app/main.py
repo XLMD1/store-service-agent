@@ -21,6 +21,7 @@ from app.knowledge.router import router as knowledge_router
 from app.knowledge.lookup import router as knowledge_lookup_router
 from app.knowledge.batch import router as knowledge_batch_router
 from app.knowledge.repair import router as repair_router
+from app.knowledge.cases import router as repair_cases_router
 
 
 def create_app(settings: Settings | None = None):
@@ -57,6 +58,7 @@ def create_app(settings: Settings | None = None):
     app.include_router(knowledge_lookup_router)
     app.include_router(knowledge_batch_router)
     app.include_router(repair_router)
+    app.include_router(repair_cases_router)
     web = Path(__file__).parent / 'web'
     app.mount('/web', StaticFiles(directory=web), name='web')
 

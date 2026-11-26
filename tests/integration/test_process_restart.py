@@ -20,7 +20,8 @@ def process_config():
     path.unlink(missing_ok=True)
 
 
-def test_authenticated_session_survives_server_process_restart(application, settings, process_config):
+@pytest.fixture
+def workbench_process(settings, process_config):
     with socket.socket() as listener:
         listener.bind(('127.0.0.1', 0))
         port = listener.getsockname()[1]
@@ -29,9 +30,9 @@ def test_authenticated_session_survives_server_process_restart(application, sett
     config_path.write_text(json.dumps({**asdict(settings), 'origin': origin}), encoding='utf-8')
 
     @contextmanager
-    def server():
+    def server(factory='app.main:create_app'):
         process = subprocess.Popen(
-            [sys.executable, '-m', 'uvicorn', 'app.main:create_app', '--factory', '--host', '127.0.0.1',
+            [sys.executable, '-m', 'uvicorn', factory, '--factory', '--host', '127.0.0.1',
              '--port', str(port)], env={**os.environ, 'APP_CONFIG_FILE': str(config_path)},
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
@@ -56,6 +57,11 @@ def test_authenticated_session_survives_server_process_restart(application, sett
                 process.kill()
                 process.wait(timeout=5)
 
+    return origin, server
+
+
+def test_authenticated_session_survives_server_process_restart(application, workbench_process):
+    origin, server = workbench_process
     with httpx2.Client(base_url=origin, trust_env=False) as client:
         with server():
             token = client.get('/api/auth/csrf').json()['csrf_token']

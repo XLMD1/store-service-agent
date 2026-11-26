@@ -106,9 +106,107 @@ async function knowledgePage(params,keepViewer=false){
       ||'<p class="state">当前没有可查看的资料。</p>'}
     <div class="actions">${offset?'<a class="button" href="#knowledge?offset='+Math.max(0,offset-50)+'">上一页</a>':''}
       ${data.next_offset!=null?'<a class="button" href="#knowledge?offset='+esc(data.next_offset)+'">下一页</a>':''}</div>
-    </section>${canImport?manualImport():''}`,'',true);
+    </section>${experiencePanel()}${canImport?manualImport():''}`,'',true);
+  bindExperiencePanel($('#repair-cases'));
   if(canImport)bindManualImport($('#knowledge-import'));
   if(searchData?.models.length)bindManualSearch($('#knowledge-search'));
+}
+
+const caseStates={pending_review:'待核对',reviewed:'已核对',rejected:'未通过'};
+
+function experiencePanel(){
+  const manage=hasPermission('knowledge.review');
+  return `<section class="panel"><details id="repair-cases"><summary>维修经验案例</summary>
+    <p class="muted">按完整型号查门店案例。厂家处理建议可在维修辅助中查看。</p>
+    ${manage?`<details><summary>提交案例</summary><form class="fields" data-case-submit>
+      ${field('完整型号','model','','required maxlength="100"')}
+      ${field('故障码或现象','problem','','required maxlength="2000"')}
+      <label class="field"><span>现场检查条件</span><textarea required name="conditions" maxlength="2000"></textarea></label>
+      <label class="field"><span>处理经过及实际结果</span><textarea required name="outcome" maxlength="2000"></textarea></label>
+      ${check('已核对事实，并去除客户姓名、电话和详细地址。')}
+      <button class="primary">保存并提交核对</button><p role="status"></p>
+    </form></details>`:''}
+    <form class="fields" data-case-search><div class="grid two">
+      ${field('按完整型号筛选','model','','maxlength="100"')}
+      <label class="field"><span>核对状态</span><select name="state">
+        ${(manage?['pending_review','reviewed','rejected']:['reviewed']).map(key=>`<option value="${key}">${caseStates[key]}</option>`).join('')}
+      </select></label></div><div><button>查询案例</button></div></form>
+    <p role="status" data-case-status></p><div data-case-list></div>
+    <button type="button" data-case-next hidden>下一页案例</button>
+  </details></section>`;
+}
+
+function caseRow(row){
+  const review=row.state==='pending_review'&&hasPermission('knowledge.review');
+  return `<article class="service-row"><h3>${esc(row.problem)}</h3>
+    <p>${esc(row.model)} · ${esc(caseStates[row.state])} · ${esc(row.submitted_by)} 提交</p>
+    <dl><dt>检查条件</dt><dd>${esc(row.conditions)}</dd><dt>经过及结果</dt><dd>${esc(row.outcome)}</dd></dl>
+    ${row.reviewed_at?`<p>核对人 ${esc(row.reviewed_by)} · ${esc(stamp(row.reviewed_at))}</p><p>${esc(row.review_note)}</p>`:''}
+    ${review?`<form class="fields" data-case-review="${esc(row.id)}">
+      <label class="field"><span>核对结果</span><select required name="decision"><option value="">请选择</option>
+        <option value="reviewed">通过</option><option value="rejected">未通过</option></select></label>
+      ${field('核对依据','note','','required maxlength="1000"')}${check('已核对型号、条件和结果。')}
+      <button>保存核对结果</button><p role="status"></p></form>`:''}</article>`;
+}
+
+function bindExperiencePanel(panel){
+  const search=panel.querySelector('[data-case-search]'),list=panel.querySelector('[data-case-list]');
+  const next=panel.querySelector('[data-case-next]'),status=panel.querySelector('[data-case-status]');
+  let generation=0,query,nextOffset;
+  async function load(offset=0){
+    const current=++generation;
+    const params=new URLSearchParams(query);
+    params.set('offset',String(offset));
+    next.hidden=true;
+    status.textContent='正在查询案例…';
+    try{
+      const result=await api('/repair/cases?'+params);
+      if(current!==generation)return;
+      list.innerHTML=result.items.map(caseRow).join('');
+      status.textContent=result.items.length?'':'此条件下暂无案例。';
+      nextOffset=result.next_offset;
+      next.hidden=nextOffset==null;
+    }catch(error){if(current===generation){list.replaceChildren();status.textContent=error.message;}}
+  }
+  function searchCases(){
+    query=new URLSearchParams({state:search.elements.state.value});
+    const model=search.elements.model.value.trim();
+    if(model)query.set('model',model);
+    return load();
+  }
+  panel.ontoggle=event=>{if(event.target===panel&&panel.open&&!query)searchCases();};
+  search.onsubmit=event=>{event.preventDefault();searchCases();};
+  next.onclick=()=>load(nextOffset);
+  panel.addEventListener('submit',async event=>{
+    const form=event.target;
+    if(form===search||form.tagName!=='FORM')return;
+    event.preventDefault();
+    const review=form.dataset.caseReview;
+    const payload=Object.fromEntries(new FormData(form));
+    payload.confirmed=form.elements.confirmed.checked;
+    const fingerprint=JSON.stringify(payload);
+    if(form.dataset.fingerprint!==fingerprint){
+      form.dataset.fingerprint=fingerprint;
+      form.dataset.requestId=crypto.randomUUID();
+    }
+    const message=form.querySelector('[role=status]');
+    try{
+      await FormState.freezeWhile(form,()=>api(review?'/repair/cases/'+encodeURIComponent(review)+'/review':'/repair/cases',
+        'POST',{...payload,request_id:form.dataset.requestId}));
+      form.reset();
+      message.textContent='';
+      delete form.dataset.fingerprint;
+      if(!review){search.elements.state.value='pending_review';search.elements.model.value=String(payload.model);}
+      await searchCases();
+      const receipt=review?'核对结果已保存。':'案例已保存，等待核对。';
+      status.textContent=receipt+status.textContent;
+    }catch(error){
+      if(review&&error.status===409){
+        await searchCases();
+        status.textContent='此案例的核对状态已变化。'+status.textContent;
+      }else message.textContent=error.message;
+    }
+  });
 }
 
 function manualSearch(models){

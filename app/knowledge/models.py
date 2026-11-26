@@ -99,3 +99,26 @@ class RepairAnswer(Base):
     result: Mapped[dict] = mapped_column(JSONB)
     feedback: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+class RepairCase(Base):
+    __tablename__ = 'repair_cases'
+    __table_args__ = (
+        UniqueConstraint('submitted_by', 'request_id'),
+        UniqueConstraint('reviewed_by', 'review_request_id'),
+        CheckConstraint("state IN ('pending_review','reviewed','rejected')", name='ck_repair_case_state'),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    model: Mapped[str] = mapped_column(String(100))
+    problem: Mapped[str] = mapped_column(Text)
+    conditions: Mapped[str] = mapped_column(Text)
+    outcome: Mapped[str] = mapped_column(Text)
+    state: Mapped[str] = mapped_column(String(20), default='pending_review')
+    submitted_by: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    submitted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    request_id: Mapped[str] = mapped_column(String(36))
+    request_digest: Mapped[str] = mapped_column(String(64))
+    reviewed_by: Mapped[str | None] = mapped_column(ForeignKey('users.id'))
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    review_note: Mapped[str | None] = mapped_column(Text)
+    review_request_id: Mapped[str | None] = mapped_column(String(36))

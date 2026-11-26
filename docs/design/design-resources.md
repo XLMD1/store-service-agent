@@ -1,11 +1,15 @@
 # 门店助手 · 设计资源与页面规范（AI阅读版）
 
-版本：V1.47 · 整理日期：2026-11-24 · 视觉基准：C / 沉稳专业型。
+版本：V1.51 · 整理日期：2026-11-25 · 视觉基准：C / 沉稳专业型。
 [HTML可视化版](design-resources.html)使用相同的页面编号、路径和实现状态。
+
+## 维修经验案例 · V1.51
+
+页面编号 `knowledge`。维修资料页可按完整型号、审核状态查询。师傅和老板可提交脱敏案例并确认通过或驳回，读者可查已核对案例；现场经验单独列示。构造样例交互及截图见[案例核对记录](qa/repair-cases/README.md)。
 
 ## 正式页面背景与布局 · 2026-11-24
 
-正式页面统一使用灰蓝导航、白色内容面板和品牌蓝操作。页首以低饱和渐变和局部点阵区分内容区。原有五种背景偏好继续生效，可在「账户与显示」切换。
+正式页面统一使用灰蓝导航、白色内容面板和品牌蓝操作。页首以低饱和渐变和局部点阵区分内容区。原有五种背景偏好继续生效，可在「账户与显示」切换。共用退出按钮已在 work-fees 的 1417px 和 390px 视口核对悬停、按下和键盘焦点，悬停文字对比度 7.72:1。[核对截图](qa/store-theme/logout-hover.jpg)
 
 页面编号：home、inventory、reservations、ledger、pending、statistics、correction、reconciliation、inbound、movement、opening、catalog、customers、sources、source、service-draft、service-search、service-detail、service-agent、service-task、work-fees、work-fee、technicians、knowledge、repair-assistant、task、deepseek-settings、login。
 
@@ -337,6 +341,10 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 | m1-inbound | [入库登记](http://127.0.0.1:8002/#inbound) | [电脑 1754px](qa/header-back/inbound-1754.jpg) |
 | m1-outbound | [普通出库](http://127.0.0.1:8002/#movement?kind=inventory_outbound) | [手机 390px](qa/header-back/outbound-390.jpg) |
 
+正式浅色页头的共用返回链接在悬停、按下和键盘聚焦时使用深蓝文字与浅蓝底色，焦点保留独立描边。8002 已核对原返回目标。
+
+[维修辅助悬停](qa/header-back/repair-hover-1417.jpg) · [手机入库焦点](qa/header-back/inbound-focus-390.jpg)
+
 本机浏览器已核对两页的返回目标、点击区域、键盘焦点及横向边界。[验收记录](qa/header-back/README.md)
 
 ### 1.23 办理留货备注选填
@@ -542,7 +550,7 @@ home、task、task-candidates、m1-pending继续沿用C方向，页面结构与�
 
 | 页面编号 | 入口与行为 | 证据 | 状态 |
 | --- | --- | --- | --- |
-| repair-assistant | 「日常工作 → 维修辅助」。选型号并输入故障码或现象。答复标明说明书原文或 AI 整理；可就地展开说明书、补充现场观察或继续提问。改型号或起始问题会清除本次问答。没有现场检查结果且现象精确匹配已核对表格时，显示可能原因。点击引用在问答页预览原图，关闭后保留填写内容和答复。 | [手机首查与追问入口](qa/m3-03/repair-followup-390.jpg) · [早期电脑问答样例](qa/m3-03/repair-answer-desktop.jpg) · [手机原图预览样例](qa/m3-03/manual-preview-390.jpg) · [同页预览实测](qa/m3-03/README.md#同页原图预览) | 已部署本机 8002 审核版，待专业审核 |
+| repair-assistant | 「日常工作 → 维修辅助」。选型号并输入故障码或现象。仅输入故障码时，首屏展示故障说明和可对应核对的厂家处理建议，两项都可打开引用页。资料缺少处理建议时直接提示缺口。答复标明说明书原文或 AI 整理；可就地展开说明书、补充现场观察或继续提问。改型号或起始问题会清除本次问答。没有现场检查结果且现象精确匹配已核对表格时，显示可能原因。点击引用在问答页预览原图，关闭后保留填写内容和答复。老板可在查询区下方展开「查看评测反馈」，按答复时间查看评价、原因、对应答复和原页。 | [老板回看反馈](qa/m3-03/repair-feedback-review-390.jpg) · [手机首查结果](qa/m3-03/repair-first-query-390.jpg) · [追问入口历史样例](qa/m3-03/repair-followup-390.jpg) · [早期电脑问答样例](qa/m3-03/repair-answer-desktop.jpg) · [手机原图预览样例](qa/m3-03/manual-preview-390.jpg) · [同页预览实测](qa/m3-03/README.md#同页原图预览) | 已部署本机 8002 审核版，待专业审核 |
 
 ### 1.45 工作台背景与老板资料核对
 

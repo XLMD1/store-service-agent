@@ -64,12 +64,24 @@ def test_assistant_checks_model_evidence_risk_and_feedback(application):
         assert owner.post(feedback_path, headers=csrf(owner), json=feedback).status_code == 404
         assert technician.post(feedback_path, headers=csrf(technician), json=feedback).status_code == 200
         assert technician.post(feedback_path, headers=csrf(technician), json=feedback).json() == {'saved':True}
+        review_path = '/api/repair/feedback'
+        assert technician.get(review_path).status_code == 403
+        review = owner.get(review_path)
+        assert review.status_code == 200, review.text
+        [reviewed] = review.json()['items']
+        assert review.json()['next_offset'] is None
+        assert reviewed['answer_id'] == result['answer_id'] and reviewed['actor'] == 'repair-tech'
+        assert reviewed['answered_at'] and reviewed['feedback'] == feedback
+        assert reviewed['model'] == 'SAMPLE-1' and reviewed['points'] == result['points']
+        assert reviewed['sources'] == result['sources'] and 'request_key' not in reviewed
+        assert owner.get(review_path, params={'offset': 1}).json()['items'] == []
         application.state.repair_responder=lambda _: {'status':'answered','points':[
             {'kind':'meaning','source':1,'segment':99}]}
         assert query('SAMPLE-1','E3')['status']=='source_only'
 
-        explicit = {**approved, 'revision': 2,
-                    'source_excerpt': 'E30：样例供水异常\nE3：样例传感器故障\n请由样例人员核对设备。'}
+        manufacturer_note = '当设备显示样例状态时，请先联系样例服务人员。'
+        explicit = {**approved, 'revision': 2, 'keywords': 'E3 E30',
+                    'source_excerpt': f'E30：样例供水异常\nE3：样例传感器故障\n{manufacturer_note}'}
         assert technician.post(path+'/index-drafts/confirm', headers=csrf(technician),
                                json={'confirmed':True,'entries':[explicit]}).status_code == 200
 
@@ -81,7 +93,9 @@ def test_assistant_checks_model_evidence_risk_and_feedback(application):
         direct = query('SAMPLE-1','E3')
         assert direct['status'] == 'answered'
         assert direct['origin'] == 'manual'
-        assert direct['passages'] == [{'source':1,'text':'E3：样例传感器故障'}]
+        assert direct['passages'] == [{'source':1,'text':'E3：样例传感器故障\n'+manufacturer_note}]
+        assert direct['manufacturer_guidance'] == [{'source':1,'quote':manufacturer_note}]
+        assert query('SAMPLE-1', 'E30')['manufacturer_guidance'] == []
         for extra, expected in [('闻到燃气味','urgent'), ('现在报 E30','need_code')]:
             reply = technician.post('/api/repair/ask',headers=csrf(technician),
                                     json={'model':'SAMPLE-1','problem':'E3','question':extra})
@@ -92,7 +106,7 @@ def test_assistant_checks_model_evidence_risk_and_feedback(application):
 
         def followup_reply(context):
             observed.append(context)
-            return {'status':'answered','points':[{'kind':'action','source':1,'segment':2,'condition_segment':1}]}
+            return {'status':'answered','points':[{'kind':'action','source':1,'segment':3,'condition_segment':2}]}
 
         application.state.repair_responder = followup_reply
         followup = {'model':'SAMPLE-1','problem':'E3','question':'接下来呢？','previous_answer_id':direct['answer_id']}

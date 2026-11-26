@@ -6,6 +6,49 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const {JSDOM}=require('jsdom');
 
+test('repair cases keep the request ID on retry and refresh the review queue after confirmation',async()=>{
+  const dom=new JSDOM('<main></main>',{url:'https://example.test/#knowledge',runScripts:'outside-only'});
+  const w=dom.window,calls=[];
+  let cases=[],attempts=0;
+  w.fixture=async(url,method,body)=>{
+    if(!method)return {items:cases.filter(row=>row.state===new URL(url,w.location).searchParams.get('state')),next_offset:null};
+    calls.push({url,body});
+    if(++attempts===1)throw new Error('响应丢失');
+    if(url.endsWith('/review'))cases[0].state=body.decision;
+    else cases=[{...body,id:'example',state:'pending_review',submitted_by:'样例师傅'}];
+    return cases[0];
+  };
+  const page=fs.readFileSync(require.resolve('../app/web/knowledge.js'),'utf8');
+  vm.runInContext(`
+    const esc=value=>String(value??'').replaceAll('<','&lt;');
+    const api=window.fixture, hasPermission=()=>true;
+    const FormState={freezeWhile:(form,action)=>action()};
+    const field=(label,name,value,attrs)=>'<input name="'+name+'" '+attrs+'>';
+    const check=()=>'<input name="confirmed" type="checkbox" required>';
+    `+page+`
+    document.querySelector('main').innerHTML=experiencePanel();
+    bindExperiencePanel(document.querySelector('#repair-cases'));`,dom.getInternalVMContext());
+  const tick=()=>new Promise(resolve=>setImmediate(resolve));
+  try{
+    const form=w.document.querySelector('[data-case-submit]');
+    for(const key of ['model','problem','conditions','outcome'])form.elements[key].value='样例';
+    form.elements.confirmed.checked=true;
+    form.requestSubmit();await tick();
+    assert.match(form.textContent,/响应丢失/);
+    form.requestSubmit();await tick();
+    assert.ok(calls[0].body.request_id);
+    assert.equal(calls[0].body.request_id,calls[1].body.request_id);
+    const review=w.document.querySelector('[data-case-review]');
+    review.elements.decision.value='rejected';
+    review.elements.note.value='与原页冲突';
+    review.elements.confirmed.checked=true;
+    review.requestSubmit();await tick();
+    assert.equal(calls[2].body.decision,'rejected');
+    assert.equal(w.document.querySelector('[data-case-review]'),null);
+    assert.match(w.document.querySelector('[data-case-status]').textContent,/核对结果已保存/);
+  }finally{w.close();}
+});
+
 test('manual page changes keep the existing viewer and review inputs mounted',async()=>{
   const dom=new JSDOM('<main id="main"></main>',{
     url:'https://example.test/#knowledge?id=manual-1&page=2',runScripts:'outside-only',

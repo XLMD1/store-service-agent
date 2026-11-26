@@ -48,6 +48,9 @@ body {
 .workbench-preferences .identity { margin: 0; padding-top: 10px; border-top: 1px solid var(--line); }
 .workbench-preferences .identity small { color: var(--muted); }
 .workbench-preferences .identity button { color: var(--text); background: white; border-color: var(--line); }
+.workbench-preferences .identity button:not(:disabled):is(:hover, :focus-visible, :active) {
+  color: var(--primary-hover); background: var(--primary-soft); border-color: var(--primary);
+}
 
 .store-shell .top.material-ink {
   position: relative; isolation: isolate;
@@ -62,8 +65,12 @@ body {
 .store-shell .top h1 { font-size: clamp(25px, 2.4vw, 36px); letter-spacing: -.035em; }
 .store-shell .top p { color: var(--muted); }
 .store-shell .top a { color: var(--primary); }
-.store-shell .top .page-back { background: var(--surface); border-color: var(--line); }
-.store-shell .top .page-back:hover { border-color: var(--primary); }
+.store-shell .top .page-back { color: var(--primary); background: var(--surface); border-color: var(--line); }
+.store-shell .top .page-back:is(:hover,:focus-visible,:active) {
+  color: var(--primary-hover);
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
 .store-shell .top .page-back:focus-visible { outline-color: var(--focus); }
 
 .store-shell :is(.panel,.stock-card,.service-reader) { border-radius: var(--radius-surface); box-shadow: var(--paper-shadow); }
