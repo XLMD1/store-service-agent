@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends
 from app.auth.router import current_user, database
 from app.auth.service import ensure_permission
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 RELEASES = "https://github.com/XLMD1/store-service-agent/releases"
 INSTALLER = "StoreAssistant-Win10-x64-Setup.exe"
 router = APIRouter(prefix="/api/version")
