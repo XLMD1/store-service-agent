@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, field_validator
 
 
-Role = Literal['clerk', 'technician', 'stock_operator', 'owner']
+Role = Literal['technician', 'owner']
 
 
 class StrictModel(BaseModel):
@@ -17,7 +17,7 @@ class Login(StrictModel):
 
 class AccountCreate(Login):
     password: SecretStr = Field(min_length=12, max_length=256)
-    roles: list[Role] = Field(min_length=1, max_length=4)
+    roles: list[Role] = Field(min_length=1, max_length=1)
     confirmed: Literal[True]
 
     @field_validator('confirmed', mode='before')
@@ -29,7 +29,7 @@ class AccountCreate(Login):
 
 
 class AccountUpdate(StrictModel):
-    roles: list[Role] | None = Field(default=None, min_length=1, max_length=4)
+    roles: list[Role] | None = Field(default=None, min_length=1, max_length=1)
     enabled: bool | None = Field(default=None, strict=True)
     confirmed: Literal[True]
 

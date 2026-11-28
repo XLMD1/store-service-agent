@@ -145,7 +145,7 @@ def test_partial_task_reopens_with_current_permissions(application, settings, st
             assert numbers(owner, params) == (12, 3, 9)
 
             assert owner.patch(account, headers=csrf(owner), json={
-                'roles': ['stock_operator'], 'confirmed': True,
+                'roles': ['owner'], 'confirmed': True,
             }).status_code == 200
             items = client.get(task_path).json()['items']
             assert [item['state'] for item in items] == ['completed', 'awaiting_confirmation']
@@ -216,7 +216,7 @@ def test_lost_receipt_and_pending_task_recover_after_server_restart(application,
             assert all(item['draft'] is None and item['result'] is None for item in hidden)
             assert client.post(operation + '/confirm', headers=headers, json=confirmation).status_code == 403
             assert owner.patch(account, headers=csrf(owner), json={
-                'roles': ['stock_operator'], 'confirmed': True,
+                'roles': ['owner'], 'confirmed': True,
             }).status_code == 200
 
             recovered = client.get(operation).json()

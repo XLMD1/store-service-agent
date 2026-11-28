@@ -23,9 +23,22 @@ def login(client, credentials=OWNER):
 
 
 def create_user(client, username='demo-stock', roles=None):
+    roles = roles or ['stock_operator']
+    if set(roles) & {'clerk', 'stock_operator'}:
+        # Historical databases can still contain these roles. Seed their pre-upgrade state
+        # directly so permission and account-recovery regressions remain covered.
+        from app.auth.models import User, UserRole
+        from app.auth.service import hash_password, identity
+        with client.app.state.sessions.begin() as db:
+            user = User(username=username, password_hash=hash_password('Sample-Stock-Password-123'))
+            db.add(user)
+            db.flush()
+            db.add_all(UserRole(user_id=user.id, role=role) for role in roles)
+            db.flush()
+            return identity(db, user)
     response = client.post('/api/accounts', headers=csrf(client), json={
         'username': username, 'password': 'Sample-Stock-Password-123',
-        'roles': roles or ['stock_operator'], 'confirmed': True})
+        'roles': roles, 'confirmed': True})
     assert response.status_code == 201, response.text
     return response.json()
 
@@ -104,7 +117,7 @@ def test_login_rejects_cross_site_or_missing_csrf(application, mutation):
         assert client.get('/api/auth/me').status_code == 401
 
 
-def test_two_accounts_share_service_and_roles_are_combined(application):
+def test_legacy_account_retains_combined_permissions(application):
     with TestClient(application) as owner, TestClient(application) as worker:
         login(owner)
         user = create_user(owner, roles=['clerk', 'stock_operator'])
@@ -198,7 +211,7 @@ def test_account_creation_rejects_unconfirmed_or_invalid_input(application, over
     with TestClient(application) as client:
         login(client)
         payload = {'username': 'demo-stock', 'password': 'Sample-Stock-Password-123',
-                   'roles': ['stock_operator'], 'confirmed': True, **overrides}
+                   'roles': ['technician'], 'confirmed': True, **overrides}
         assert client.post('/api/accounts', headers=csrf(client), json=payload).status_code == 422
         with application.state.sessions() as db:
             assert db.scalar(text('SELECT count(*) FROM users')) == 1
@@ -206,7 +219,7 @@ def test_account_creation_rejects_unconfirmed_or_invalid_input(application, over
 
 def test_duplicate_user_has_no_partial_audit_or_role_rows(application):
     with TestClient(application) as client:
-        login(client); create_user(client)
+        login(client); create_user(client, roles=['technician'])
         assert client.post('/api/accounts', headers=csrf(client), json={
             'username': 'demo-stock', 'password': 'Sample-Stock-Password-123',
             'roles': ['owner'], 'confirmed': True}).status_code == 409
@@ -359,3 +372,15 @@ def test_https_session_cookie_is_secure(application, settings):
             assert client.get('/api/auth/me').status_code == 200
     finally:
         secure_app.state.engine.dispose()
+
+
+@pytest.mark.parametrize('roles', [['clerk'], ['stock_operator'], ['owner', 'technician'], ['owner', 'clerk'], []])
+def test_only_one_current_role_can_be_assigned(application, roles):
+    with TestClient(application) as client:
+        login(client)
+        user = create_user(client, roles=['technician'])
+        payload = {'roles': roles, 'confirmed': True}
+        assert client.post('/api/accounts', headers=csrf(client), json={
+            **payload, 'username': 'invalid-user', 'password': 'Sample-Password-123',
+        }).status_code == 422
+        assert client.patch('/api/accounts/' + user['id'], headers=csrf(client), json=payload).status_code == 422
